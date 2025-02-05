@@ -1,0 +1,189 @@
+<template>
+  <div 
+    class="image-preview" 
+    v-show="visible" 
+    @click="close"
+    @mousewheel.prevent="handleWheel"
+    @mousemove="onDrag"
+    @mouseup="stopDrag"
+  >
+    <div class="preview-wrapper">
+      <img 
+        :src="currentImage" 
+        :style="{ 
+          transform: `translate(${position.x}px, ${position.y}px) scale(${scale}) rotate(${rotation}deg)` 
+        }"
+        @click.stop.prevent
+        @mousedown.stop.prevent="startDrag"
+      >
+    </div>
+    
+    <div class="preview-toolbar" @click.stop>
+      <button class="tool-btn" @click="rotate(-90)">
+        <i class="fas fa-undo"></i>
+      </button>
+      <button class="tool-btn" @click="rotate(90)">
+        <i class="fas fa-redo"></i>
+      </button>
+      <button class="tool-btn" @click="zoom(0.1)">
+        <i class="fas fa-search-plus"></i>
+      </button>
+      <button class="tool-btn" @click="zoom(-0.1)">
+        <i class="fas fa-search-minus"></i>
+      </button>
+      <button class="tool-btn" @click="reset">
+        <i class="fas fa-sync-alt"></i>
+      </button>
+      <button class="tool-btn" @click="close">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'ImagePreview',
+  data() {
+    return {
+      visible: false,
+      currentImage: '',
+      scale: 1,
+      rotation: 0,
+      position: { x: 0, y: 0 },
+      isDragging: false,
+      lastMousePosition: { x: 0, y: 0 }
+    }
+  },
+  methods: {
+    show(imageUrl) {
+      this.currentImage = imageUrl
+      this.visible = true
+      this.reset()
+      document.body.style.overflow = 'hidden'
+    },
+    close() {
+      this.visible = false
+      document.body.style.overflow = ''
+    },
+    rotate(deg) {
+      this.rotation = (this.rotation + deg) % 360
+    },
+    zoom(delta) {
+      const newScale = this.scale + delta
+      if (newScale >= 0.1 && newScale <= 3) {
+        this.scale = newScale
+      }
+    },
+    reset() {
+      this.scale = 1
+      this.rotation = 0
+      this.position = { x: 0, y: 0 }
+    },
+    handleWheel(e) {
+      const delta = e.deltaY > 0 ? -0.1 : 0.1
+      this.zoom(delta)
+    },
+    startDrag(e) {
+      this.isDragging = true
+      this.lastMousePosition = {
+        x: e.clientX,
+        y: e.clientY
+      }
+    },
+    onDrag(e) {
+      if (!this.isDragging) return
+      
+      const deltaX = e.clientX - this.lastMousePosition.x
+      const deltaY = e.clientY - this.lastMousePosition.y
+      
+      this.position.x += deltaX
+      this.position.y += deltaY
+      
+      this.lastMousePosition = {
+        x: e.clientX,
+        y: e.clientY
+      }
+    },
+    stopDrag() {
+      this.isDragging = false
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.image-preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+  
+  .preview-wrapper {
+    max-width: 90vw;
+    max-height: 90vh;
+    
+    img {
+      max-width: 100%;
+      max-height: 90vh;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+      cursor: grab;
+      user-select: none;
+      
+      &:active {
+        cursor: grabbing;
+      }
+    }
+  }
+  
+  .preview-toolbar {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    
+    .tool-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+      }
+      
+      i {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+</style> 

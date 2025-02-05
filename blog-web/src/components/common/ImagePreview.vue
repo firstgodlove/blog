@@ -1,44 +1,62 @@
 <template>
-  <div 
-    class="image-preview" 
-    v-show="visible" 
-    @click="close"
-    @mousewheel.prevent="handleWheel"
-    @mousemove="onDrag"
-    @mouseup="stopDrag"
-  >
-    <div class="preview-wrapper">
-      <img 
-        :src="currentImage" 
-        :style="{ 
-          transform: `translate(${position.x}px, ${position.y}px) scale(${scale}) rotate(${rotation}deg)` 
-        }"
-        @click.stop.prevent
-        @mousedown.stop.prevent="startDrag"
-      >
+  <transition name="fade">
+    <div 
+      class="image-preview" 
+      v-show="visible" 
+      @click="close"
+      @mousewheel.prevent="handleWheel"
+      @mousemove="onDrag"
+      @mouseup="stopDrag"
+      @keydown.left="prev"
+      @keydown.right="next"
+      tabindex="-1"
+    >
+      <div class="preview-wrapper">
+        <img 
+          :src="currentImage" 
+          :style="{ 
+            transform: `translate(${position.x}px, ${position.y}px) scale(${scale}) rotate(${rotation}deg)` 
+          }"
+          @click.stop.prevent
+          @mousedown.stop.prevent="startDrag"
+        >
+      </div>
+      
+      <div class="nav-buttons" v-if="images.length > 1">
+        <button class="nav-btn prev" @click.stop="prev" :disabled="currentIndex <= 0">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="nav-btn next" @click.stop="next" :disabled="currentIndex >= images.length - 1">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+      
+      <div class="preview-toolbar" @click.stop>
+        <button class="tool-btn" @click="rotate(-90)">
+          <i class="fas fa-undo"></i>
+        </button>
+        <button class="tool-btn" @click="rotate(90)">
+          <i class="fas fa-redo"></i>
+        </button>
+        <button class="tool-btn" @click="zoom(0.1)">
+          <i class="fas fa-search-plus"></i>
+        </button>
+        <button class="tool-btn" @click="zoom(-0.1)">
+          <i class="fas fa-search-minus"></i>
+        </button>
+        <button class="tool-btn" @click="reset">
+          <i class="fas fa-sync-alt"></i>
+        </button>
+        <button class="tool-btn" @click="close">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="image-counter" v-if="images.length > 1">
+        {{ currentIndex + 1 }} / {{ images.length }}
+      </div>
     </div>
-    
-    <div class="preview-toolbar" @click.stop>
-      <button class="tool-btn" @click="rotate(-90)">
-        <i class="fas fa-undo"></i>
-      </button>
-      <button class="tool-btn" @click="rotate(90)">
-        <i class="fas fa-redo"></i>
-      </button>
-      <button class="tool-btn" @click="zoom(0.1)">
-        <i class="fas fa-search-plus"></i>
-      </button>
-      <button class="tool-btn" @click="zoom(-0.1)">
-        <i class="fas fa-search-minus"></i>
-      </button>
-      <button class="tool-btn" @click="reset">
-        <i class="fas fa-sync-alt"></i>
-      </button>
-      <button class="tool-btn" @click="close">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -47,7 +65,8 @@ export default {
   data() {
     return {
       visible: false,
-      currentImage: '',
+      images: [],
+      currentIndex: 0,
       scale: 1,
       rotation: 0,
       position: { x: 0, y: 0 },
@@ -55,16 +74,37 @@ export default {
       lastMousePosition: { x: 0, y: 0 }
     }
   },
+  computed: {
+    currentImage() {
+      return this.images[this.currentIndex] || ''
+    }
+  },
   methods: {
-    show(imageUrl) {
-      this.currentImage = imageUrl
+    show(images, startIndex = 0) {
+      this.images = Array.isArray(images) ? images : [images]
+      this.currentIndex = startIndex
       this.visible = true
       this.reset()
       document.body.style.overflow = 'hidden'
+      this.$nextTick(() => {
+        this.$el.focus()
+      })
     },
     close() {
       this.visible = false
       document.body.style.overflow = ''
+    },
+    prev() {
+      if (this.currentIndex > 0) {
+        this.currentIndex--
+        this.reset()
+      }
+    },
+    next() {
+      if (this.currentIndex < this.images.length - 1) {
+        this.currentIndex++
+        this.reset()
+      }
     },
     rotate(deg) {
       this.rotation = (this.rotation + deg) % 360
@@ -124,7 +164,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: fadeIn 0.3s ease;
   
   .preview-wrapper {
     max-width: 90vw;
@@ -134,7 +173,6 @@ export default {
       max-width: 100%;
       max-height: 90vh;
       object-fit: contain;
-      transition: transform 0.3s ease;
       cursor: grab;
       user-select: none;
       
@@ -178,6 +216,22 @@ export default {
   }
 }
 
+.fade-enter-active {
+  animation: fadeIn 0.3s ease;
+  
+  img {
+    animation: zoomIn 0.3s ease;
+  }
+}
+
+.fade-leave-active {
+  animation: fadeOut 0.3s ease;
+  
+  img {
+    animation: zoomOut 0.3s ease;
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -185,5 +239,89 @@ export default {
   to {
     opacity: 1;
   }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.3) rotate(0deg);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes zoomOut {
+  from {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  to {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.3) rotate(0deg);
+  }
+}
+
+.nav-buttons {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  pointer-events: none;
+
+  .nav-btn {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    pointer-events: auto;
+    
+    &:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    i {
+      font-size: 20px;
+    }
+  }
+}
+
+.image-counter {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
 }
 </style> 

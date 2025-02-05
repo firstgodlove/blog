@@ -263,6 +263,7 @@ export default {
       showSidebar: true,
       contentLayout: 'center',
       collapsedCodeBlocks: new Set(),
+      images: []
     }
   },
   computed: {
@@ -524,6 +525,7 @@ export default {
     initImagePreview() {
       const images = document.querySelectorAll('.article-content img')
       images.forEach(img => {
+        this.images.push(img.src)
         // 移除旧的事件监听器（如果有的话）
         img.removeEventListener('click', this.handleImageClick)
         // 添加新的事件监听器
@@ -536,7 +538,7 @@ export default {
     handleImageClick(e) {
       const img = e.target
       if (img.tagName === 'IMG') {
-        this.$refs.imagePreview.show(img.src)
+        this.$refs.imagePreview.show(this.images, this.images.indexOf(img.src))
       }
     },
     toggleDislike() {

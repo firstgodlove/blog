@@ -94,7 +94,7 @@
         background: var(--card-bg) !important;
         color: var(--text-secondary) !important;
         border: 1px solid var(--border-color) !important;
-        border-radius: $border-radius-sm !important;
+        border-radius: $border-radius-sm * 2.5 !important;
         margin: 0 3px !important;
         min-width: 34px !important;
         height: 34px !important;
@@ -106,7 +106,6 @@
         &:hover {
             color: $primary !important;
             border-color: $primary !important;
-            transform: translateY(-1px) !important;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05) !important;
         }
     }
@@ -119,7 +118,6 @@
                 color: #fff !important;
                 border-color: $primary !important;
                 font-weight: bold !important;
-                transform: translateY(-1px) !important;
                 box-shadow: 0 4px 12px rgba($primary, 0.2) !important;
 
                 &:hover {

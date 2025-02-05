@@ -142,12 +142,12 @@ export default {
             }
           ]
         },
-        // { 
-        //   name: '说说', 
-        //   path: '/moments', 
-        //   icon: 'fas fa-comment-dots',
-        //   colorClass: 'talk-link'
-        // },
+        { 
+          name: '说说', 
+          path: '/moments', 
+          icon: 'fas fa-comment-dots',
+          colorClass: 'talk-link'
+        },
         { 
           name: '热搜', 
           path: '/hotSearch', 

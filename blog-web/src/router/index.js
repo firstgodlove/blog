@@ -109,15 +109,15 @@ const routes = [
                 component: Article,
                 props: true
               },
-              // {
-              //   path: '/moments',
-              //   name: 'Moments',
-              //   component: () => import('@/views/moments/index.vue'),
-              //   meta: {
-              //     title: '说说 - 墨笺博客',
-              //     icon: 'fas fa-comment-dots'
-              //   }
-              // },
+              {
+                path: '/moments',
+                name: 'Moments',
+                component: () => import('@/views/moments/index.vue'),
+                meta: {
+                  title: '说说 - 墨笺博客',
+                  icon: 'fas fa-comment-dots'
+                }
+              },
               {
                 path: '/user/profile',
                 name: 'Profile',

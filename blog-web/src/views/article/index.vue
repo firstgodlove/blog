@@ -691,7 +691,7 @@ export default {
 
 <style lang="scss" scoped>
 .article-page {
-  max-width: 1400px;
+  max-width: 1300px;
   margin: 0 auto;
   padding: $spacing-lg;
 }
@@ -704,7 +704,7 @@ export default {
 
   &.center {
     grid-template-columns: 1fr;
-    max-width: 900px;
+    max-width: 1100px;
     margin: 0 auto;
   }
 

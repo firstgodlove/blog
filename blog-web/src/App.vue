@@ -10,7 +10,7 @@
     <Lantern />
     <RandomVideo />
     <div class="cursor-container"></div>
-    <Fireworks />
+    <!-- <Fireworks /> -->
   </div>
 </template>
 
@@ -26,7 +26,7 @@ import SearchDialog from '@/components/Search/index.vue'
 import MobileMenu from '@/layout/MobileMenu/index.vue'
 import Lantern from '@/components/Lanterns/index.vue'
 import RandomVideo from '@/components/RandomVideo/index.vue'
-import Fireworks from '@/components/Fireworks/index.vue'
+//import Fireworks from '@/components/Fireworks/index.vue'
 
 export default {
   name: 'App',
@@ -39,7 +39,7 @@ export default {
     MobileMenu,
     Lantern,
     RandomVideo,
-    Fireworks
+ //   Fireworks
   },
 
   async created() {
@@ -68,28 +68,28 @@ export default {
       }
     },
 
-    // /**
-    //  * 初始化鼠标点击效果
-    //  */
-    // initCursorEffect() {
-    //   const container = document.querySelector('.cursor-container')
+    /**
+     * 初始化鼠标点击效果
+     */
+    initCursorEffect() {
+      const container = document.querySelector('.cursor-container')
       
-    //   document.addEventListener('click', (e) => {
-    //     const cursor = document.createElement('div')
-    //     cursor.className = 'cursor-fx'
-    //     cursor.style.left = `${e.clientX}px`
-    //     cursor.style.top = `${e.clientY}px`
-    //     container.appendChild(cursor)
+      document.addEventListener('click', (e) => {
+        const cursor = document.createElement('div')
+        cursor.className = 'cursor-fx'
+        cursor.style.left = `${e.clientX}px`
+        cursor.style.top = `${e.clientY}px`
+        container.appendChild(cursor)
         
-    //     cursor.addEventListener('animationend', () => {
-    //       cursor.remove()
-    //     })
-    //   })
-    // }
+        cursor.addEventListener('animationend', () => {
+          cursor.remove()
+        })
+      })
+    }
   },
-  // mounted() {
-  //   this.initCursorEffect()
-  // }
+  mounted() {
+    this.initCursorEffect()
+  }
 }
 </script>
 

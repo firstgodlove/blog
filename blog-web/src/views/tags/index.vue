@@ -60,12 +60,10 @@
 
 <script>
 import ArticleList from '@/components/ArticleList/index.vue'
-import gsap from 'gsap'
-import ScrollTrigger from 'gsap/ScrollTrigger'
 import Sidebar from '@/components/Sidebar/index.vue'
 import { getTagsApi } from '@/api/tags'
 import { getArticlesApi } from '@/api/article'
-gsap.registerPlugin(ScrollTrigger)
+
 
 export default {
   name: 'Tags',
@@ -128,37 +126,7 @@ export default {
       this.total = res.data.total
       this.loading = false
     },
-    /**
-     * 初始化动画
-     */
-    initAnimations() {
-      this.$nextTick(() => {
-        if (this.$refs.tagsCloud && this.$refs.tagsCloud.children.length) {
-          gsap.from(this.$refs.tagsCloud.children, {
-            opacity: 0,
-            y: 30,
-            scale: 0.9,
-            duration: 0.6,
-            stagger: {
-              amount: 1,
-              from: "random"
-            },
-            ease: "back.out(1.4)",
-            scrollTrigger: {
-              trigger: this.$refs.tagsCloud,
-              start: "top bottom-=100",
-            }
-          });
-        }
-
-        gsap.from('.page-header h1', {
-          opacity: 0,
-          y: -30,
-          duration: 1,
-          ease: "elastic.out(1, 0.8)"
-        });
-      });
-    }
+  
   },
   async created() {
     const res = await getTagsApi()
@@ -173,11 +141,6 @@ export default {
       }
     }
   },
-  mounted() {
-    this.$nextTick(() => {
-      this.initAnimations();
-    });
-  }
 }
 </script>
 

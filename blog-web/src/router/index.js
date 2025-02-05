@@ -1,8 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '@/views/home/index.vue'
-import layout from '@/layout/index.vue'
+import Layout from '@/layout/index.vue'
 import NotFound from '@/views/404/404.vue'
+import Article from '@/views/article/index.vue'
+import Archive from '@/views/archives/index.vue'
+import Categories from '@/views/categories/index.vue'
+import Tags from '@/views/tags/index.vue'
+import Messages from '@/views/messages/index.vue'
+import About from '@/views/about/index.vue'
 import store from '@/store';
 
 Vue.use(VueRouter)
@@ -10,7 +16,7 @@ Vue.use(VueRouter)
 const routes = [
     {
         path: "/",
-        component: layout,
+        component: Layout,
         meta: {
             title: "墨笺博客-一个专注于技术分享的博客平台",
             loading: true
@@ -30,7 +36,7 @@ const routes = [
               {
                 path: '/archive',
                 name: 'Archive',
-                component: () => import('@/views/archives/index.vue'),
+                component: Archive,
                 meta: { 
                   transition: 'fade',
                   title: '归档 - 墨笺博客',
@@ -40,7 +46,7 @@ const routes = [
               {
                 path: '/categories',
                 name: 'Categories',
-                component: () => import('@/views/categories/index.vue'),
+                component: Categories,
                 meta: {
                     transition: 'fade',
                     title: "分类 - 墨笺博客",
@@ -50,7 +56,7 @@ const routes = [
               {
                 path: '/tags',
                 name: 'Tags',
-                component: () => import('@/views/tags/index.vue'),
+                component: Tags,
                 meta: {
                     transition: 'fade',
                     title: '标签 - 墨笺博客',
@@ -60,7 +66,7 @@ const routes = [
               {
                 path: '/hotSearch',
                 name: 'HotSearch',
-                component: () => import('@/views/hotSearch/index.vue'),
+                component: () => import(/* webpackPrefetch: true */ '@/views/hotSearch/index.vue'),
                 meta: { 
                   transition: 'fade',
                   title: '热搜 - 墨笺博客',
@@ -70,7 +76,7 @@ const routes = [
               {
                 path: '/messages',
                 name: 'Messages',
-                component: () => import('@/views/messages/index.vue'),
+                component: Messages,
                 meta: { 
                   transition: 'fade',
                   title: '留言板 - 墨笺博客',
@@ -80,7 +86,7 @@ const routes = [
               {
                 path: '/friends',
                 name: 'Friends',
-                component: () => import('@/views/friends/index.vue'),
+                component: () => import(/* webpackPrefetch: true */ '@/views/friends/index.vue'),
                 meta: { 
                   transition: 'fade',
                   title: '友情链接 - 墨笺博客',
@@ -90,7 +96,7 @@ const routes = [
               {
                 path: '/about',
                 name: 'About',
-                component: () => import('@/views/about/index.vue'),
+                component: About,
                 meta: { 
                   transition: 'fade',
                   title: '关于本站 - 墨笺博客',
@@ -100,7 +106,7 @@ const routes = [
               {
                 path: '/post/:id',
                 name: 'Post',
-                component: () => import('@/views/article/index.vue'),
+                component: Article,
                 props: true
               },
               // {
@@ -115,7 +121,7 @@ const routes = [
               {
                 path: '/user/profile',
                 name: 'Profile',
-                component: () => import('@/views/profile/index.vue'),
+                component: () => import(/* webpackPrefetch: true */ '@/views/profile/index.vue'),
                 meta: {
                   title: '个人主页 - 墨笺博客',
                   icon: 'fas fa-user'
@@ -124,7 +130,7 @@ const routes = [
               {
                 path: '/editor',
                 name: 'Editor',
-                component: () => import('@/views/editor/index.vue'),
+                component: () => import(/* webpackPrefetch: true */ '@/views/editor/index.vue'),
                 meta: {
                   title: '写文章 - 墨笺博客',
                   icon: 'fas fa-edit',
@@ -134,7 +140,7 @@ const routes = [
               {
                 path: '/chat',
                 name: 'Chat',
-                component: () => import('@/views/chat/index.vue'),
+                component: () => import(/* webpackPrefetch: true */ '@/views/chat/index.vue'),
                 meta: {
                   title: '聊天 - 墨笺博客',
                   icon: 'fas fa-comments'

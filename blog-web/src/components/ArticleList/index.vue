@@ -262,7 +262,7 @@ export default {
 
     .post-excerpt {
       color: var(--text-secondary);
-      line-height: 1.6;
+      line-height: 1.8;
       margin-bottom: $spacing-md;
       flex-grow: 1;
       font-size: 1em;

@@ -896,6 +896,47 @@ VALUES (101, '100', '', '', '留言列表', 1, '', 'BUTTON', '2025-01-02 10:12:1
 INSERT INTO `sys_menu`
 VALUES (102, '100', '', '', '删除留言', 2, '', 'BUTTON', '2025-01-02 10:22:06', NULL, '', '', 1, 'sys:message:delete',
         0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (103, '71', '', '', '爬取文章', 6, '', 'BUTTON', '2025-01-02 16:34:53', NULL, '', '', 1, 'sys:article:reptile',
+        0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (104, '67', '', '', '列表', 1, '', 'BUTTON', '2025-01-03 15:53:46', NULL, '', '', 1, 'monitor:online:list', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (105, '67', '', '', '强退', 2, '', 'BUTTON', '2025-01-03 15:54:03', NULL, '', '', 1,
+        'monitor:online:forceLogout', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (106, '96', 'feedback', '/message/feedback/index', '反馈管理', 3, 'Checked', 'MENU', '2025-01-12 11:23:23', NULL,
+        '', '', 0, '', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (107, '106', '', '', '列表', 1, '', 'BUTTON', '2025-01-12 12:30:48', '2025-01-12 12:31:51', '', '', 1,
+        'sys:feedback:list', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (108, '106', '', '', '修改', 2, '', 'BUTTON', '2025-01-12 12:31:00', '2025-01-12 12:31:55', '', '', 1,
+        'sys:feedback:update', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (109, '106', '', '', '删除', 3, '', 'BUTTON', '2025-01-12 12:31:14', '2025-01-12 12:31:19', '', '', 1,
+        'sys:feedback:delete', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (110, '68', '/moments', '/article/moment/index', '说说管理', 4, 'ChatDotRound', 'MENU', '2025-02-06 10:22:22',
+        NULL, '', '', 0, '', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (111, '110', '', '', '新增', 1, '', 'BUTTON', '2025-02-06 10:32:06', NULL, '', '', 1, 'sys:moment:add', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (112, '110', '', '', '修改', 2, '', 'BUTTON', '2025-02-06 10:32:20', NULL, '', '', 1, 'sys:moment:update', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (113, '110', '', '', '删除', 3, '', 'BUTTON', '2025-02-06 10:32:37', NULL, '', '', 1, 'sys:moment:delete', 0);
+
 
 -- ----------------------------
 -- Table structure for sys_message
@@ -1272,6 +1313,18 @@ CREATE TABLE `sys_feedback`
     `create_time`   datetime                                DEFAULT NULL COMMENT '创建时间',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='反馈';
+
+
+drop table if exists sys_moment;
+CREATE TABLE `sys_moment`
+(
+    `id`          bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `user_id`     bigint(20) DEFAULT NULL COMMENT '用户id',
+    `content`     mediumtext COMMENT '文章内容',
+    `images`      mediumtext COMMENT '图片',
+    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='说说';
 
 SET
 FOREIGN_KEY_CHECKS = 1;

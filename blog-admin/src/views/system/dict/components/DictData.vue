@@ -326,13 +326,3 @@ if (props.dictId) {
   getList()
 }
 </script>
-
-<style scoped>
-.dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-}
-
-
-</style> 

@@ -1,6 +1,6 @@
 package com.mojian.service.impl;
 
-import java.util.List;
+import cn.dev33.satoken.stp.StpUtil;
 import org.springframework.stereotype.Service;
 import com.mojian.mapper.SysMomentMapper;
 import com.mojian.entity.SysMoment;
@@ -23,52 +23,13 @@ public class SysMomentServiceImpl extends ServiceImpl<SysMomentMapper, SysMoment
      */
     @Override
     public IPage<SysMoment> selectPage(SysMoment sysMoment) {
-        LambdaQueryWrapper<SysMoment> wrapper = new LambdaQueryWrapper<>();
-        // 构建查询条件
-        wrapper.eq(sysMoment.getId() != null, SysMoment::getId, sysMoment.getId());
-        wrapper.eq(sysMoment.getUserId() != null, SysMoment::getUserId, sysMoment.getUserId());
-        wrapper.eq(sysMoment.getContent() != null, SysMoment::getContent, sysMoment.getContent());
-        wrapper.eq(sysMoment.getImages() != null, SysMoment::getImages, sysMoment.getImages());
-        wrapper.eq(sysMoment.getCreateTime() != null, SysMoment::getCreateTime, sysMoment.getCreateTime());
-        return page(PageUtils.getPage(), wrapper);
+        return page(PageUtils.getPage(), new LambdaQueryWrapper<SysMoment>()
+                .orderByDesc(SysMoment::getCreateTime));
     }
 
-    /**
-     * 查询说说列表
-     */
     @Override
-    public List<SysMoment> selectList(SysMoment sysMoment) {
-        LambdaQueryWrapper<SysMoment> wrapper = new LambdaQueryWrapper<>();
-        // 构建查询条件
-        wrapper.eq(sysMoment.getId() != null, SysMoment::getId, sysMoment.getId());
-        wrapper.eq(sysMoment.getUserId() != null, SysMoment::getUserId, sysMoment.getUserId());
-        wrapper.eq(sysMoment.getContent() != null, SysMoment::getContent, sysMoment.getContent());
-        wrapper.eq(sysMoment.getImages() != null, SysMoment::getImages, sysMoment.getImages());
-        wrapper.eq(sysMoment.getCreateTime() != null, SysMoment::getCreateTime, sysMoment.getCreateTime());
-        return list(wrapper);
-    }
-
-    /**
-     * 新增说说
-     */
-    @Override
-    public boolean insert(SysMoment sysMoment) {
+    public Object add(SysMoment sysMoment) {
+        sysMoment.setUserId(StpUtil.getLoginIdAsLong());
         return save(sysMoment);
-    }
-
-    /**
-     * 修改说说
-     */
-    @Override
-    public boolean update(SysMoment sysMoment) {
-        return updateById(sysMoment);
-    }
-
-    /**
-     * 批量删除说说
-     */
-    @Override
-    public boolean deleteByIds(List<Long> ids) {
-        return removeByIds(ids);
     }
 }

@@ -4,7 +4,7 @@
     <div class="moments-list" v-loading="loading">
       <div v-for="moment in moments" :key="moment.id" class="moment-item">
         <div class="user-avatar">
-          <img v-lazy="moment.avatar" class="avatar" />
+          <img v-lazy="moment.avatar" :key="moment.avatar" class="avatar" />
           <!-- 移动端显示的用户信息 -->
           <div class="mobile-user-info">
             <span class="name">{{ moment.nickname }}</span>

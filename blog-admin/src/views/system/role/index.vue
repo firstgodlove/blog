@@ -396,29 +396,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.app-container {
-  .card-header {
-    .left-button-group {
-      display: flex;
-      align-items: center;
-    }
-  }
-
-  :deep(.permission-tree) {
-    max-height: 400px;
-    overflow-y: auto;
-    
-    .el-tree-node__content {
-      height: 32px;
-    }
-  }
-
-  .dialog-footer {
-    text-align: right;
-  }
-
-}
-
 :deep(.el-form-item__content) {
     display: block !important;
   }

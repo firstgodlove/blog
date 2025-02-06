@@ -49,7 +49,7 @@
       </h3>
       <div class="post-list">
         <router-link v-for="post in hot" :key="post.id" :to="`/post/${post.id}`" class="post-item">
-          <img :src="post.cover" :alt="post.title" @error="handleImageError">
+          <img v-lazy="post.cover" :key="post.cover" :alt="post.title" @error="handleImageError">
           <div class="post-meta">
             <h4>{{ post.title }}</h4>
             <time>{{ post.createTime }}</time>

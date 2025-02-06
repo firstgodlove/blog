@@ -168,14 +168,4 @@
   })
   </script>
   
-  <style lang="scss" scoped>
-  .app-container {
-    .pagination-container {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-    }
-  }
-  
  
-  </style> 

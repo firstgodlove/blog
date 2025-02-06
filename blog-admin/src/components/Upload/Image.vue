@@ -90,8 +90,13 @@ const handlePreview: UploadProps['onPreview'] = (uploadFile) => {
 }
 
 // 处理图片删除
-const handleRemove: UploadProps['onRemove'] = async () => {
-  emit('update:modelValue', props.multiple ? [] : '')
+const handleRemove: UploadProps['onRemove'] = async (uploadFile) => {
+  if (props.multiple) {
+    const urls = (props.modelValue as string[]).filter(url => url !== uploadFile.url)
+    emit('update:modelValue', urls)
+  } else {
+    emit('update:modelValue', '')
+  }
 }
 
 // 处理上传成功
@@ -100,11 +105,13 @@ const handleSuccess: UploadProps['onSuccess'] = async (response) => {
   if (response.code === 200) {
     const url = response.data
     if (props.multiple) {
-      const urls = fileList.value.map(file => file.url as string)
-      if (!urls.includes(url)) {
-        urls.push(url)
-      }
+      const urls = props.modelValue ? [...(props.modelValue as string[])] : []
+      urls.push(url)
       emit('update:modelValue', urls)
+      fileList.value = urls.map(u => ({
+        name: u.substring(u.lastIndexOf('/') + 1),
+        url: u
+      }))
     } else {
       emit('update:modelValue', url)
       fileList.value = [{

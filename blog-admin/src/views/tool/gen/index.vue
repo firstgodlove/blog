@@ -245,7 +245,7 @@ const import_title = ref('导入表')
 const dbTableList = ref([])
 const dbTableTotal = ref(0)
 const dbTableLoading = ref(false)
-const dbTableSelection = ref([])
+const dbTableSelection = ref<any[]>([])
 
 const dbTableParams = reactive({
   pageNum: 1,
@@ -326,7 +326,7 @@ const highlightedCode = (code: string) => {
       'ts': 'typescript'
     }
     
-    const lang = languageMap[language] || 'plaintext'
+    const lang = languageMap[language as keyof typeof languageMap] || 'plaintext'
     result = hljs.highlight(code, { language: lang }).value
     
     // 存入缓存
@@ -435,7 +435,7 @@ const submitImport = async () => {
   }
 
   try {
-    const tables = dbTableSelection.value.map(row => row.tableName)
+    const tables = dbTableSelection.value.map((row: any) => row.tableName)
     await importTableApi(tables)
     ElMessage.success('导入成功')
     closeImport()

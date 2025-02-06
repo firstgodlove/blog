@@ -45,7 +45,7 @@
         <div class="friends-grid">
           <div v-for="friend in friends" :key="friend.id" class="friend-card" @click="visitFriend(friend.url)">
             <div class="friend-avatar">
-              <img :src="friend.avatar" :alt="friend.name">
+              <img v-lazy="friend.avatar" :key="friend.avatar" :alt="friend.name">
               <div class="status" :class="{ online: friend.online }"></div>
             </div>
             <div class="friend-info">

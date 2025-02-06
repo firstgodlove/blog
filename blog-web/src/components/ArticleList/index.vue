@@ -4,7 +4,7 @@
       <article v-for="(post, index) in articles" :key="post.id" class="post-item"
         :class="{ 'image-right': index % 2 === 1 }">
         <div class="post-image" @click="$emit('article-click', post.id)">
-          <img :src="post.cover" :alt="post.title" @error="handleImageError" ref="postImage">
+          <img v-lazy="post.cover" :key="post.cover" :alt="post.title" ref="postImage">
           <div class="image-placeholder">
             <i class="fas fa-image"></i>
           </div>
@@ -85,10 +85,6 @@ export default {
     }
   },
   methods: {
-    handleImageError(e) {
-      e.target.src = this.$store.state.defaultImage
-      e.target.classList.add('fallback')
-    },
     formatTime(time) {
       return formatTime(time)
     }

@@ -55,7 +55,7 @@
       <template v-if="sortedComments.length">
         <div v-for="comment in sortedComments" :key="comment.id" :id="`comment-${comment.id}`" class="comment-item">
           <div class="comment-avatar">
-            <img :src="comment.avatar" :alt="comment.nickname" @error="handleImageError" />
+            <img :src="comment.avatar" :alt="comment.nickname" />
           </div>
           <div class="comment-content">
             <div class="comment-header">
@@ -84,7 +84,7 @@
             <div v-if="comment.children?.length" class="replies-list">
               <div v-for="reply in comment.children" :key="reply.id" class="reply-item">
                 <div class="reply-avatar">
-                  <img :src="reply.avatar" :alt="reply.nickname" @error="handleImageError" />
+                  <img :src="reply.avatar" :alt="reply.nickname" />
                 </div>
                 <div class="reply-content">
                   <div class="reply-header">
@@ -473,12 +473,7 @@ export default {
         textarea.setSelectionRange(start + prefix.length, end + prefix.length);
       });
     },
-    /**
-     * 处理图片错误
-     */
-    handleImageError(e) {
-      e.target.src = "https://api.dicebear.com/7.x/avataaars/svg?seed=default";
-    },
+
     /**
      * 插入回复表情
      */

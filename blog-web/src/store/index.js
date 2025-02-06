@@ -6,7 +6,6 @@ import { getToken, setToken, removeToken } from '@/utils/cookie'
 Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
-    defaultImage: 'https://api.dicebear.com/7.x/shapes/svg?seed=article',
     userInfo: sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")) : null,
     webSiteInfo: {
       showList:[]

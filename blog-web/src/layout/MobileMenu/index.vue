@@ -59,8 +59,7 @@ export default {
       if (!rootRoute || !rootRoute.children) return []
       
       return rootRoute.children.filter(route => {
-        const excludePaths = ['/post/:id', '/:pathMatch(.*)*']
-        if (excludePaths.includes(route.path) || !route.name || route.meta?.hidden) return false
+        if (!route.name || route.meta?.hidden) return false
         return true
       })
     }

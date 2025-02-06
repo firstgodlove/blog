@@ -34,8 +34,8 @@
         </div>
         <div class="reward-popup">
           <div class="reward-content">
-            <img :src="$store.state.webSiteInfo.weixinPay" alt="微信打赏" class="reward-qr">
-            <img :src="$store.state.webSiteInfo.aliPay" alt="支付宝打赏" class="reward-qr">
+            <img v-lazy="$store.state.webSiteInfo.weixinPay" alt="微信打赏" class="reward-qr">
+            <img v-lazy="$store.state.webSiteInfo.aliPay" alt="支付宝打赏" class="reward-qr">
           </div>
           <div class="reward-text">扫一扫，请我喝杯咖啡</div>
         </div>
@@ -60,7 +60,7 @@
           <!-- 作者信息和元数据 -->
           <div class="article-info">
             <div class="author-info">
-              <img :src="article.avatar" alt="作者头像" class="author-avatar">
+              <img v-lazy="article.avatar" alt="作者头像" class="author-avatar">
               <div class="author-meta">
                 <span class="author-name">{{ article.nickname }}</span>
                 <div class="post-meta">
@@ -284,7 +284,7 @@ export default {
         const res = await getArticleDetailApi(this.$route.params.id)
         this.article = {
           ...res.data,
-          content: res.data.content || ''
+          content: res.data.content ? this.addLazyLoadToImages(res.data.content) : ''
         }
 
         // 等待下一个 tick，确保文章内容渲染完成
@@ -313,6 +313,22 @@ export default {
       } finally {
         this.loading = false
       }
+    },
+    /**
+     * 为文章内容中的图片添加懒加载
+     */
+    addLazyLoadToImages(content) {
+      // 使用data-src来存储实际图片地址，并添加lazy-image类用于识别
+      return content.replace(
+        /<img([^>]*)src="([^"]*)"([^>]*)>/gi,
+        '<img$1src="' + this.getLoadingImage() + '" data-src="$2" class="lazy-image"$3>'
+      )
+    },
+    /**
+     * 获取加载中的图片
+     */
+    getLoadingImage() {
+      return 'https://img.shiyit.com/base/mojian/lazy.gif'
     },
     /**
      * 生成目录
@@ -523,14 +539,52 @@ export default {
      * 初始化图片预览
      */
     initImagePreview() {
-      const images = document.querySelectorAll('.article-content img')
-      images.forEach(img => {
-        this.images.push(img.src)
-        // 移除旧的事件监听器（如果有的话）
-        img.removeEventListener('click', this.handleImageClick)
-        // 添加新的事件监听器
-        img.addEventListener('click', this.handleImageClick)
+      // 使用 IntersectionObserver 监听图片
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target
+            const actualSrc = img.getAttribute('data-src')
+            if (actualSrc) {
+              // 创建一个新的图片对象来预加载
+              const tempImg = new Image()
+              tempImg.onload = () => {
+                img.src = actualSrc
+                img.classList.add('loaded')
+              }
+              tempImg.onerror = () => {
+                img.src = 'https://img.shiyit.com/base/mojian/img-error.jpg'
+                img.classList.add('error')
+              }
+              tempImg.src = actualSrc
+              img.removeAttribute('data-src')
+              observer.unobserve(img)
+            }
+          }
+        })
+      }, {
+        rootMargin: '50px 0px',
+        threshold: 0.1
       })
+
+      // 监听所有带有 lazy-image 类的图片
+      setTimeout(() => {
+        const lazyImages = document.querySelectorAll('.lazy-image')
+        lazyImages.forEach(img => {
+          observer.observe(img)
+        })
+
+        // 收集所有图片URL用于预览
+        this.images = Array.from(document.querySelectorAll('.article-content img')).map(img => 
+          img.getAttribute('data-src') || img.getAttribute('src')
+        )
+
+        // 为图片添加点击事件
+        document.querySelectorAll('.article-content img').forEach(img => {
+          img.style.cursor = 'zoom-in'
+          img.addEventListener('click', this.handleImageClick)
+        })
+      }, 200)
     },
     /**
      * 处理图片点击
@@ -1091,6 +1145,19 @@ export default {
     }
   }
 
+  :deep(img.lazy-image) {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    
+    &.loaded {
+      opacity: 1;
+    }
+
+    &.error {
+      opacity: 0.5;
+    }
+  }
+
   :deep(img) {
     max-width: 100%;
     border-radius: $border-radius-md;
@@ -1485,24 +1552,6 @@ export default {
             margin-left: 2px;
             opacity: 0.7;
           }
-        }
-
-        @keyframes progressPulse {
-          0% {
-            background: rgba($primary, 0.05);
-          }
-          50% {
-            background: rgba($primary, 0.1);
-          }
-          100% {
-            background: rgba($primary, 0.05);
-          }
-        }
-
-        &.completed {
-          background: rgba($primary, 0.15);
-          color: $primary;
-          animation: progressPulse 2s infinite;
         }
       }
     }

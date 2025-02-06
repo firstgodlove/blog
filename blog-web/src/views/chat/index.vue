@@ -65,7 +65,8 @@
               ></div>
               <img 
                 v-else-if="msg.type === 'image'" 
-                :src="msg.content" 
+                v-lazy="msg.content" 
+                :key="msg.content"
                 class="message-image"
                 @click="previewImage(msg.content)"
                 @load="handleImageLoad"

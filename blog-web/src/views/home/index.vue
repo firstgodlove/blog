@@ -7,7 +7,7 @@
           :slides="carouselSlides" 
           @click="goToPost"
         />
-
+        <MomentsList />
         <ArticleList
           :articles="articleList"
           :loading="loading"
@@ -26,6 +26,7 @@
 import ArticleList from '@/components/ArticleList/index.vue'
 import Carousel from '@/components/common/Carousel.vue'
 import Sidebar from '@/components/Sidebar/index.vue'
+import MomentsList from '@/components/MomentsList/index.vue'
 import { getArticlesApi,getCarouselArticlesApi } from '@/api/article'
 
 export default {
@@ -34,6 +35,7 @@ export default {
     ArticleList,
     Carousel,
     Sidebar,
+    MomentsList,
   },
   data() {
     return {
@@ -129,7 +131,7 @@ export default {
   height: 100%;
 
   .carousel {
-    margin-bottom: $spacing-xl * 2;
+    margin-bottom: $spacing-xl;
     width: 100%;
     max-height: 480px;
 

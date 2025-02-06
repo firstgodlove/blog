@@ -107,7 +107,10 @@ const routes = [
                 path: '/post/:id',
                 name: 'Post',
                 component: Article,
-                props: true
+                props: true,
+                meta: {
+                  hidden: true
+                }
               },
               {
                 path: '/moments',
@@ -124,7 +127,8 @@ const routes = [
                 component: () => import(/* webpackPrefetch: true */ '@/views/profile/index.vue'),
                 meta: {
                   title: '个人主页 - 墨笺博客',
-                  icon: 'fas fa-user'
+                  icon: 'fas fa-user',
+                  hidden: true
                 }
               },
               {
@@ -134,7 +138,8 @@ const routes = [
                 meta: {
                   title: '写文章 - 墨笺博客',
                   icon: 'fas fa-edit',
-                  requireAuth: true
+                  requireAuth: true,
+                  hidden: true
                 }
               },
               {
@@ -143,13 +148,17 @@ const routes = [
                 component: () => import(/* webpackPrefetch: true */ '@/views/chat/index.vue'),
                 meta: {
                   title: '聊天 - 墨笺博客',
-                  icon: 'fas fa-comments'
+                  icon: 'fas fa-comments',
+                  hidden: true
                 }
               },
               {
                 path: '/:pathMatch(.*)*',
                 name: 'NotFound',
-                component: NotFound
+                component: NotFound,
+                meta: {
+                  hidden: true
+                }
               }
         ]
     }

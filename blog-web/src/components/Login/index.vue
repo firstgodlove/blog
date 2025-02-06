@@ -145,7 +145,7 @@
           <div class="qrcode-content">
             <div class="qrcode-box">
               <!-- 这里放二维码图片 -->
-              <img src="https://img.shiyit.com/wechatQr.jpg" alt="微信二维码">
+              <img v-lazy="'https://img.shiyit.com/wechatQr.jpg'" :key="'https://img.shiyit.com/wechatQr.jpg'" alt="微信二维码">
             </div>
             <p class="qrcode-tip">登录验证码：
               <span class="code-text">{{ wechatForm.code }}</span>

@@ -7,7 +7,7 @@
         class="carousel-slide"
         :class="{ active: currentIndex === index }"
       >
-        <img :src="slide.cover" :alt="slide.title" @error="handleImageError">
+        <img v-lazy="slide.cover" :key="slide.cover" :alt="slide.title">
         <div class="slide-content">
           <h3>{{ slide.title }}</h3>
           <p>{{ slide.description }}</p>
@@ -59,13 +59,6 @@ export default {
     }
   },
   methods: {
-    /**
-     * 处理图片加载失败
-     */
-    handleImageError(e) {
-      e.target.src = this.$store.state.defaultImage
-      e.target.classList.add('fallback')
-    },
     /**
      * 下一页
      */

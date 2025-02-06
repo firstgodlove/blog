@@ -4,7 +4,7 @@
     <div class="moments-list" v-loading="loading">
       <div v-for="moment in moments" :key="moment.id" class="moment-item">
         <div class="user-avatar">
-          <img :src="moment.avatar" class="avatar" />
+          <img v-lazy="moment.avatar" class="avatar" />
           <!-- 移动端显示的用户信息 -->
           <div class="mobile-user-info">
             <span class="name">{{ moment.nickname }}</span>
@@ -26,7 +26,7 @@
           <div class="moment-content-wrapper">
             <div class="moment-content" v-html="moment.content"></div>
             <div class="moment-images" v-if="moment.images?.length">
-              <img v-for="(img, index) in moment.images" :key="index" :src="img"
+              <img v-for="(img, index) in moment.images" :key="img" v-lazy="img"
                 @click="previewImage(moment.images, index)" />
             </div>
           </div>
@@ -199,7 +199,6 @@ export default {
     color: var(--text-primary);
     line-height: 1.8;
     font-size: 15px;
-    margin-bottom: 16px;
     white-space: pre-wrap;
     word-break: break-word;
   }
@@ -208,6 +207,7 @@ export default {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 8px;
+    margin-top: 16px;
 
     @media screen and (max-width: 768px) {
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));

@@ -4,10 +4,23 @@ import router from './router'
 import store from './store'
 import gsap from 'gsap'
 import 'animate.css'
+import VueLazyload from 'vue-lazyload'
 
 import ScrollTrigger from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
+// 配置 vue-lazyload
+Vue.use(VueLazyload, {
+  preLoad: 1.3,
+  error: 'https://img.shiyit.com/base/mojian/img-error.jpg',
+  loading: 'https://img.shiyit.com/base/mojian/lazy.gif',
+  attempt: 1,
+  observer: true,
+  observerOptions: {
+    rootMargin: '0px',
+    threshold: 0.1
+  }
+})
 
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';

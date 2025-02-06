@@ -1,5 +1,5 @@
 <template>
-  <header class="site-header">
+  <header class="site-header" :class="{ 'header-hidden': !isHeaderVisible }">
     <nav class="navbar">
       <!-- 移动端菜单按钮 -->
       <button class="menu-btn" @click="handleOpenMobileMenu">
@@ -109,6 +109,8 @@ export default {
       searchQuery: '',
       showSearchPanel: false,
       showMobileSearch: false,
+      lastScrollTop: 0,
+      isHeaderVisible: true,
       menuItems: [
         { 
           name: '首页', 
@@ -262,9 +264,33 @@ export default {
       this.$message.success('已退出登录')
       this.showDropdown = false
     },
+    handleScroll() {
+      const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop
+      
+      // 如果滚动位置小于 100px，始终显示 header
+      if (currentScrollTop < 100) {
+        this.isHeaderVisible = true
+        this.lastScrollTop = currentScrollTop
+        return
+      }
+
+      // 判断滚动方向
+      if (currentScrollTop > this.lastScrollTop) {
+        // 向下滚动
+        this.isHeaderVisible = false
+      } else {
+        // 向上滚动
+        this.isHeaderVisible = true
+      }
+      
+      this.lastScrollTop = currentScrollTop
+    },
   },
   mounted() {
-    // 点击其他地方关闭下拉菜单
+    // 添加滚动事件监听
+    window.addEventListener('scroll', this.handleScroll)
+    
+    // 保留原有的事件监听
     document.addEventListener('click', (e) => {
       const userSection = this.$el.querySelector('.user-section')
       if (userSection && !userSection.contains(e.target)) {
@@ -273,6 +299,8 @@ export default {
     })
   },
   beforeDestroy() {
+    // 移除滚动事件监听
+    window.removeEventListener('scroll', this.handleScroll)
     document.removeEventListener('click', this.closeDropdown)
   }
 }
@@ -290,6 +318,12 @@ export default {
   -webkit-backdrop-filter: blur(10px) saturate(180%);
   border-bottom: 1px solid rgba(var(--border-color-rgb), 0.08);
   transition: all 0.3s ease;
+  transform: translateY(0);
+
+  &.header-hidden {
+    transform: translateY(-100%);
+    box-shadow: none;
+  }
 
   &::after {
     content: '';

@@ -182,15 +182,6 @@ export default {
                                 return;
                             }
 
-                            // 检查每行的有效性
-                            const lines = value.split('\n');
-                            for (const line of lines) {
-                                const trimmedLine = line.trim();
-                                if (trimmedLine && repeatedCharPattern.test(trimmedLine)) {
-                                    callback(new Error('文章内容包含无意义的重复字符，请修改'));
-                                    return;
-                                }
-                            }
 
                             callback();
                         }, 
@@ -275,7 +266,7 @@ export default {
         async publishArticle() {
             const status = this.statusList.filter(item => {
                 if (item.label === '审核') {
-                    return item.value
+                    return item
                 }
             })
             this.articleForm.status = status[0].value

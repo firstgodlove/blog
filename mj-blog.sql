@@ -936,6 +936,34 @@ VALUES (112, '110', '', '', '修改', 2, '', 'BUTTON', '2025-02-06 10:32:20', NU
 INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
                         `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
 VALUES (113, '110', '', '', '删除', 3, '', 'BUTTON', '2025-02-06 10:32:37', NULL, '', '', 1, 'sys:moment:delete', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (114, '72', '/album', '/site/album/index', '相册管理', 1, 'CreditCard', 'MENU', '2025-02-07 10:49:51',
+        '2025-02-07 10:50:23', '', '', 0, '', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (115, '114', '', '', '列表', 1, '', 'BUTTON', '2025-02-07 15:08:50', NULL, '', '', 1, 'sys:album:list', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (116, '114', '', '', '新增', 2, '', 'BUTTON', '2025-02-07 15:09:03', NULL, '', '', 1, 'sys:album:add', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (117, '114', '', '', '修改', 3, '', 'BUTTON', '2025-02-07 15:09:30', NULL, '', '', 1, 'sys:album:update', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (118, '114', '', '', '删除', 4, '', 'BUTTON', '2025-02-07 15:09:53', NULL, '', '', 1, 'sys:album:delete', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (119, '114', '', '', '新增照片', 5, '', 'BUTTON', '2025-02-07 15:10:39', NULL, '', '', 1, 'sys:photo:add', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (120, '114', '', '', '修改照片', 6, '', 'BUTTON', '2025-02-07 15:10:55', NULL, '', '', 1, 'sys:photo:update', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (121, '114', '', '', '删除照片', 7, '', 'BUTTON', '2025-02-07 15:11:18', NULL, '', '', 1, 'sys:photo:delete', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (122, '114', '', '', '移动照片', 8, '', 'BUTTON', '2025-02-07 15:11:38', NULL, '', '', 1, 'sys:photo:move', 0);
 
 
 -- ----------------------------
@@ -1326,5 +1354,29 @@ CREATE TABLE `sys_moment`
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='说说';
 
+CREATE TABLE `sys_album`
+(
+    `id`          bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `name`        varchar(64)  DEFAULT NULL COMMENT '相册名',
+    `description` varchar(64)  DEFAULT NULL COMMENT '相册描述',
+    `cover`       varchar(255) DEFAULT NULL COMMENT '封面URL',
+    `is_lock`     int(11) DEFAULT '0' COMMENT '是否加密 0：否 1：是',
+    `password`    varchar(255) DEFAULT NULL COMMENT '密码',
+    `sort`        int(11) DEFAULT NULL COMMENT '排序',
+    `create_time` datetime     DEFAULT NULL COMMENT '创建时间',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COMMENT='相册';
+
+CREATE TABLE `sys_photo`
+(
+    `id`          bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `album_id`    bigint(20) NOT NULL COMMENT '相册id',
+    `description` varchar(64)  DEFAULT NULL COMMENT '图片描述',
+    `url`         varchar(255) DEFAULT NULL COMMENT '图片地址',
+    `record_time` date         DEFAULT NULL COMMENT '记录时间',
+    `sort`        int(11) DEFAULT NULL COMMENT '排序',
+    `create_time` datetime     DEFAULT NULL COMMENT '创建时间',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='照片';
 SET
 FOREIGN_KEY_CHECKS = 1;

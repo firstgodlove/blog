@@ -9,6 +9,7 @@ import Categories from '@/views/categories/index.vue'
 import Tags from '@/views/tags/index.vue'
 import Messages from '@/views/messages/index.vue'
 import About from '@/views/about/index.vue'
+import Photos from '@/views/photos/index.vue'
 import store from '@/store';
 
 Vue.use(VueRouter)
@@ -61,6 +62,27 @@ const routes = [
                     transition: 'fade',
                     title: '标签 - 墨笺博客',
                     icon: 'fas fa-tags'
+                }
+              },
+              {
+                path: '/photos',
+                name: 'Photos',
+                component: Photos,
+                meta: {
+                    transition: 'fade',
+                    title: '相册 - 墨笺博客',
+                    icon: 'fas fa-images'
+                }
+              },
+              {
+                path: '/photos/:id',
+                name: 'PhotoDetail',
+                component: () => import('@/views/photos/detail.vue'),
+                meta: {
+                    transition: 'fade',
+                    title: '相册详情 - 墨笺博客',
+                    icon: 'fas fa-images',
+                    hidden: true
                 }
               },
               {

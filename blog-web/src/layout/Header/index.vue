@@ -157,6 +157,12 @@ export default {
           colorClass: 'hot-link'
         },
         { 
+          name: '相册', 
+          path: '/photos', 
+          icon: 'fas fa-images',
+          colorClass: 'photos-link'
+        },
+        { 
           name: '留言板', 
           path: '/messages', 
           icon: 'fas fa-envelope',
@@ -464,6 +470,7 @@ export default {
     &.talk-link i { color: #2196F3; }
     &.code-link i { color: #607D8B; }
     &.hot-link i { color: #F44336; }
+    &.photos-link i { color: #9b36f4; }
     &.message-link i { color: #009688; }
     &.friend-link i { color: #3F51B5; }
     &.about-link i { color: #795548; }

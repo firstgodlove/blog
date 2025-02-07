@@ -2,7 +2,7 @@
 
 <p align=center>
   <a href="http://www.shiyit.com">
-    <img src="logo.png" alt="拾壹博客" style="border-radius: 50%">
+    <img src="logo.png" alt="拾壹博客" style="border-radius: 50%;width: 100px;height: 100px">
   </a>
 </p>
 

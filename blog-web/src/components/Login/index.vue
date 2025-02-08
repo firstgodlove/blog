@@ -167,6 +167,8 @@ import {
   sendEmailCodeApi, registerApi, forgotPasswordApi,
   getWechatLoginCodeApi, getWechatIsLoginApi, getAuthRenderApi
 } from '@/api/auth'
+import { setCookie } from '@/utils/cookie'
+
 export default {
   name: 'Login',
   data() {
@@ -394,6 +396,8 @@ export default {
         return
       }
       getAuthRenderApi(type).then(res => {
+        //将当前地址存到cookie中
+        setCookie('redirectUrl', window.location.href)
         window.open(res.data, "_self")
       })
     },

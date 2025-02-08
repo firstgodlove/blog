@@ -27,7 +27,7 @@ import MobileMenu from '@/layout/MobileMenu/index.vue'
 import Lantern from '@/components/Lanterns/index.vue'
 import RandomVideo from '@/components/RandomVideo/index.vue'
 //import Fireworks from '@/components/Fireworks/index.vue'
-
+import { getCookie,removeCookie } from '@/utils/cookie'
 export default {
   name: 'App',
   components: {
@@ -51,7 +51,14 @@ export default {
     initTheme()
     await this.handleThirdPartyLogin()
     //这里等待第三方登录处理完成在获取用户信息
-    this.getUserInfo()
+    await this.getUserInfo();
+
+    //跳转到缓存地址
+    let url = getCookie('redirectUrl')
+    if (url) {
+      removeCookie('redirectUrl')
+      window.location.href = url
+    }
   },
   methods: {
     ...mapActions(['setSiteInfo','getUserInfo']),

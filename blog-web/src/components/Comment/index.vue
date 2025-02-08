@@ -478,10 +478,9 @@ export default {
      * 插入回复表情
      */
     insertReplyEmoji(emoji) {
-      const textarea = this.$refs.replyTextarea;
+      const textarea = this.$refs.replyTextarea[0];
       const start = textarea.selectionStart;
       const text = this.replyContent;
-
       this.replyContent = text.slice(0, start) + emoji + text.slice(start);
 
       this.$nextTick(() => {
@@ -493,7 +492,7 @@ export default {
      * 插入回复Markdown
      */
     insertReplyMarkdown(prefix, suffix) {
-      const textarea = this.$refs.replyTextarea;
+      const textarea = this.$refs.replyTextarea[0];
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
       const text = this.replyContent;

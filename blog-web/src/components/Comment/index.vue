@@ -594,7 +594,7 @@ export default {
      * 插入子评论表情
      */
     insertChildReplyEmoji(emoji) {
-      const textarea = this.$refs.childReplyTextarea;
+      const textarea = this.$refs.childReplyTextarea[0];
       if (!textarea) return;
 
       const start = textarea.selectionStart;
@@ -611,7 +611,7 @@ export default {
      * 插入子评论Markdown
      */
     insertChildReplyMarkdown(prefix, suffix) {
-      const textarea = this.$refs.childReplyTextarea;
+      const textarea = this.$refs.childReplyTextarea[0];
       if (!textarea) return;
 
       const start = textarea.selectionStart;

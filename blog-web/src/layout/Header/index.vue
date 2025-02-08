@@ -55,8 +55,9 @@
       </div>
 
       <div class="nav-right">
-        <a href="javascript:void(0)" class="search-box" @click="handleSearch">
-          <i class="fas fa-search" ></i>
+        <a href="javascript:void(0)" class="search-btn" @click="handleSearch">
+          <i class="fas fa-search"></i>
+          <span class="search-text">搜索</span>
         </a>
 
         <!-- 移动端搜索按钮 -->
@@ -535,34 +536,38 @@ export default {
   position: relative;
   right: 0px;
   
-  .search-box {
-    position: relative;
-    width: 200px;
-
-    input {
-      width: 100%;
-      padding: $spacing-sm $spacing-xl $spacing-sm $spacing-lg;
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      outline: none;
-      transition: all 0.3s ease;
-      font-size: 0.9em;
-      background: var(--input-bg);
-      color: var(--text-primary);
-
-      &:focus {
-        border-color: $primary;
-        box-shadow: 0 0 0 3px rgba($primary, 0.1);
-        background: var(--surface);
-      }
-    }
-
+  .search-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--hover-bg);
+    border-radius: 20px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+    
     i {
-      position: absolute;
-      right: $spacing-md;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-secondary);
+      font-size: 0.9em;
+      transition: transform 0.3s ease;
+    }
+    
+    .search-text {
+      font-size: 0.9em;
+      font-weight: 500;
+    }
+    
+    &:hover {
+      background: var(--surface);
+      color: $primary;
+      border-color: $primary;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba($primary, 0.1);
+      
+      i {
+        transform: scale(1.1);
+      }
     }
   }
 
@@ -721,7 +726,7 @@ export default {
     display: none;
   }
 
-  .nav-right .search-box {
+  .nav-right .search-btn {
     width: 160px;
   }
 }
@@ -737,7 +742,7 @@ export default {
   }
 
   .nav-center,
-  .nav-right .search-box {
+  .nav-right .search-btn {
     display: none;
   }
 

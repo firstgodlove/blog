@@ -192,6 +192,7 @@ export default {
       reconnectAttempts: 0,    // 重连次数
       maxReconnectAttempts: 5, // 最大重连次数
       shouldReconnect: true, // 是否需要重连的标志
+      shouldScrollToBottom: true, // 添加新标志来控制是否滚动到底部
     }
   },
   //监听this.$store.state.userInfo的变化
@@ -322,9 +323,8 @@ export default {
      * 处理接收到的消息
      */
     handleIncomingMessage(message) {
-      console.log('收到消息:', message) // 添加日志
+      console.log('收到消息:', message)
       
-      // 检查消息格式
       if (typeof message === 'string') {
         try {
           message = JSON.parse(message)
@@ -334,7 +334,6 @@ export default {
         }
       }
       if(message.isRecalled){
-        //根据id找到对应的那条消息，然后修改显示内容
         const index = this.currentChat.messages.findIndex(msg => msg.id === message.id)
         if(index !== -1){
           this.currentChat.messages[index].content = message.content
@@ -342,7 +341,6 @@ export default {
         }
         return
       }
-      // 如果是文本消息，确保@标记被正确处理
       if (message.type === 'text') {
         message.content = message.content.replace(/@(\S+)\s/g, '<mention>@$1</mention> ')
       }
@@ -360,6 +358,7 @@ export default {
       this.currentChat.messages.push(newMessage)
       this.currentChat.lastMessage = message.type === 'text' ? message.content : '[图片]'
       this.currentChat.lastTime = '刚刚'
+      this.shouldScrollToBottom = true // 收到新消息时设置为true
 
       this.$nextTick(() => {
         this.scrollToBottom()
@@ -372,7 +371,6 @@ export default {
     async sendMessage() {
       if (!this.messageText.trim() || !this.$store.state.userInfo || this.countdown > 0) return
       
-      // 处理@消息，将@用户转换为HTML
       const mentionedContent = this.messageText.replace(/@(\S+)\s/g, '<mention>@$1</mention> ')
       
       const message = {
@@ -386,6 +384,7 @@ export default {
       try {
         const response = await sendMsg(message)
         this.startCountdown()
+        this.shouldScrollToBottom = true // 发送消息时设置为true
       } catch (error) {
         console.error('发送消息失败:', error)
         this.$message.error('发送失败，请重试')
@@ -410,6 +409,7 @@ export default {
 
       try {
         const response = await sendMsg(message)
+        this.shouldScrollToBottom = true // 发送图片时设置为true
       } catch (error) {
         console.error('发送图片失败:', error)
         this.$message.error('发送失败，请重试')
@@ -552,7 +552,10 @@ export default {
      * 处理图片加载
      */
     handleImageLoad() {
-      this.scrollToBottom()
+      // 只有在需要滚动到底部时才执行
+      if (this.shouldScrollToBottom) {
+        this.scrollToBottom()
+      }
     },
 
     /**
@@ -573,33 +576,27 @@ export default {
       if (this.loading || !this.hasMore) return
 
       this.loading = true
+      this.shouldScrollToBottom = false // 加载历史消息时设置为false
       try {
-        // 记住当前的滚动高度
         const container = this.$refs.messageContainer
         const oldScrollHeight = container.scrollHeight
 
-        // 增加页码
         this.params.pageNum++
         
         const response = await getChatMsgListApi(this.params)
         
-        // 检查响应数据
         if (response.data && response.data.records && response.data.records.length > 0) {
-          // 格式化消息时间
           const formattedMessages = response.data.records.map(msg => ({
             ...msg,
             time: formatTime(msg.time)
           }))
           
-          // 将新消息添加到数组开头
           this.currentChat.messages.unshift(...formattedMessages.reverse())
           
-          // 如果返回的消息数小于 pageSize，说明没有更多消息了
           if (response.data.records.length < this.params.pageSize) {
             this.hasMore = false
           }
 
-          // 在 DOM 更新后调整滚动位置
           this.$nextTick(() => {
             const newScrollHeight = container.scrollHeight
             container.scrollTop = newScrollHeight - oldScrollHeight

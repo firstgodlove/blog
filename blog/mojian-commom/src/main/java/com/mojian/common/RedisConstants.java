@@ -10,6 +10,11 @@ public class RedisConstants {
      */
     public static final String LOGIN_TOKEN = "login:token:";
 
+    /**
+     * 用户签到
+     */
+    public static final String USER_SIGN = "user_sign:";
+
 
     /**
      * 验证码 redis key

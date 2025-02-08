@@ -17,6 +17,31 @@
         </div>
         <h3 class="username">{{ userInfo.nickname }}</h3>
         <p class="bio">{{ userInfo.bio || '这个人很懒，还没有写简介...' }}</p>
+        
+        <!-- 添加签到按钮 -->
+        <div class="sign-in-section">
+          <el-button 
+            type="primary" 
+            :disabled="signInStatus"
+            @click="handleSignIn"
+            size="small"
+            :loading="signInLoading"
+          >
+            <i class="el-icon-check"></i>
+            {{ signInStatus ? '今日已签到' : '立即签到' }}
+          </el-button>
+          <div class="sign-in-stats">
+            <div class="stat-item">
+              <span class="label">连续签到</span>
+              <span class="value">{{ signInStats.continuousDays }}天</span>
+            </div>
+            <div class="stat-item">
+              <span class="label">累计签到</span>
+              <span class="value">{{ signInStats.totalDays }}天</span>
+            </div>
+          </div>
+        </div>
+
         <div class="user-stats" role="list">
           <div class="stat-item" role="listitem">
             <span class="number">{{ statistics.posts }}</span>
@@ -74,7 +99,7 @@
       </div>
 
       <!-- 账号绑定 -->
-      <div v-if="currentTab === 'binding'" class="content-section">
+      <div v-if="currentTab === 'binding'" cla1110ss="content-section">
         <h2 class="section-title">账号绑定</h2>
         <div class="binding-tips">
           <el-alert title="账号绑定提示" type="info" description="绑定第三方账号后，您可以直接使用第三方账号登录本站，还可以同步您的个人信息。" show-icon
@@ -349,7 +374,8 @@
 <script>
 import {
   getUserInfoApi, updateProfileApi, updatePasswordApi,
-  getMyCommentApi, delMyCommentApi, getMyLikeApi, getMyReplyApi, getMyFeedbackApi, addFeedbackApi
+  getMyCommentApi, delMyCommentApi, getMyLikeApi, getMyReplyApi, getMyFeedbackApi, addFeedbackApi,
+  signInApi, getSignInStatusApi, getSignInStatsApi
 } from '@/api/user'
 import { uploadFileApi } from '@/api/file'
 import { getMyArticleApi, likeArticleApi, delArticleApi } from '@/api/article'
@@ -484,13 +510,18 @@ export default {
           { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' },
         ],
       },
+      signInStatus: false,
+      signInStats: {
+        continuousDays: 0,
+        totalDays: 0
+      },
+      signInLoading: false,
     }
   },
 
   watch: {
     '$store.state.userInfo': {
       handler(newVal, oldVal) {
-        // 有值就连接ws, 没有就移除
         if (!newVal) {
           this.$router.push('/')
         }
@@ -531,6 +562,9 @@ export default {
     })
 
     this.getFeedbackDict()
+    // 获取签到状态和统计
+    this.getSignInStatus()
+    this.getSignInStats()
   },
   methods: {
     /**
@@ -638,7 +672,7 @@ export default {
      * @param id
      */
     deletePost(row) {
-      this.$confirm(`确定要删除标题为 ‘${row.title}’ 的文章吗？`, '提示', {
+      this.$confirm(`确定要删除标题为 '${row.title}' 的文章吗？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -879,7 +913,42 @@ export default {
 
       // 清空 input 的值，这样可以重复上传同一个文件
       e.target.value = ''
-    }
+    },
+    /**
+     * 获取签到状态
+     */
+    getSignInStatus() {
+      getSignInStatusApi().then(res => {
+        this.signInStatus = res.data
+      })
+    },
+
+    /**
+     * 获取签到统计
+     */
+    getSignInStats() {
+      getSignInStatsApi().then(res => {
+        this.signInStats = res.data
+      })
+    },
+
+    /**
+     * 签到
+     */
+    handleSignIn() {
+      if (this.signInStatus.hasSignedIn) return
+      
+      this.signInLoading = true
+      signInApi().then(res => {
+        this.$message.success('签到成功！')
+        this.getSignInStatus()
+        this.getSignInStats()
+      }).catch(err => {
+        this.$message.error(err.message || '签到失败')
+      }).finally(() => {
+        this.signInLoading = false
+      })
+    },
   }
 }
 </script>
@@ -1416,6 +1485,38 @@ export default {
 
       &:hover {
         background: darken($primary, 10%);
+      }
+    }
+  }
+}
+
+.sign-in-section {
+  padding: 16px 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  margin: 16px 0;
+  
+  .sign-in-stats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 16px;
+    
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      
+      .label {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+      
+      .value {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--primary-color);
       }
     }
   }

@@ -99,6 +99,36 @@ export function addFeedbackApi(data) {
     })
 }
 
+/**
+ * 签到
+ */
+export function signInApi() {
+    return request({
+        url: '/sign/',
+        method: 'get'
+    })
+}
+
+/**
+ * 获取签到状态
+ */
+export function getSignInStatusApi() {
+    return request({
+        url: '/sign/isSignedToday',
+        method: 'get'
+    })
+}
+
+/**
+ * 获取签到统计
+ */
+export function getSignInStatsApi() {
+    return request({
+        url: '/sign/getSignDays',
+        method: 'get'
+    })
+}
+
 
 
 

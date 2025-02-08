@@ -1,6 +1,7 @@
 package com.mojian.utils;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -175,8 +176,8 @@ public class RedisUtils {
     /**
      * Set结构添加属性
      */
-    public Long sAdd(String key, Object... values) {
-        return redisTemplate.opsForSet().add(key, values);
+    public void sAdd(String key, Object... values) {
+        redisTemplate.opsForSet().add(key, values);
     }
 
     public Boolean sIsMember(String key, Object value) {
@@ -231,4 +232,27 @@ public class RedisUtils {
     public Long size(String key) {
         return redisTemplate.opsForValue().size(key);
     }
+
+    /**
+     * 设置位图中的某一位
+     */
+    public void setBit(String key, long offset, boolean value){
+        redisTemplate.opsForValue().setBit(key, offset, value);
+    }
+
+    /**
+     * 获取位图中的某一位
+     */
+    public Boolean getBit(String key, long offset){
+        return redisTemplate.opsForValue().getBit(key, offset);
+    }
+
+    /**
+     * 统计位图中指定范围内置为 1 的位数
+     */
+    public Long bitCount(String key, long start, long end) {
+        return redisTemplate.execute((RedisCallback<Long>) connection ->
+                connection.bitCount(key.getBytes(), start, end));
+    }
+
 }

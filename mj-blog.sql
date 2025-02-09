@@ -567,6 +567,13 @@ CREATE TABLE `sys_dict_data`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 38 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典数据表' ROW_FORMAT = DYNAMIC;
 
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `status`, `remark`) 
+VALUES 
+(1, 26, 'QQ', 'qq', 'success', '1', 2, 1, 'QQ登录'),
+(2, 26, '微博', 'weibo', 'danger', '0', 2, 1, '微博登录'),
+(3, 26, '码云', 'gitee', 'danger', '0', 3, 1, 'gitee登录'),
+(4, 26, '微信', 'wechat', 'success', '1', 0, 1, '微信登录'),
+(5, 26, 'github', 'github', 'info', '1', 4, 1, 'github登录');
 
 -- ----------------------------
 -- Table structure for sys_friend

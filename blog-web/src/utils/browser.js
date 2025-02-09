@@ -23,7 +23,7 @@ function getBrowserInfo() {
         browserName = "Safari";
         let safariVersionStart = userAgent.indexOf("Safari/") + 7;
         let safariVersionEnd = userAgent.indexOf(" ", safariVersionStart);
-        if (safiVersionEnd === -1) {
+        if (safariVersionEnd === -1) {
             safariVersionEnd = userAgent.length;
         }
         browserVersion = userAgent.substring(safariVersionStart, safariVersionEnd);

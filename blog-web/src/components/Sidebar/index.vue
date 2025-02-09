@@ -18,10 +18,10 @@
       </div>
       <div class="social-links">
         <div v-for="item in socialLinks" :key="item.type">
-          <el-tooltip placement="top" :content="item.content" >
+          <el-tooltip placement="top" :content="item.content">
             <a v-if="$store.state.webSiteInfo.showList.indexOf(item.type) !== -1" href="javascript:void(0)"
-              title="GitHub" :class="`social-btn ${item.type}`" @click="copyToClipboard(item)">
-              <i :class="item.icon"></i>
+                :title="item.title" :class="`social-btn ${item.type}`" @click="copyToClipboard(item)">
+                <i :class="item.icon"></i>
             </a>
           </el-tooltip>
         </div>

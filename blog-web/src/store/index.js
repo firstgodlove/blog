@@ -51,10 +51,6 @@ export default new Vuex.Store({
     SET_LOADING(state, status) {
       state.isLoading = status
     },
-    SET_TOKEN(state, token) {
-      state.token = token
-      setToken(token)
-    },
   },
   actions: {
     /**

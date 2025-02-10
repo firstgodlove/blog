@@ -93,4 +93,6 @@ public interface SysArticleMapper extends BaseMapper<SysArticle> {
     IPage<ArticleListVo> selectMyLike(@Param("page")Page<Object> page, @Param("userId")long userId);
 
     IPage<ArticleListVo> selectMyArticle(@Param("page")Page<Object> page,@Param("article") SysArticle article);
+
+    void updateBatchQuantity(@Param("articles") List<SysArticle> articles);
 }

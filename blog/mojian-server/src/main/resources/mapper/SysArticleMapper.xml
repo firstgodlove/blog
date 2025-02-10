@@ -50,6 +50,20 @@
         INSERT INTO sys_article_like(user_id, article_id) VALUES (#{userId}, #{articleId})
     </insert>
 
+    <update id="updateBatchQuantity">
+        UPDATE sys_article
+        SET
+        quantity = CASE
+        <foreach collection="articles" item="article" separator="">
+            WHEN id = #{article.id} THEN #{article.quantity}
+        </foreach>
+        END
+        WHERE id IN
+        <foreach collection="articles" item="article" open="(" separator="," close=")">
+            #{article.id}
+        </foreach>
+    </update>
+
 
     <delete id="unLike">
         DELETE FROM sys_article_like WHERE user_id = #{userId} AND article_id = #{articleId}

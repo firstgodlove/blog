@@ -69,7 +69,7 @@ public class SysArticle implements Serializable {
     private String originalUrl;
 
     @Schema(description = "文章阅读量")
-    private Long quantity;
+    private Integer quantity;
 
     @Schema(description = "关键词")
     private String keywords;

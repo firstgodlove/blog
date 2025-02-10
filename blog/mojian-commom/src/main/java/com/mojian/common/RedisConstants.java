@@ -128,4 +128,7 @@ public class RedisConstants {
      */
     public static final String ARTICLE_LIKE_COUNT = "article_like_count";
 
+
+    public static final String ARTICLE_QUANTITY = "article_quantity";
+
 }

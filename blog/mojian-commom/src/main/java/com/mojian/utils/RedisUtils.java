@@ -119,7 +119,7 @@ public class RedisUtils {
     /**
      * 直接设置整个Hash结构
      */
-    public void hSetAll(String key, Map<String, Object> map) {
+    public void hSetAll(String key, Map<Object, Object> map) {
         redisTemplate.opsForHash().putAll(key, map);
     }
 
@@ -254,5 +254,4 @@ public class RedisUtils {
         return redisTemplate.execute((RedisCallback<Long>) connection ->
                 connection.bitCount(key.getBytes(), start, end));
     }
-
 }

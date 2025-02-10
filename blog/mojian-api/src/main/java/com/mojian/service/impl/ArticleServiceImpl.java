@@ -1,11 +1,15 @@
 package com.mojian.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.thread.ThreadUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import com.mojian.common.RedisConstants;
 import com.mojian.entity.SysArticle;
 import com.mojian.service.ArticleService;
+import com.mojian.utils.IpUtils;
+import com.mojian.utils.RedisUtils;
 import com.mojian.vo.article.ArchiveListVo;
 import com.mojian.vo.article.ArticleDetailVo;
 import com.mojian.vo.article.ArticleListVo;
@@ -19,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +33,7 @@ public class ArticleServiceImpl implements ArticleService {
     private final SysArticleMapper sysArticleMapper;
 
     private final SysCategoryMapper sysCategoryMapper;
+    private final RedisUtils redisUtils;
 
     @Override
     public IPage<ArticleListVo> getArticleList(Integer tagId, Integer categoryId, String keyword) {
@@ -42,6 +48,23 @@ public class ArticleServiceImpl implements ArticleService {
         if (userId != null) {
            detailVo.setIsLike(sysArticleMapper.getUserIsLike(id, Integer.parseInt(userId.toString())));
         }
+
+        //添加阅读量
+        ThreadUtil.execAsync(() -> {
+            String ip = IpUtils.getIp();
+            Map<Object, Object> map = redisUtils.hGetAll(RedisConstants.ARTICLE_QUANTITY);
+            List<String> ipList = (List<String> ) map.get(id.toString());
+            if (ipList != null) {
+                if (!ipList.contains(ip)) {
+                    ipList.add(ip);
+                }
+            }else {
+                ipList = new ArrayList<>();
+                ipList.add(ip);
+            }
+            map.put(id.toString(),ipList);
+            redisUtils.hSetAll(RedisConstants.ARTICLE_QUANTITY,map);
+        });
         return detailVo;
     }
 

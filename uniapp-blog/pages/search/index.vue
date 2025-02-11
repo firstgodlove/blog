@@ -20,7 +20,7 @@
         <view class="search-results" v-if="searchResults.length">
             <view class="results-header">
                 <text class="results-title">搜索结果</text>
-                <text class="filter-btn">筛选 ▾</text>
+                <!-- <text class="filter-btn">筛选 ▾</text> -->
             </view>
             <view class="results-list">
                 <view v-for="(result, index) in searchResults" :key="index" class="result-item"

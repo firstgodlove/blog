@@ -7,7 +7,7 @@
             <i class="fas fa-bullhorn"></i>
           </div>
           <div class="announcement-text">
-            <span>{{ text }}</span>
+            <span v-html="notice.content"></span>
           </div>
         </div>
         <div class="announcement-close" @click="close">
@@ -19,16 +19,27 @@
 </template>
 
 <script>
+import { setCookie,getCookie } from '@/utils/cookie'
 export default {
   name: 'Announcement',
   data() {
     return {
       visible: false,
-      text:  '欢迎访问本站！',
+      notice: {},
     }
+  },
+  watch: {
+    '$store.state.notice'(val) {
+      if (val && val.top) {
+        this.notice = val.top[0]
+        if(getCookie('notice') == this.notice.id) return
+        this.visible = true
+      }
+    } 
   },
   methods: {
     close() {
+      setCookie('notice',this.notice.id)
       this.visible = false
     }
   }

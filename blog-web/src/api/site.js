@@ -7,6 +7,14 @@ export function getWebConfigApi() {
         method: 'get'
     })
 }
+
+
+export function getNoticeApi() {
+    return request({
+        url: '/api/getNotice',
+        method: 'get'
+    })
+}
 export function reportApi() {
     return request({
         url: '/api/report',

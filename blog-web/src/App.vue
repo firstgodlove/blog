@@ -18,7 +18,7 @@
 import TheHeader from '@/layout/Header/index.vue'
 import TheFooter from '@/layout/Footer/index.vue'
 import FloatingButtons from '@/components/common/FloatingButtons.vue'
-import { getWebConfigApi, reportApi } from '@/api/site'
+import { getWebConfigApi, reportApi,getNoticeApi } from '@/api/site'
 import { mapActions } from 'vuex'
 import { initTheme } from '@/utils/theme'
 import Login from '@/components/Login/index.vue'
@@ -48,6 +48,9 @@ export default {
     this.setSiteInfo(res.data)
     this.$store.commit('setVisitorAccess', res.extra.visitorCount)
     this.$store.commit('setSiteAccess', res.extra.blogViewsCount)
+
+    const noticeRes = await getNoticeApi()
+    this.$store.commit('SET_NOTICE', noticeRes.data)
     initTheme()
     await this.handleThirdPartyLogin()
     //这里等待第三方登录处理完成在获取用户信息

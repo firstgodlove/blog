@@ -2,7 +2,11 @@ package com.mojian.service;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.mojian.common.Result;
+import com.mojian.entity.SysNotice;
 import com.mojian.entity.SysWebConfig;
+
+import java.util.List;
+import java.util.Map;
 
 public interface HomeService {
 
@@ -25,5 +29,11 @@ public interface HomeService {
      */
     void report();
 
+
+    /**
+     * 获取公告
+     * @return
+     */
+    Map<String, List<SysNotice>> getNotice();
 
 }

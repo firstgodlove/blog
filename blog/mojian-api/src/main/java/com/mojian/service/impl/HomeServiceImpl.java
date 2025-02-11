@@ -3,8 +3,12 @@ package com.mojian.service.impl;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.mojian.common.Constants;
 import com.mojian.common.RedisConstants;
 import com.mojian.common.Result;
+import com.mojian.entity.SysNotice;
+import com.mojian.enums.NoticePosttionEnum;
+import com.mojian.mapper.SysNoticeMapper;
 import com.mojian.service.HomeService;
 import com.mojian.entity.SysWebConfig;
 import com.mojian.mapper.SysWebConfigMapper;
@@ -17,8 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +31,8 @@ public class HomeServiceImpl implements HomeService {
     private final SysWebConfigMapper sysWebConfigMapper;
 
     private final RedisUtils redisUtils;
+
+    private final SysNoticeMapper noticeMapper;
 
     @Override
     public Result<SysWebConfig> getWebConfig() {
@@ -77,5 +83,14 @@ public class HomeServiceImpl implements HomeService {
         }
         // 访问量+1
         redisUtils.increment(RedisConstants.BLOG_VIEWS_COUNT, 1);
+    }
+
+    @Override
+    public Map<String, List<SysNotice>> getNotice() {
+
+        List<SysNotice> sysNotices = noticeMapper.selectList(new LambdaQueryWrapper<SysNotice>()
+                .eq(SysNotice::getIsShow, Constants.YES));
+        return sysNotices.stream()
+                .collect(Collectors.groupingBy(SysNotice::getPosition));
     }
 }

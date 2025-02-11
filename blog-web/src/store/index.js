@@ -16,7 +16,8 @@ export default new Vuex.Store({
     mobileMenuVisible: false,
     visitorAccess: 0,
     siteAccess: 0,
-    isLoading: false
+    isLoading: false,
+    notice: null
   },
   mutations: {
     setSiteInfo(state, info) {
@@ -51,8 +52,19 @@ export default new Vuex.Store({
     SET_LOADING(state, status) {
       state.isLoading = status
     },
+    SET_NOTICE(state, notice) {
+      state.notice = notice
+    }
   },
   actions: {
+    
+    /**
+     * 设置公告信息
+     */
+    setNotice({ commit }, notice) {
+      commit('SET_NOTICE', notice)
+    },
+
     /**
      * 设置站点信息
      */

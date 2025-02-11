@@ -548,6 +548,12 @@ CREATE TABLE `sys_dict`
 -- ----------------------------
 INSERT INTO `sys_dict`
 VALUES (26, '登录方式', 'login_type', 1, '登陆方式', '2024-12-28 22:25:17', '2024-12-28 22:25:17', 0);
+INSERT INTO `sys_dict` (`id`, `name`, `type`, `status`, `remark`, `create_time`, `update_time`, `sort`)
+VALUES (31, '反馈类型', 'feedback_type', 1, '反馈类型', '2025-01-12 10:37:00', '2025-01-12 10:37:00', 0);
+INSERT INTO `sys_dict` (`id`, `name`, `type`, `status`, `remark`, `create_time`, `update_time`, `sort`)
+VALUES (32, '反馈状态', 'feedback_status', 1, '', '2025-01-12 10:37:00', '2025-01-12 10:37:00', 0);
+INSERT INTO `sys_dict` (`id`, `name`, `type`, `status`, `remark`, `create_time`, `update_time`, `sort`)
+VALUES (33, '公告位置', 'notice_position', 1, '', '2025-02-11 15:27:51', '2025-02-11 15:27:51', 0);
 
 -- ----------------------------
 -- Table structure for sys_dict_data
@@ -567,13 +573,23 @@ CREATE TABLE `sys_dict_data`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 38 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典数据表' ROW_FORMAT = DYNAMIC;
 
-INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `status`, `remark`) 
-VALUES 
-(1, 26, 'QQ', 'qq', 'success', '1', 2, 1, 'QQ登录'),
-(2, 26, '微博', 'weibo', 'danger', '0', 2, 1, '微博登录'),
-(3, 26, '码云', 'gitee', 'danger', '0', 3, 1, 'gitee登录'),
-(4, 26, '微信', 'wechat', 'success', '1', 0, 1, '微信登录'),
-(5, 26, 'github', 'github', 'info', '1', 4, 1, 'github登录');
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `status`, `remark`)
+VALUES (1, 26, 'QQ', 'qq', 'success', '1', 2, 1, 'QQ登录'),
+       (2, 26, '微博', 'weibo', 'danger', '0', 2, 1, '微博登录'),
+       (3, 26, '码云', 'gitee', 'danger', '0', 3, 1, 'gitee登录'),
+       (4, 26, '微信', 'wechat', 'success', '1', 0, 1, '微信登录'),
+       (5, 26, 'github', 'github', 'info', '1', 4, 1, 'github登录');
+
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (38, 31, '问题反馈', 'bug', 'danger', 0, 1, '', 1);
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (39, 31, '功能建议', 'feature', 'success', 0, 2, '', 1);
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (40, 31, '其他', 'other', 'info', 0, 3, '', 1);
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (49, 33, '顶部', 'top', 'primary', 0, 1, '', 1);
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (50, 33, '右侧', 'right', 'info', 0, 2, '', 1);
 
 -- ----------------------------
 -- Table structure for sys_friend
@@ -971,6 +987,23 @@ VALUES (121, '114', '', '', '删除照片', 7, '', 'BUTTON', '2025-02-07 15:11:1
 INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
                         `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
 VALUES (122, '114', '', '', '移动照片', 8, '', 'BUTTON', '2025-02-07 15:11:38', NULL, '', '', 1, 'sys:photo:move', 0);
+
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (123, '72', '/notice', '/site/notice/index', '公告管理', 4, 'AlarmClock', 'MENU', '2024-12-25 16:13:03',
+        '2024-12-25 16:13:33', '', '', 0, '', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (124, '123', '', '', '列表', 1, '', 'BUTTON', '2025-02-11 16:32:27', NULL, '', '', 1, 'sys:notice:list', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (125, '123', '', '', '新增', 2, '', 'BUTTON', '2025-02-11 16:32:37', NULL, '', '', 1, 'sys:notice:add', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (126, '123', '', '', '修改', 3, '', 'BUTTON', '2025-02-11 16:32:49', NULL, '', '', 0, 'sys:notice:update', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (127, '123', '', '', '删除', 4, '', 'BUTTON', '2025-02-11 16:33:01', NULL, '', '', 1, 'sys:notice:delete', 0);
 
 
 -- ----------------------------
@@ -1385,5 +1418,17 @@ CREATE TABLE `sys_photo`
     `create_time` datetime     DEFAULT NULL COMMENT '创建时间',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='照片';
+
+CREATE TABLE `sys_notice`
+(
+    `id`          bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `content`     mediumtext COMMENT '公告内容',
+    `is_show`     int(11) DEFAULT NULL COMMENT '是否展示',
+    `position`    varchar(20) DEFAULT NULL COMMENT '显示位置 （top：顶部，right:右侧）',
+    `create_time` datetime    DEFAULT NULL COMMENT '创建时间',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='公告';
+
+
 SET
 FOREIGN_KEY_CHECKS = 1;

@@ -29,14 +29,14 @@
       </div>
     </el-card>
 
-    <el-card class="section announcement">
+    <el-card class="section announcement" v-if="announcements.length">
       <h3>
         <i class="fas fa-bullhorn"></i>
         公告
       </h3>
       <div class="announcement-content">
         <div class="announcement-item" v-for="(item, index) in announcements" :key="index">
-          <i :class="item.icon"></i>
+          <!-- <i :class="item.icon"></i> -->
           <span v-html="item.content"></span>
         </div>
       </div>
@@ -82,20 +82,7 @@ export default {
   data() {
     return {
       hot: [],
-      announcements: [
-        {
-          icon: 'fas fa-star',
-          content: this.$store.state.webSiteInfo.bulletin
-        },
-        {
-          icon: 'fas fa-code',
-          content: '本站基于 Vue2 + ElmentUi + Spring Boot 开发，源码已开源。'
-        },
-        {
-          icon: 'fas fa-envelope',
-          content: '有问题欢迎通过邮箱或其他社交方式联系我。'
-        }
-      ],
+      announcements: [],
       socialLinks: [
         {
           icon: 'fab fa-github',
@@ -148,13 +135,17 @@ export default {
       tags: [],
     }
   },
+  watch: {
+    '$store.state.notice'(val) {
+      if (val && val.right) {
+        this.announcements = val.right
+      }
+    } 
+  },
   mounted() {
     getRecommendArticlesApi().then(res => {
       this.hot = res.data
     })
-    setTimeout(() => {
-      this.announcements[0].content = this.$store.state.webSiteInfo.bulletin
-    }, 300)
   },
   methods: {
     /**

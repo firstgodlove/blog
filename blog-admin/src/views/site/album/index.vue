@@ -19,22 +19,27 @@
             <!-- 数据表格 -->
             <div class="album-list" v-loading="loading">
                 <el-checkbox-group v-model="selectedIds" v-for="item in albumList" :key="item.id">
-                    <div class="album-item" >
+                    <div class="album-item">
                         <span class="album-checkbox">
                             <el-checkbox :value="item.id" />
                         </span>
                         <el-image class="album-cover" :src="item.cover" />
                         <div class="album-lock" v-if="item.isLock">
-                            <el-icon><Lock /></el-icon>
+                            <el-icon>
+                                <Lock />
+                            </el-icon>
                         </div>
                         <div class="album-info">
                             <div class="album-name">{{ item.name }}</div>
                             <div class="album-description">{{ item.description }}</div>
                         </div>
                         <div class="album-action">
-                            <el-button link type="success" size="small" icon="Edit" @click="handlePreviewPhotos(item)">查看照片</el-button>
-                            <el-button link v-permission="['sys:album:update']" type="primary" size="small" icon="Edit" @click="handleUpdate(item)">编辑</el-button>
-                            <el-button link v-permission="['sys:album:delete']" type="danger" size="small" icon="Delete" @click="handleDelete(item)">删除</el-button>
+                            <el-button link type="success" size="small" icon="Edit"
+                                @click="handlePreviewPhotos(item)">查看照片</el-button>
+                            <el-button link v-permission="['sys:album:update']" type="primary" size="small" icon="Edit"
+                                @click="handleUpdate(item)">编辑</el-button>
+                            <el-button link v-permission="['sys:album:delete']" type="danger" size="small" icon="Delete"
+                                @click="handleDelete(item)">删除</el-button>
                         </div>
                     </div>
                 </el-checkbox-group>
@@ -59,10 +64,10 @@
                     <el-input v-model="albumForm.name" placeholder="请输入名称" clearable />
                 </el-form-item>
                 <el-form-item label="描述" prop="description">
-                    <el-input v-model="albumForm.description" type="textarea" :rows="4" show-word-limit placeholder="请输入描述"
-                        clearable />
+                    <el-input v-model="albumForm.description" type="textarea" :rows="4" show-word-limit
+                        placeholder="请输入描述" clearable />
                 </el-form-item>
-                <el-form-item label="是否加密" prop="isLock" >
+                <el-form-item label="是否加密" prop="isLock">
                     <el-switch v-model="albumForm.isLock" :active-value="1" :inactive-value="0" />
                 </el-form-item>
                 <el-form-item label="密码" prop="password" v-if="albumForm.isLock === 1">
@@ -86,7 +91,7 @@
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import UploadImage from '@/components/Upload/Image.vue'
-import { listAlbumApi, addAlbumApi, updateAlbumApi, deleteAlbumApi,verifyAlbumPasswordApi } from '@/api/site/album'
+import { listAlbumApi, addAlbumApi, updateAlbumApi, deleteAlbumApi, verifyAlbumPasswordApi } from '@/api/site/album'
 import Photos from './Photos.vue'
 
 // 查询参数
@@ -146,9 +151,9 @@ const getList = async () => {
 
 // 全选
 const handleAllSelect = () => {
-    if(albumList.value.length === selectedIds.value.length){
+    if (albumList.value.length === selectedIds.value.length) {
         selectedIds.value = []
-    }else{
+    } else {
         selectedIds.value = albumList.value.map(item => item.id)
     }
 }
@@ -213,22 +218,33 @@ const handleUpdate = (row: any) => {
 
 // 查看照片
 const handlePreviewPhotos = (row: any) => {
-    if(row.isLock === 1){
-        ElMessageBox.prompt('请输入密码', '提示', {
+    if (row.isLock === 1) {
+        ElMessageBox.prompt('', '提示', {
+            inputPlaceholder: '请输入密码',
+            inputType: 'password',
             confirmButtonText: '确定',
             cancelButtonText: '取消',
-            inputType: 'password', 
-        }).then(({ value }) => {
-            verifyAlbumPasswordApi(row.id,value).then(() => {
-                openPhotos.value = true
-                albumForm.id = row.id  
-            })
-        }).catch(() => {
-            
-        })
-    }else{
+            beforeClose: (action, instance, done) => {
+                const password = instance.inputValue;
+                if (action === 'confirm') {
+                    if (!password) {
+                        ElMessage.warning('请输入密码');
+                        return false;
+                    }
+                    verifyAlbumPasswordApi(row.id, password).then(() => {
+                        openPhotos.value = true
+                        albumForm.id = row.id
+                        done();
+                    })
+                } else {
+                    // 点击取消，直接关闭弹框
+                    done();
+                }
+            },
+        });
+    } else {
         openPhotos.value = true
-        albumForm.id = row.id  
+        albumForm.id = row.id
     }
 
 }
@@ -316,10 +332,11 @@ onMounted(() => {
             background-color: rgba(0, 0, 0, 0.3);
             border-radius: 50%;
             padding: 8px;
-            i{
+
+            i {
                 font-size: 16px;
             }
-         
+
         }
 
         .album-info {
@@ -328,6 +345,7 @@ onMounted(() => {
             padding: 0 10px;
             margin: 10px 0 20px 0;
             gap: 20px;
+
             .album-name {
                 font-size: 16px;
                 font-weight: bold;

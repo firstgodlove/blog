@@ -32,7 +32,7 @@
                             <div class="album-description">{{ item.description }}</div>
                         </div>
                         <div class="album-action">
-                            <el-button link type="success" size="small" icon="Edit" @click="handlePreviewPhotos(item.id)">查看照片</el-button>
+                            <el-button link type="success" size="small" icon="Edit" @click="handlePreviewPhotos(item)">查看照片</el-button>
                             <el-button link v-permission="['sys:album:update']" type="primary" size="small" icon="Edit" @click="handleUpdate(item)">编辑</el-button>
                             <el-button link v-permission="['sys:album:delete']" type="danger" size="small" icon="Delete" @click="handleDelete(item)">删除</el-button>
                         </div>
@@ -86,7 +86,7 @@
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import UploadImage from '@/components/Upload/Image.vue'
-import { listAlbumApi, addAlbumApi, updateAlbumApi, deleteAlbumApi } from '@/api/site/album'
+import { listAlbumApi, addAlbumApi, updateAlbumApi, deleteAlbumApi,verifyAlbumPasswordApi } from '@/api/site/album'
 import Photos from './Photos.vue'
 
 // 查询参数
@@ -212,9 +212,22 @@ const handleUpdate = (row: any) => {
 }
 
 // 查看照片
-const handlePreviewPhotos = (id: number) => {
-    openPhotos.value = true
-    albumForm.id = id
+const handlePreviewPhotos = (row: any) => {
+    if(row.isLock === 1){
+        ElMessageBox.prompt('请输入密码', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            inputType: 'password', 
+        }).then(({ value }) => {
+            verifyAlbumPasswordApi(row.id,value).then(() => {
+                openPhotos.value = true
+                albumForm.id = row.id  
+            })
+        }).catch(() => {
+            
+        })
+    }
+
 }
 
 // 提交表单

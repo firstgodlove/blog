@@ -64,4 +64,18 @@ export function deleteAlbumApi(ids: number[] | number) {
 }
 
 
+/**
+ * 验证相册密码
+ */
+export function verifyAlbumPasswordApi(id : any, password:any) {
+    return request({
+      url: `/api/album/verify/${id}`,
+      method: 'get',
+      params: {
+        password: password
+      }
+    })
+  }
+
+
 

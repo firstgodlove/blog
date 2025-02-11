@@ -19,6 +19,8 @@ public enum LoginTypeEnum {
 
     WECHAT("wechat", "微信登录"),
 
+    APPLET("applet", "小程序登录"),
+
     GITHUB("github", "github登录");
 
 

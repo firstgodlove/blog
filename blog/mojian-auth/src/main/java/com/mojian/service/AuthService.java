@@ -78,4 +78,10 @@ public interface AuthService {
      */
     void authLogin(AuthCallback callback,String source, HttpServletResponse httpServletResponse) throws IOException;
 
+    /**
+     * 小程序登录
+     * @param code
+     * @return
+     */
+    LoginUserInfo appletLogin(String code);
 }

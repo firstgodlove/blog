@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.mojian.common.RedisConstants;
 import com.mojian.entity.SysArticle;
+import com.mojian.entity.SysCategory;
 import com.mojian.service.ArticleService;
 import com.mojian.utils.IpUtils;
 import com.mojian.utils.RedisUtils;
@@ -108,6 +109,11 @@ public class ArticleServiceImpl implements ArticleService {
             sysArticleMapper.like(articleId, userId);
         }
         return true;
+    }
+
+    @Override
+    public List<SysCategory> getCategoryAll() {
+        return sysCategoryMapper.selectList(null);
     }
 
     private List<ArticleListVo> getArticlesByCondition(SFunction<SysArticle, Object> conditionField) {

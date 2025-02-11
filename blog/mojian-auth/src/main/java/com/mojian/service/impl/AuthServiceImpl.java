@@ -289,6 +289,43 @@ public class AuthServiceImpl implements AuthService {
         httpServletResponse.sendRedirect("https://www.shiyit.com/?token=" + StpUtil.getTokenValue());
     }
 
+    @Override
+    public LoginUserInfo appletLogin(String code) {
+        // 查询用户
+        SysUser user = userMapper.selectByUsername(code);
+
+        if (user == null) {
+            String ip = IpUtils.getIp();
+            String avatar = avatarList[(int) (Math.random() * avatarList.length)];
+            user = SysUser.builder()
+                    .username(code)
+                    .password(UUID.randomUUID().toString())
+                    .loginType(LoginTypeEnum.APPLET.getType())
+                    .lastLoginTime(LocalDateTime.now())
+                    .ipLocation(IpUtils.getIp2region(ip))
+                    .ip(ip)
+                    .status(Constants.YES)
+                    .nickname("applet-" + getRandomString(6))
+                    .avatar(avatar)
+                    .build();
+            userMapper.insert(user);
+            //添加用户角色信息
+            this.insertRole(user);
+        }else {
+            if (user.getStatus() == Constants.NO) {
+                throw new ServiceException("账号已被禁用，请联系管理员");
+            }
+        }
+
+        LoginUserInfo loginUserInfo = new LoginUserInfo();
+        BeanUtils.copyProperties(user,loginUserInfo);
+
+        StpUtil.login(loginUserInfo.getId());
+        loginUserInfo.setToken(StpUtil.getTokenValue());
+
+        return loginUserInfo;
+    }
+
     private void validateEmailCode(EmailRegisterDto dto) {
         Object code = redisUtils.get(RedisConstants.CAPTCHA_CODE_KEY + dto.getEmail());
         if (code == null || !code.equals(dto.getCode())) {

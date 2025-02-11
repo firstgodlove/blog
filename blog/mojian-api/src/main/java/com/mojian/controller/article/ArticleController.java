@@ -3,6 +3,7 @@ package com.mojian.controller.article;
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.mojian.annotation.AccessLimit;
+import com.mojian.entity.SysCategory;
 import com.mojian.service.ArticleService;
 import com.mojian.vo.article.ArchiveListVo;
 import com.mojian.vo.article.ArticleDetailVo;
@@ -49,6 +50,12 @@ public class ArticleController {
     @Operation(summary = "获取分类")
     public Result<List<CategoryListVo>> getArticleCategories() {
         return Result.success(articleService.getArticleCategories());
+    }
+
+    @GetMapping("/categorie-all")
+    @Operation(summary = "获取所有分类")
+    public Result<List<SysCategory>> getCategoryAll() {
+        return Result.success(articleService.getCategoryAll());
     }
 
 

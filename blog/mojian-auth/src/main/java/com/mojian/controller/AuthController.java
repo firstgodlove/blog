@@ -78,6 +78,12 @@ public class AuthController {
         return Result.success(authService.getWechatIsLogin(loginCode));
     }
 
+    @Operation(summary = "微信小程序登录")
+    @GetMapping("/api/wechat/appletLogin/{code}")
+    public Result<LoginUserInfo> appletLogin(@PathVariable String code){
+        return Result.success(authService.appletLogin(code));
+    }
+
     @GetMapping("/auth/info")
     public Result<LoginUserInfo> getUserInfo() {
         return Result.success(authService.getLoginUserInfo());

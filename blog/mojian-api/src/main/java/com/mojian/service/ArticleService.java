@@ -1,6 +1,7 @@
 package com.mojian.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.mojian.entity.SysCategory;
 import com.mojian.vo.article.ArchiveListVo;
 import com.mojian.vo.article.ArticleDetailVo;
 import com.mojian.vo.article.ArticleListVo;
@@ -55,4 +56,9 @@ public interface ArticleService {
      * @return
      */
     Boolean like(Long id);
+
+    List<SysCategory> getCategoryAll();
+
+
+
 }

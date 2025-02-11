@@ -1,11 +1,14 @@
 package com.mojian.enums;
 
 
+import lombok.Getter;
+
 /**
  * @author: quequnlong
  * @date: 2024/12/29
  * @description:
  */
+@Getter
 public enum LoginTypeEnum {
 
 
@@ -32,14 +35,6 @@ public enum LoginTypeEnum {
     LoginTypeEnum(String type, String desc) {
         this.type = type;
         this.desc = desc;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getDesc() {
-        return desc;
     }
 
 }

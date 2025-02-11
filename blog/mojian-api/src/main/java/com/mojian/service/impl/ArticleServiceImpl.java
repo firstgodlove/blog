@@ -51,8 +51,8 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         //添加阅读量
+        String ip = IpUtils.getIp();
         ThreadUtil.execAsync(() -> {
-            String ip = IpUtils.getIp();
             Map<Object, Object> map = redisUtils.hGetAll(RedisConstants.ARTICLE_QUANTITY);
             List<String> ipList = (List<String> ) map.get(id.toString());
             if (ipList != null) {

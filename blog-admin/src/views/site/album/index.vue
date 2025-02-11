@@ -226,6 +226,9 @@ const handlePreviewPhotos = (row: any) => {
         }).catch(() => {
             
         })
+    }else{
+        openPhotos.value = true
+        albumForm.id = row.id  
     }
 
 }

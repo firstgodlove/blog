@@ -53,7 +53,7 @@
             </el-icon>
             <span class="tab-label">作者信息</span>
           </template>
-          <el-form ref="formRef" :model="form" :rules="rules" label-width="120px">
+          <el-form ref="formRef" :model="form" :rules="rules">
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="作者头像" prop="authorAvatar">
@@ -73,13 +73,13 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row :gutter="20">
-              <el-col :span="12">
                 <el-form-item label="关于我" prop="aboutMe">
-                  <!-- <editor v-model="form.aboutMe" :min-height="192" /> -->
+                  <div style="border: 1px solid #ccc;">
+                      <Toolbar style="border-bottom: 1px solid #ccc;width: 1200px;" :editor="editorRef" :defaultConfig="toolbarConfig" :mode="mode" />
+                      <Editor style=" overflow-y: hidden;width: 1200px" v-model="form.aboutMe" :defaultConfig="editorConfig" :mode="mode"
+                      @onCreated="handleCreated"/>
+                  </div>
                 </el-form-item>
-              </el-col>
-            </el-row>
 
           </el-form>
         </el-tab-pane>
@@ -233,13 +233,13 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row :gutter="20">
+             <!--<el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="公告" prop="bulletin">
                   <el-input v-model="form.bulletin" type="textarea" :rows="3" placeholder="请输入公告内容" />
                 </el-form-item>
               </el-col>
-            </el-row>
+            </el-row>-->
           </el-form>
         </el-tab-pane>
       </el-tabs>
@@ -258,6 +258,33 @@ import type { FormInstance } from 'element-plus'
 import UploadImage from '@/components/Upload/Image.vue'
 import { getWebConfigApi, updateWebConfigApi } from '@/api/site/config'
 import { getDictDataByDictTypesApi } from '@/api/system/dict'
+import { uploadApi } from '@/api/file'
+
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
+import '@wangeditor/editor/dist/css/style.css'
+const editorRef = shallowRef()
+const mode = 'default'
+const toolbarConfig = {}
+const editorConfig = {
+  placeholder: "请输入内容...",
+  MENU_CONF: {
+    // 配置上传图片
+    uploadImage: {
+      customUpload: contentUpload,
+    },
+
+    codeSelectLang: {
+      // 代码语言
+      codeLangs: [
+        { text: "CSS", value: "css" },
+        { text: "HTML", value: "html" },
+        { text: "XML", value: "xml" },
+        { text: "Java", value: "java" },
+        // 其他
+      ],
+    },
+  },
+}
 
 
 const activeTab = ref('basic')
@@ -292,6 +319,8 @@ const showList = ref([])
 const loginTypeList = ref([])
 const loginTypes = ref<any>([])
 
+const files = ref();
+
 const rules = {
   name: [{ required: true, message: '请输入网站名称', trigger: 'blur' }],
   logo: [{ required: true, message: '请上传网站Logo', trigger: 'change' }],
@@ -317,6 +346,22 @@ const submitForm = async () => {
 const getDictDataByDictTypes = async () => {
   const res = await getDictDataByDictTypesApi(['login_type'])
   loginTypes.value = res.data.login_type.list
+}
+
+const handleCreated = (editor:any) => {
+  editorRef.value = editor // 记录 editor 实例，重要！
+}
+
+//编辑器上传图片
+function contentUpload(file: any, insertFn: any) {
+  files.value = file;
+  // FormData 对象
+  var formData = new FormData();
+  // 文件对象
+  formData.append("file", files.value);
+  uploadApi(formData).then((res: any) => {
+    insertFn(res.data, "", res.data);
+  });
 }
 
 onMounted(() => {
@@ -361,6 +406,5 @@ onMounted(() => {
 
 .el-form-item {
   max-width: 600px;
-  margin: 0 auto 20px;
 }
 </style>

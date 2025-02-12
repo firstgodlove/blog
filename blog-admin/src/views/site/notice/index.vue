@@ -116,7 +116,6 @@
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
     listSysNoticeApi,
-    detailSysNoticeApi,
     deleteSysNoticeApi,
     addSysNoticeApi,
     updateSysNoticeApi

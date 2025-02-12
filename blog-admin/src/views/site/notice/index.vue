@@ -4,17 +4,17 @@
         <div class="search-wrapper">
             <el-form :model="queryParams" ref="queryFormRef" inline>
                 <el-form-item label="公告内容" prop="content">
-                    <el-input v-model="queryParams.content" placeholder="请输入公告内容" clearable
+                    <el-input v-model="queryParams.content"  placeholder="请输入公告内容" clearable
                         @keyup.enter="handleQuery" />
                 </el-form-item>
                 <el-form-item label="是否展示" prop="isShow">
-                    <el-select v-model="queryParams.isShow" placeholder="请选择是否展示" size="large" style="width: 240px">
+                    <el-select v-model="queryParams.isShow" placeholder="请选择是否展示"  style="width: 240px">
                         <el-option label="否" :value="0" />
                         <el-option label="是" :value="1" />
                     </el-select>
                 </el-form-item>
                 <el-form-item label="显示位置" prop="position">
-                    <el-select v-model="queryParams.position" placeholder="请选择显示位置" size="large" style="width: 240px">
+                    <el-select v-model="queryParams.position" placeholder="请选择显示位置" style="width: 240px">
                         <el-option v-for="item in positionOptions" :key="item.value" :label="item.label"
                             :value="item.value" />
                     </el-select>
@@ -194,14 +194,10 @@ const cancel = () => {
 
 /** 表单重置 */
 const reset = () => {
-    form.value = {
-        id: undefined,
-        content: undefined,
-        isShow: undefined,
-        position: undefined,
-        createTime: undefined
-    }
-    formRef.value?.resetFields()
+    form.id = undefined
+    form.isShow = 1
+    form.position = 'right'
+    form.content = ''
 }
 
 /** 搜索按钮操作 */

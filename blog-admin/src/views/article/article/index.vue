@@ -102,7 +102,7 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column v-permission="['sys:article:updateStatus']" label="发布状态" align="center" prop="status" width="100">
+          <el-table-column  label="发布状态" align="center" prop="status" width="100">
             <template #default="scope">
                 <el-switch @change="handleChangeStatus(scope.row)" style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"  
                 v-model="scope.row.status" :active-value="1" :inactive-value="0"/>

@@ -146,6 +146,10 @@ export default {
     getRecommendArticlesApi().then(res => {
       this.hot = res.data
     })
+    // 初始化公告数据
+    if (this.$store.state.notice && this.$store.state.notice.right) {
+      this.announcements = this.$store.state.notice.right
+    }
   },
   methods: {
     /**

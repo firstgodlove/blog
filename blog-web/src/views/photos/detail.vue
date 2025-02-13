@@ -158,11 +158,12 @@ export default {
       try {
         await verifyAlbumPasswordApi(this.album.id, password)
         this.getAlbumPhotos()
-        this.$refs.passwordDialog.visible = false
+        // this.$refs.passwordDialog.visible = false
+        callback()
       } catch (error) {
         this.$message.error(error.message || '密码错误')
+        this.$refs.passwordDialog.loading = false
       }
-      callback()
     },
     /**
      * 处理取消密码验证

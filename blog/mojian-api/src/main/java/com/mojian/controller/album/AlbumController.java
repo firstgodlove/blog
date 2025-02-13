@@ -46,7 +46,7 @@ public class AlbumController {
         return Result.success(albumService.getPhotos(albumId));
     }
 
-    @AccessLimit(count = 5)
+    @AccessLimit(count = 5, time = 30)
     @GetMapping("/verify/{id}")
     @Operation(summary = "验证相册的密码")
     public Result<Boolean> verify(@PathVariable Long id,String password) {

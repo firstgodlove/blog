@@ -164,6 +164,7 @@
       :title="`字典数据 - ${currentDict?.name}`"
       width="800px"
       append-to-body
+      :close-on-click-modal="false"
     >
       <dict-data
         :dict-id="currentDict?.id"

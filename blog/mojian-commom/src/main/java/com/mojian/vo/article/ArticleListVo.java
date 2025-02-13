@@ -52,6 +52,9 @@ public class ArticleListVo {
     @Schema(description = "是否置顶 0否 1是")
     private Integer isStick;
 
+    @Schema(description = "是否推荐 0否 1是")
+    private Integer isRecommend;
+
     @Schema(description = "发布状态")
     private Integer status;
 

@@ -91,6 +91,7 @@
         <el-table-column label="操作" align="center" width="250">
           <template #default="{ row }">
             <el-button
+              v-permission="['sys:job:update']"
               type="info"
               link
               icon="VideoPlay"

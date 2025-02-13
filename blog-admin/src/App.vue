@@ -17,16 +17,19 @@ onMounted(() => {
 </script>
 
 <style>
+
+
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
+  font-family: 'Handwriting', sans-serif;
 }
 
 /* 默认尺寸 */
 :root {
   --el-header-height: 56px;
-  --el-aside-width: 240px;
+  --el-aside-width: 220px !important;
   --el-menu-item-height: 50px;
   --el-font-size-base: 14px;
 }
@@ -215,6 +218,33 @@ h6 { font-size: var(--el-font-size-base); }
   .el-sub-menu__title {
     font-size: var(--el-font-size-base);
   }
+}
+
+/* 确保所有组件使用手写体字体 */
+.el-button,
+.el-input,
+.el-select,
+.el-menu-item,
+.el-sub-menu__title,
+.el-dropdown-menu__item,
+.el-form-item__label,
+.el-form-item__content,
+.el-table,
+.el-dialog__title,
+.el-card__header,
+.el-tabs__item,
+.el-breadcrumb__item,
+.el-radio__label,
+.el-checkbox__label,
+.el-tag,
+.el-pagination,
+.el-alert__title,
+.el-notification__title,
+.el-message-box__title,
+.el-drawer__title,
+.el-tooltip__trigger,
+.el-popover__title {
+  font-family: 'Handwriting', sans-serif !important;
 }
 
 </style> 

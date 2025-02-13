@@ -48,8 +48,10 @@ public class SysJobLog implements Serializable {
     private LocalDateTime createTime;
 
     @Schema(description = "开始时间")
+    @JsonFormat(pattern = DateUtils.YYYY_MM_DD_HH_MM_SS, timezone = "GMT+8")
     private LocalDateTime startTime;
 
     @Schema(description = "停止时间")
+    @JsonFormat(pattern = DateUtils.YYYY_MM_DD_HH_MM_SS, timezone = "GMT+8")
     private LocalDateTime stopTime;
 }

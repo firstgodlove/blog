@@ -14,6 +14,7 @@
         <result property="contentMd" column="content_md"/>
         <result property="quantity" column="quantity"/>
         <result property="isStick" column="is_stick"/>
+        <result property="isRecommend" column="is_recommend"/>
         <result property="status" column="status"/>
         <result property="createTime" column="create_time"/>
         <result property="likeNum" column="likeNum"/>
@@ -150,6 +151,8 @@
             a.summary,
             a.cover,
             a.is_stick,
+            a.is_recommend,
+            a.quantity,
             a.status,
             a.create_time,
             c.name AS categoryName,
@@ -169,7 +172,7 @@
                 and a.category_id = #{query.categoryId}
             </if>
             <if test="query.tagId != null">
-                AND a.id in (SELECT article_id FROM sys_article_tag WHERE tag_id = #{tagId})
+                AND a.id in (SELECT article_id FROM sys_article_tag WHERE tag_id = #{query.tagId})
             </if>
         </where>
         order by a.is_stick desc, a.create_time desc

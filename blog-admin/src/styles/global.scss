@@ -267,7 +267,6 @@ html.dark {
   opacity: 1;
 }
 
-
 /* 根据大小调整布局尺寸 */
 :deep([data-size="large"]) {
   --el-header-height: 64px;
@@ -336,7 +335,7 @@ html.dark {
 /* 默认尺寸 */
 :deep([data-size="default"]) {
   --el-header-height: 56px;
-  --el-aside-width: 240px;
+  --el-aside-width: 220px !important;
   --el-menu-item-height: 50px;
   --el-font-size-base: 14px;
   
@@ -410,4 +409,11 @@ html.grey-mode {
   filter: progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
   -webkit-filter: grayscale(1);
   transition: filter 0.3s ease;
+}
+
+@font-face {
+  font-family: 'Handwriting';
+  src: url('@/assets/font/2.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
 }

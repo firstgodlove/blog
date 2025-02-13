@@ -4,31 +4,16 @@
       <!-- 搜索工具栏 -->
       <el-form :model="queryParams" ref="queryFormRef" :inline="true">
         <el-form-item label="任务名称" prop="jobName">
-          <el-input
-            v-model="queryParams.jobName"
-            placeholder="请输入任务名称"
-            clearable
-            @keyup.enter="handleQuery"
-          />
+          <el-input v-model="queryParams.jobName" placeholder="请输入任务名称" clearable @keyup.enter="handleQuery" />
         </el-form-item>
         <el-form-item label="任务组名" prop="jobGroup">
           <el-select v-model="queryParams.jobGroup" placeholder="请选择任务组名" clearable>
-            <el-option
-              v-for="dict in jobGroupOptions"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            />
+            <el-option v-for="dict in jobGroupOptions" :key="dict.value" :label="dict.label" :value="dict.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="执行状态" prop="status">
           <el-select v-model="queryParams.status" placeholder="请选择执行状态" clearable>
-            <el-option
-              v-for="dict in statusOptions"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            />
+            <el-option v-for="dict in statusOptions" :key="dict.value" :label="dict.label" :value="dict.value" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -42,28 +27,15 @@
       <!-- 操作工具栏 -->
       <template #header>
         <div class="card-header">
-          <el-button
-            v-permission="['sys:jobLog:delete']"
-            type="danger"
-            icon="Delete"
-            :disabled="!selectedIds.length"
-            @click="handleBatchDelete"
-          >批量删除</el-button>
-          <el-button
-            v-permission="['sys:jobLog:clean']"
-            type="danger"
-            icon="Delete"
-            @click="handleClean"
-          >清空日志</el-button>
+          <el-button v-permission="['sys:jobLog:delete']" type="danger" icon="Delete" :disabled="!selectedIds.length"
+            @click="handleBatchDelete">批量删除</el-button>
+          <el-button v-permission="['sys:jobLog:clean']" type="danger" icon="Delete"
+            @click="handleClean">清空日志</el-button>
         </div>
       </template>
 
       <!-- 数据表格 -->
-      <el-table
-        v-loading="loading"
-        :data="logList"
-        @selection-change="handleSelectionChange"
-      >
+      <el-table v-loading="loading" :data="logList" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column label="任务名称" align="center" prop="jobName" :show-overflow-tooltip="true" />
         <el-table-column label="任务组名" align="center" prop="jobGroup">
@@ -81,33 +53,58 @@
           </template>
         </el-table-column>
         <el-table-column label="执行时间" align="center" prop="createTime" width="180" />
-        <el-table-column label="操作" align="center" width="100">
+        <el-table-column label="操作" align="center" width="150">
           <template #default="{ row }">
-            <el-button
-              v-permission="['sys:jobLog:delete']"
-              link
-              type="danger"
-              icon="Delete"
-              @click="handleDelete(row)"
-            >删除</el-button>
+            <el-button link type="primary" icon="Document" @click="handleDetail(row)">详情</el-button>
+            <el-button v-permission="['sys:jobLog:delete']" link type="danger" icon="Delete"
+              @click="handleDelete(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <!-- 分页 -->
       <div class="pagination-container">
-        <el-pagination
-          background
-          v-model:current-page="queryParams.pageNum"
-          v-model:page-size="queryParams.pageSize"
-          :total="total"
-          :page-sizes="[10, 20, 30, 50]"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        />
+        <el-pagination background v-model:current-page="queryParams.pageNum" v-model:page-size="queryParams.pageSize"
+          :total="total" :page-sizes="[10, 20, 30, 50]" layout="total, sizes, prev, pager, next, jumper"
+          @size-change="handleSizeChange" @current-change="handleCurrentChange" />
       </div>
     </el-card>
+
+    <!-- 详情抽屉 -->
+    <el-drawer v-model="drawer" title="日志详情" direction="rtl" size="40%">
+      <el-descriptions :column="1" border>
+        <el-descriptions-item label="日志编号">
+          {{ form.id }}
+        </el-descriptions-item>
+        <el-descriptions-item label="任务名称">
+          {{ form.jobName }}
+        </el-descriptions-item>
+        <el-descriptions-item label="任务组名">
+          {{ jobGroupFormat(form) }}
+        </el-descriptions-item>
+        <el-descriptions-item label="调用方法">
+          {{ form.invokeTarget }}
+        </el-descriptions-item>
+        <el-descriptions-item label="日志信息">
+          {{ form.jobMessage }}
+        </el-descriptions-item>
+        <el-descriptions-item label="执行状态">
+          <el-tag :type="form.status === 0 ? 'success' : 'danger'">
+              {{ statusFormat(form) }}
+            </el-tag>
+        </el-descriptions-item>
+        <el-descriptions-item label="开始时间">
+          {{ form.startTime }}
+        </el-descriptions-item>
+        <el-descriptions-item label="结束时间">
+          {{ form.stopTime }}
+        </el-descriptions-item>
+        <el-descriptions-item label="异常信息">
+          <pre style="white-space: pre-wrap; word-wrap: break-word; max-height: 300px;
+           max-width: 500px; overflow-y: auto; margin: 0;">{{ form.exceptionInfo }}</pre>
+        </el-descriptions-item>
+      </el-descriptions>
+    </el-drawer>
   </div>
 </template>
 
@@ -144,9 +141,14 @@ const jobGroupOptions = [
 
 // 状态字典
 const statusOptions = [
-{ value: 0, label: '成功' },
+  { value: 0, label: '成功' },
   { value: 1, label: '失败' }
 ]
+
+// 抽屉
+const drawer = ref(false)
+// 详情表单
+const form = ref<any>({})
 
 // 任务组名格式化
 const jobGroupFormat = (row: any) => {
@@ -186,6 +188,12 @@ const resetQuery = () => {
 /** 多选框选中数据 */
 const handleSelectionChange = (selection: any[]) => {
   selectedIds.value = selection.map(item => item.id)
+}
+
+/** 详情按钮操作 */
+const handleDetail = (row: any) => {
+  form.value = row
+  drawer.value = true
 }
 
 /** 删除按钮操作 */
@@ -242,4 +250,4 @@ const handleCurrentChange = (val: number) => {
 onMounted(() => {
   getList()
 })
-</script> 
+</script>

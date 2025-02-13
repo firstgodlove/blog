@@ -65,8 +65,6 @@
           </template>
         </el-table-column>
         <el-table-column label="昵称" align="center" prop="nickname" show-overflow-tooltip />
-        <el-table-column label="登录IP" align="center" prop="ip" show-overflow-tooltip />
-        <el-table-column label="登录地址" align="center" prop="ipLocation" show-overflow-tooltip />
         <el-table-column label="登录方式" align="center" prop="ipLocation" >
           <template #default="{ row }">
             <span v-for="item in loginTypes">
@@ -76,14 +74,17 @@
             </span>
           </template>
         </el-table-column>
+        <el-table-column label="登录IP" align="center" prop="ip" show-overflow-tooltip />
+        <el-table-column label="登录地址" align="center" prop="ipLocation" show-overflow-tooltip />
         <el-table-column label="状态" align="center" width="80">
           <template #default="{ row }">
-            <el-tag :type="row.status === 1 ? 'success' : 'info'">
+            <el-tag :type="row.status === 1 ? 'success' : 'danger'">
               {{ row.status === 1 ? '启用' : '禁用' }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" align="center" prop="createTime" width="180" />
+        <el-table-column label="最后登录时间" align="center" prop="lastLoginTime" width="160" />
+        <el-table-column label="创建时间" align="center" prop="createTime" width="160" />
         <el-table-column label="操作" align="center" width="280" fixed="right">
           <template #default="scope">
             <el-button
@@ -95,7 +96,7 @@
             >修改</el-button>
             <el-button
             v-permission="['sys:user:reset']"
-              type="primary"
+              type="info"
               link
               icon="Key"
               @click="handleResetPwd(scope.row)"

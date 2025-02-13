@@ -1,6 +1,6 @@
 <template>
   <el-container class="layout-container">
-    <el-aside :width="isCollapse ? '64px' : '240px'" class="transition-width">
+    <el-aside :width="isCollapse ? '64px' : '220px'" class="transition-width">
       <Sidebar :is-collapse="isCollapse" />
     </el-aside>
     <el-container>

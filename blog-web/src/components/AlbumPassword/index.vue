@@ -1,24 +1,23 @@
 <template>
   <el-dialog
-    :visible.sync="visible"
-    title="相册密码验证"
-    width="400px"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
-    :show-close="false"
+      :visible.sync="visible"
+      title="相册密码验证"
+      width="400px"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
   >
     <div class="password-dialog">
       <div class="dialog-icon">
         <i class="fas fa-lock"></i>
       </div>
       <p class="dialog-tip">这是一个加密相册，请输入密码访问</p>
-      <el-form :model="form" ref="form" :rules="rules">
+      <el-form :model="form" ref="form" :rules="rules" @submit.native.prevent="handleSubmit">
         <el-form-item prop="password">
           <el-input
-            v-model="form.password"
-            type="password"
-            placeholder="请输入相册密码"
-            @keyup.enter.native="handleSubmit"
+              v-model="form.password"
+              type="password"
+              placeholder="请输入相册密码"
           >
             <template slot="prefix">
               <i class="fas fa-key"></i>
@@ -55,27 +54,32 @@ export default {
   },
   methods: {
     show() {
-      this.visible = true
-      this.form.password = ''
+      this.visible = true;
+      this.form.password = '';
       if (this.$refs.form) {
-        this.$refs.form.clearValidate()
+        this.$refs.form.clearValidate();
       }
     },
     handleCancel() {
-      this.visible = false
-      this.$emit('cancel')
+      this.visible = false;
+      this.$emit('cancel');
     },
-    handleSubmit() {
+    handleSubmit(event) {
+      // 阻止默认行为，防止页面刷新
+      event.preventDefault();
+
       this.$refs.form.validate(valid => {
         if (valid) {
-          this.loading = true
+          this.loading = true;
           this.$emit('submit', this.form.password, () => {
-            this.loading = false
-          })
+            this.loading = false;
+            this.visible = false; // 提交后关闭弹窗
+          });
         }
-      })
+      });
     }
   }
+
 }
 </script>
 
@@ -117,4 +121,4 @@ export default {
   25% { transform: translateX(-5px); }
   75% { transform: translateX(5px); }
 }
-</style> 
+</style>

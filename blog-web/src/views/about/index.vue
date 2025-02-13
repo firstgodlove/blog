@@ -49,9 +49,14 @@ export default {
     line-height: 1.8;
     color: var(--text-primary);
     padding: $spacing-lg;
-   
+
   }
 
 
+}
+@include responsive(sm) {
+  :deep(img) {
+      width: 100% !important;
+  }
 }
 </style>

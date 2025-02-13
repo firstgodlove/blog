@@ -9,6 +9,9 @@
       @mouseup="stopDrag"
       @keydown.left="prev"
       @keydown.right="next"
+      @touchstart="startTouch"
+      @touchmove.prevent="onTouch"
+      @touchend="stopTouch"
       tabindex="-1"
     >
       <div class="preview-wrapper">
@@ -17,8 +20,9 @@
           :style="{ 
             transform: `translate(${position.x}px, ${position.y}px) scale(${scale}) rotate(${rotation}deg)` 
           }"
-          @click.stop.prevent
+          @click.stop
           @mousedown.stop.prevent="startDrag"
+          @touchstart.stop="startTouch"
         >
       </div>
       
@@ -146,6 +150,33 @@ export default {
       }
     },
     stopDrag() {
+      this.isDragging = false
+    },
+    startTouch(e) {
+      if (e.target.tagName.toLowerCase() === 'img' && e.touches.length === 1) {
+        e.preventDefault()
+        this.isDragging = true
+        this.lastMousePosition = {
+          x: e.touches[0].clientX,
+          y: e.touches[0].clientY
+        }
+      }
+    },
+    onTouch(e) {
+      if (!this.isDragging || e.touches.length !== 1) return
+      
+      const deltaX = e.touches[0].clientX - this.lastMousePosition.x
+      const deltaY = e.touches[0].clientY - this.lastMousePosition.y
+      
+      this.position.x += deltaX
+      this.position.y += deltaY
+      
+      this.lastMousePosition = {
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY
+      }
+    },
+    stopTouch() {
       this.isDragging = false
     }
   }

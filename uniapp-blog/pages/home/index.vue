@@ -14,7 +14,7 @@
         </view>
 
         <view class="notice-section">
-            <u-notice-bar :text="noticeText"></u-notice-bar>
+            <u-notice-bar :text="notice.content"></u-notice-bar>
         </view>
 
 
@@ -59,6 +59,8 @@
 
 <script>
 import { getArticlesApi, getCarouselArticlesApi, getCategoriesApi } from '@/api/article'
+import { getNoticeApi } from '@/api/notice'
+
 import { formatTime } from '@/utils/time'
 export default {
     name: 'Home',
@@ -77,13 +79,14 @@ export default {
                 isRecommend: true
             },
             pages: 0,
-            noticeText:'服务器过期了，数据没了，重新出发'
+            notice:{}
         }
     },
     onLoad() {
         this.getCarouselList()
         this.getArticleList()
         this.getCategories()
+		this.getNotice()
     },
     onReachBottom() {
         if (this.loadStatus === 'loadmore') {
@@ -102,6 +105,21 @@ export default {
         })
     },
     methods: {
+		/**
+		 * 获取公告
+		 */
+		async getNotice() {
+			const notice = uni.getStorageSync("notice")
+			if(notice) {
+				this.notice = notice;
+				return;
+			}
+		    const res = await getNoticeApi()
+		    if(res.data && res.data.top) {
+				this.notice = res.data.top[0]
+				uni.setStorageSync("notice",this.notice)
+			}
+		},
         /**
          * 格式化时间
          */

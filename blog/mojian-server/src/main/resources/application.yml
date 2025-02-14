@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: prod
+    active: dev
 
 ############## Sa-Token 配置 (文档: https://sa-token.cc) ##############
 sa-token:

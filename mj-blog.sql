@@ -554,6 +554,12 @@ INSERT INTO `sys_dict` (`id`, `name`, `type`, `status`, `remark`, `create_time`,
 VALUES (32, '反馈状态', 'feedback_status', 1, '', '2025-01-12 10:37:00', '2025-01-12 10:37:00', 0);
 INSERT INTO `sys_dict` (`id`, `name`, `type`, `status`, `remark`, `create_time`, `update_time`, `sort`)
 VALUES (33, '公告位置', 'notice_position', 1, '', '2025-02-11 15:27:51', '2025-02-11 15:27:51', 0);
+INSERT INTO `sys_dict` (`id`, `name`, `type`, `status`, `remark`, `create_time`, `update_time`, `sort`)
+VALUES (34, '是否状态', 'sys_yes_no', 1, '是和否状态', '2025-02-13 14:33:48', '2025-02-13 14:33:47', 0);
+INSERT INTO `sys_dict` (`id`, `name`, `type`, `status`, `remark`, `create_time`, `update_time`, `sort`)
+VALUES (35, '文件类型', 'sys_file_type', 1, '', '2025-02-13 17:10:46', '2025-02-13 17:10:45', 0);
+INSERT INTO `sys_dict` (`id`, `name`, `type`, `status`, `remark`, `create_time`, `update_time`, `sort`)
+VALUES (36, '存储平台', 'sys_file_oss', 1, '', '2025-02-14 08:47:01', '2025-02-14 08:47:01', 0);
 
 -- ----------------------------
 -- Table structure for sys_dict_data
@@ -590,6 +596,32 @@ INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_def
 VALUES (49, 33, '顶部', 'top', 'primary', 0, 1, '', 1);
 INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
 VALUES (50, 33, '右侧', 'right', 'info', 0, 2, '', 1);
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (51, 34, '否', '0', 'danger', 0, 0, '', 1);
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (52, 34, '是', '1', 'success', 0, 1, '', 1);
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (53, 35, 'png', 'png', 'primary', 0, 0, '', 1);
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (54, 35, 'gif', 'gif', 'info', 0, 1, '', 1);
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (55, 35, 'jpg', 'jpg', 'primary', 0, 2, '', 1);
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (56, 35, 'jpeg', 'jpeg', 'primary', 0, 3, '', 1);
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (57, 35, 'doc', 'doc', 'warning', 0, 4, '', 1);
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (58, 35, 'mp4', 'mp4', 'danger', 0, 5, '', 1);
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (59, 36, '七牛云', 'qiniu', 'primary', 0, 0, '', 1);
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (60, 36, '阿里云', 'ali', 'warning', 0, 1, '', 1);
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (61, 36, '本地云', 'local', 'info', 0, 2, '', 1);
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (62, 36, '腾讯云', 'tencent', 'primary', 0, 3, '', 1);
+INSERT INTO `sys_dict_data` (`id`, `dict_id`, `label`, `value`, `style`, `is_default`, `sort`, `remark`, `status`)
+VALUES (63, 36, 'minio', 'minio', 'danger', 0, 4, '', 1);
 
 -- ----------------------------
 -- Table structure for sys_friend
@@ -1004,6 +1036,19 @@ VALUES (126, '123', '', '', '修改', 3, '', 'BUTTON', '2025-02-11 16:32:49', NU
 INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
                         `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
 VALUES (127, '123', '', '', '删除', 4, '', 'BUTTON', '2025-02-11 16:33:01', NULL, '', '', 1, 'sys:notice:delete', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (128, '1', '/file', '/system/file/index', '文件管理', 6, 'Folder', 'MENU', '2025-02-13 16:01:54', NULL, '', '',
+        0, '', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (129, '128', '', '', '列表', 1, '', 'BUTTON', '2025-02-13 17:04:56', NULL, '', '', 1, 'sys:file:list', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (130, '128', '', '', '删除', 2, '', 'BUTTON', '2025-02-13 17:05:09', NULL, '', '', 1, 'sys:file:delete', 0);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
+                        `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
+VALUES (131, '128', '', '', '保存oss配置', 2, '', 'BUTTON', '2025-02-13 17:05:09', NULL, '', '', 1, 'sys:oss:submit', 0);
 
 
 -- ----------------------------
@@ -1429,6 +1474,74 @@ CREATE TABLE `sys_notice`
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='公告';
 
+
+CREATE TABLE `file_detail`
+(
+    `id`                varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '文件id',
+    `url`               varchar(512)                                                 NOT NULL COMMENT '文件访问地址',
+    `size`              bigint       DEFAULT NULL COMMENT '文件大小，单位字节',
+    `filename`          varchar(256) DEFAULT NULL COMMENT '文件名称',
+    `original_filename` varchar(256) DEFAULT NULL COMMENT '原始文件名',
+    `base_path`         varchar(256) DEFAULT NULL COMMENT '基础存储路径',
+    `path`              varchar(256) DEFAULT NULL COMMENT '存储路径',
+    `ext`               varchar(32)  DEFAULT NULL COMMENT '文件扩展名',
+    `content_type`      varchar(128) DEFAULT NULL COMMENT 'MIME类型',
+    `platform`          varchar(32)  DEFAULT NULL COMMENT '存储平台',
+    `th_url`            varchar(512) DEFAULT NULL COMMENT '缩略图访问路径',
+    `th_filename`       varchar(256) DEFAULT NULL COMMENT '缩略图名称',
+    `th_size`           bigint       DEFAULT NULL COMMENT '缩略图大小，单位字节',
+    `th_content_type`   varchar(128) DEFAULT NULL COMMENT '缩略图MIME类型',
+    `object_id`         varchar(32)  DEFAULT NULL COMMENT '文件所属对象id',
+    `object_type`       varchar(32)  DEFAULT NULL COMMENT '文件所属对象类型，例如用户头像，评价图片',
+    `metadata`          text COMMENT '文件元数据',
+    `user_metadata`     text COMMENT '文件用户元数据',
+    `th_metadata`       text COMMENT '缩略图元数据',
+    `th_user_metadata`  text COMMENT '缩略图用户元数据',
+    `attr`              text COMMENT '附加属性',
+    `file_acl`          varchar(32)  DEFAULT NULL COMMENT '文件ACL',
+    `th_file_acl`       varchar(32)  DEFAULT NULL COMMENT '缩略图文件ACL',
+    `hash_info`         text COMMENT '哈希信息',
+    `upload_id`         varchar(128) DEFAULT NULL COMMENT '上传ID，仅在手动分片上传时使用',
+    `upload_status`     int          DEFAULT NULL COMMENT '上传状态，仅在手动分片上传时使用，1：初始化完成，2：上传完成',
+    `source`            varchar(25)  DEFAULT NULL COMMENT '图片来源',
+    `create_time`       datetime     DEFAULT NULL COMMENT '创建时间',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='文件记录表';
+
+CREATE TABLE `file_part_detail`
+(
+    `id`          varchar(32) NOT NULL COMMENT '分片id',
+    `platform`    varchar(32)  DEFAULT NULL COMMENT '存储平台',
+    `upload_id`   varchar(128) DEFAULT NULL COMMENT '上传ID，仅在手动分片上传时使用',
+    `e_tag`       varchar(255) DEFAULT NULL COMMENT '分片 ETag',
+    `part_number` int          DEFAULT NULL COMMENT '分片号。每一个上传的分片都有一个分片号，一般情况下取值范围是1~10000',
+    `part_size`   bigint       DEFAULT NULL COMMENT '文件大小，单位字节',
+    `hash_info`   text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci COMMENT '哈希信息',
+    `create_time` datetime     DEFAULT NULL COMMENT '创建时间',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='文件分片信息表，仅在手动分片上传时使用';
+
+CREATE TABLE `sys_file_oss`
+(
+    `id`            bigint                                  NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `domain`        varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT '访问域名',
+    `access_key`    varchar(255) COLLATE utf8mb4_general_ci                      DEFAULT NULL COMMENT 'access-key',
+    `secret_key`    varchar(255) COLLATE utf8mb4_general_ci                      DEFAULT NULL COMMENT 'secret-key',
+    `bucket`        varchar(255) COLLATE utf8mb4_general_ci                      DEFAULT NULL COMMENT '空间名',
+    `base_path`     varchar(255) COLLATE utf8mb4_general_ci                      DEFAULT NULL COMMENT '存储基础路径',
+    `platform`      varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '存储类型',
+    `is_enable`     int                                                          DEFAULT NULL COMMENT '是否启用存储',
+    `storage_path`  varchar(255) COLLATE utf8mb4_general_ci                      DEFAULT NULL COMMENT '本地存储路径',
+    `enable_access` int                                                          DEFAULT NULL COMMENT '本地启用访问',
+    `path_patterns` varchar(64) COLLATE utf8mb4_general_ci                       DEFAULT NULL COMMENT '本地访问路径',
+    `create_time`   datetime                                                     DEFAULT NULL COMMENT '创建时间',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='存储平台';
+
+INSERT INTO `sys_file_oss` (`id`, `domain`, `access_key`, `secret_key`, `bucket`, `base_path`, `platform`, `is_enable`,
+                            `storage_path`, `enable_access`, `path_patterns`, `create_time`)
+VALUES (1, 'http://127.0.0.1:8800/localFile/', '', '', '', 'local-plus/', 'local', 1, 'D:/Temp/', 1, 'localFile/**',
+        '2025-02-14 10:52:33');
 
 SET
 FOREIGN_KEY_CHECKS = 1;

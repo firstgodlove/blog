@@ -118,7 +118,7 @@
         </el-form-item>
 
         <el-form-item label="文章封面" prop="cover">
-          <UploadImage v-model="form.cover" :limit="1" />
+          <UploadImage v-model="form.cover" :limit="1" :source="'article-cover'" />
         </el-form-item>
 
         <el-form-item label="文章简介" prop="summary">
@@ -245,7 +245,7 @@ import {
   getArticleListApi, getDetailApi, deleteArticleApi,
   addArticleApi, updateArticleApi, updateStatusApi, reptileArticleApi
 } from '@/api/article'
-import { uploadApi } from '@/api/file'
+import { uploadApi,deleteFileApi } from '@/api/file'
 import { getDictDataByDictTypesApi } from '@/api/system/dict'
 
 // 模拟数据
@@ -353,15 +353,17 @@ const rules = reactive<FormRules>({
   ]
 })
 
-//添加图片
+//删除图片
 function imgDel(pos: any, $file: any) {
-
+  // deleteFileApi($file.url).then((res) => {
+  //   ElMessage.success('删除成功')
+  // })
 }
 //添加图片
 function imgAdd(pos: any, $file: any) {
   var formdata = new FormData();
   formdata.append("file", $file);
-  uploadApi(formdata).then((res) => {
+  uploadApi(formdata, 'article-content').then((res) => {
     mdRef.value.$img2Url(pos, res.data);
   });
 }

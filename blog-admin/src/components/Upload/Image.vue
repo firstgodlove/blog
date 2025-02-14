@@ -33,6 +33,7 @@ import { ElMessage } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import type { UploadProps, UploadUserFile } from 'element-plus'
 import { getToken } from '@/utils/auth'
+import { deleteFileApi } from '@/api/file'
 const props = defineProps({
   modelValue: {
     type: [String, Array],
@@ -49,13 +50,17 @@ const props = defineProps({
   multiple: {
     type: Boolean,
     default: false
+  },
+  source: {
+    type: String,
+    default: 'article'
   }
 })
 
 const emit = defineEmits(['update:modelValue'])
 
 // 上传地址
-const uploadUrl = import.meta.env.VITE_APP_BASE_API + '/file/upload'
+const uploadUrl =  import.meta.env.VITE_APP_BASE_API + '/file/upload'
 
 // 请求头
 const headers = {
@@ -90,11 +95,13 @@ const handlePreview: UploadProps['onPreview'] = (uploadFile) => {
 }
 
 // 处理图片删除
-const handleRemove: UploadProps['onRemove'] = async (uploadFile) => {
+const handleRemove: UploadProps['onRemove'] = async (uploadFile: any) => {
   if (props.multiple) {
+    await deleteFileApi(uploadFile.url)
     const urls = (props.modelValue as string[]).filter(url => url !== uploadFile.url)
     emit('update:modelValue', urls)
   } else {
+    await deleteFileApi(uploadFile.url)
     emit('update:modelValue', '')
   }
 }

@@ -38,28 +38,6 @@ wechat:
   # 公众号AES Key
   aesKey:
 
-#==============================文件地址配置=======================================
-dromara:
-  x-file-storage: #文件存储配置
-    default-platform: local-plus-1 #默认使用的存储平台
-    thumbnail-suffix: ".min.jpg" #缩略图后缀，例如【.min.jpg】【.png】
-    local-plus:
-      - platform: local-plus-1 # 存储平台标识
-        enable-storage: true  #启用存储
-        enable-access: true #启用访问（线上请使用 Nginx 配置，效率更高）
-        domain: http://127.0.0.1:8800/localFile/ # 访问域名，例如：“http://127.0.0.1:8030/file/”，注意后面要和 path-patterns 保持一致，“/”结尾，本地存储建议使用相对路径，方便后期更换域名
-        base-path: local-plus/ # 基础路径
-        path-patterns: /localFile/** # 访问路径
-        storage-path: D:/Temp/ # 存储路径
-    qiniu-kodo:
-      - platform: qiniu-kodo-1 # 存储平台标识
-        enable-storage: true  # 启用存储
-        access-key:
-        secret-key:
-        bucket-name: shiyi-blog
-        domain: https://img.shiyit.com/ # 访问域名，注意“/”结尾，例如：http://abc.hn-bkt.clouddn.com/
-        base-path: base/ # 基础路径
-
 #==============================邮箱配置=======================================
 mail:
   smtp:

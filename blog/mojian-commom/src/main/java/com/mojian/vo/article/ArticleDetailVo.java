@@ -39,6 +39,9 @@ public class ArticleDetailVo {
     @Schema(description = "阅读量")
     private Integer quantity;
 
+    @Schema(description = "阅读方式")
+    private Integer readType;
+
     @Schema(description = "评论数量")
     private Integer commentNum;
 

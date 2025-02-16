@@ -1,24 +1,80 @@
 <template>
   <div class="chat-container">
-    <div class="chat-sidebar">
-      <div class="chat-header">
-        <h3>群聊列表</h3>
+    <div class="nav-sidebar">
+      <div class="nav-header">
+        <div class="user-avatar">
+          <img :src="$store.state.userInfo.avatar" alt="avatar">
+        </div>
+      </div>
+      <div class="nav-menu">
+        <div 
+          class="nav-item chat-icon" 
+          :class="{ active: currentNav === 'chat' }"
+          @click="switchNav('chat')"
+        >
+          <i class="fas fa-comment"></i>
+          <span class="nav-text">聊天</span>
+        </div>
+        <div 
+          class="nav-item friends-icon"
+          :class="{ active: currentNav === 'friends' }"
+          @click="switchNav('friends')"
+        >
+          <i class="fas fa-user-friends"></i>
+          <span class="nav-text">好友</span>
+        </div>
+        <div 
+          class="nav-item groups-icon"
+          :class="{ active: currentNav === 'groups' }"
+          @click="switchNav('groups')"
+        >
+          <i class="fas fa-users"></i>
+          <span class="nav-text">群聊</span>
+        </div>
+      </div>
+      <div class="nav-bottom">
+        <a 
+          class="nav-item" 
+          href="https://gitee.com/quequnlong/shiyi-blog" 
+          target="_blank"
+          title="查看源码"
+        >
+          <i class="fab fa-github"></i>
+          <span class="nav-text">源码</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="chat-list-container">
+      <div class="search-box">
+        <input type="text" placeholder="搜索">
       </div>
       <div class="chat-list">
-        <div 
-          class="chat-item active"
-        >
-          <div class="avatar">
-            <img :src="currentChat.avatar" alt="avatar">
+        <template v-if="currentNav === 'chat'">
+          <div 
+            v-for="chat in chatList"
+            :key="chat.id"
+            class="chat-item"
+            :class="{ active: currentChat.id === chat.id }"
+          >
+            <div class="avatar">
+              <img :src="chat.avatar" alt="avatar">
+            </div>
+            <div class="chat-info">
+              <div class="name">{{ chat.name }}</div>
+              <div class="last-message">{{ currentChat.lastMessage }}</div>
+            </div>
+            <div class="meta">
+              <div class="time">{{ currentChat.lastTime }}</div>
+            </div>
           </div>
-          <div class="chat-info">
-            <div class="name">{{ currentChat.name }}</div>
-            <div class="last-message">{{ currentChat.lastMessage }}</div>
-          </div>
-          <div class="meta">
-            <div class="time">{{ currentChat.lastTime }}</div>
-          </div>
-        </div>
+        </template>
+        <template v-else-if="currentNav === 'friends'">
+          <div class="empty-tip">好友列表开发中...</div>
+        </template>
+        <template v-else>
+          <div class="empty-tip">群聊列表开发中...</div>
+        </template>
       </div>
     </div>
     
@@ -26,7 +82,7 @@
       <div class="chat-header">
         <div class="user-info">
           <h3>{{ currentChat.name }}</h3>
-          <span class="status-text">在线</span>
+          <!-- <span class="status-text">当前在线人数: 4</span> -->
         </div>
       </div>
       
@@ -37,8 +93,8 @@
         </div>
         
         <div 
-          v-for="msg in currentChat.messages" 
-          :key="msg.id"
+          v-for="(msg, index) in currentChat.messages" 
+          :key="msg.id || 'msg-' + index"
           :class="['message', { 'message-self': msg.userId === $store.state.userInfo.id }]"
         >
           <div class="avatar" @contextmenu.prevent="handleAvatarContextMenu(msg, $event)">
@@ -48,9 +104,8 @@
             <div class="message-header">
               <div v-if="currentChat.isGroup && msg.userId !== $store.state.userInfo.id" class="sender-name">
                 {{ msg.name }}
-                <span v-if="msg.userId === 1"" class="author-tag">作者</span>
+                <span v-if="msg.userId === 1" class="author-tag">作者</span>
                 <span class="location">({{ splitIpAddress(msg.location) }})</span>
-
               </div>
             </div>
             <div v-if="msg.isRecalled" class="message-recalled">
@@ -66,7 +121,7 @@
               <img 
                 v-else-if="msg.type === 'image'" 
                 v-lazy="msg.content" 
-                :key="msg.content"
+                :key="'img-' + (msg.id || index)"
                 class="message-image"
                 @click="previewImage(msg.content)"
                 @load="handleImageLoad"
@@ -80,15 +135,13 @@
       
       <div class="chat-input">
         <div class="input-toolbar">
-
           <mj-emoji
             size="1.1rem"
             class="emoji-picker"
             @select="insertEmoji"
           />
 
-
-          <label class="toolbar-btn" for="image-upload">
+          <label class="toolbar-btn image-upload-btn" for="image-upload">
             <i class="fas fa-image"></i>
           </label>
           <input 
@@ -100,24 +153,26 @@
           >
         </div>
         
-        <textarea 
-          ref="messageTextarea"
-          v-model="messageText" 
-          @keyup.enter.prevent="sendMessage"
-          @input="handleInput"
-          @keydown="handleMentionKeydown"
-          placeholder="输入消息..."
-        ></textarea>
-        
-        <button 
-          @click="sendMessage" 
-          :disabled="!messageText.trim() || countdown > 0"
-        >
-          <template v-if="countdown > 0">
-            {{ countdown }}s
-          </template>
-          <i v-else class="fas fa-paper-plane"></i>
-        </button>
+        <div class="input-area">
+          <textarea 
+            ref="messageTextarea"
+            v-model="messageText" 
+            @keydown.enter.prevent="handleEnterKey"
+            @input="handleInput"
+            @keydown="handleMentionKeydown"
+            placeholder="输入消息..."
+          ></textarea>
+          
+          <button 
+            @click="sendMessage" 
+            :disabled="!messageText.trim() || countdown > 0"
+          >
+            <template v-if="countdown > 0">
+              {{ countdown }}s
+            </template>
+            <i v-else class="fas fa-paper-plane"></i>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -161,6 +216,16 @@ export default {
   name: 'Chat',
   data() {
     return {
+      currentNav: 'chat',
+      chatList: [
+        {
+          id: 1,
+          name: '博客交流群',
+          avatar: this.$store.state.webSiteInfo.logo,
+          lastMessage: '',
+          lastTime: '',
+        }
+      ],
       messageText: '',
       ws: null, // WebSocket实例
       currentChat: {
@@ -240,6 +305,9 @@ export default {
     enableScroll()
   },
   methods: {
+    switchNav(nav) {
+      this.currentNav = nav
+    },
     /**
      * 初始化
      */
@@ -346,19 +414,20 @@ export default {
       }
       
       const newMessage = {
-        id: message.id || Date.now(),
+        id: message.id || Date.now() + Math.random(), // 确保每条消息都有唯一ID
         type: message.type || 'text',
         content: message.content,
-        time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
-        userId: message.userId, 
+        time: formatTime(new Date()),
+        userId: message.userId,
         name: message.name,
         avatar: message.avatar,
         location: message.location
       }
+      
       this.currentChat.messages.push(newMessage)
       this.currentChat.lastMessage = message.type === 'text' ? message.content : '[图片]'
       this.currentChat.lastTime = '刚刚'
-      this.shouldScrollToBottom = true // 收到新消息时设置为true
+      this.shouldScrollToBottom = true
 
       this.$nextTick(() => {
         this.scrollToBottom()
@@ -693,6 +762,31 @@ export default {
     },
 
     /**
+     * 处理Enter键
+     * @param {KeyboardEvent} event 
+     */
+    handleEnterKey(event) {
+      // 如果按下了Ctrl键，则插入换行
+      if (event.ctrlKey) {
+        const textarea = this.$refs.messageTextarea;
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        this.messageText = 
+          this.messageText.substring(0, start) + 
+          '\n' + 
+          this.messageText.substring(end);
+        
+        // 将光标移动到换行后的位置
+        this.$nextTick(() => {
+          textarea.selectionStart = textarea.selectionEnd = start + 1;
+        });
+      } else {
+        // 否则发送消息
+        this.sendMessage();
+      }
+    },
+
+    /**
      * 处理@输入
      * @param {Event} event 
      */
@@ -891,57 +985,311 @@ export default {
 
 <style lang="scss" scoped>
 .chat-container {
-  max-width: 1200px;
-  margin: 0 auto;
   height: calc(100vh - 140px);
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 80px 280px 1fr;
   background: var(--card-bg);
   border-radius: 12px;
   box-shadow: $shadow-lg;
-  margin-top: $spacing-lg;
-  margin-bottom: $spacing-lg;
-  
-  @include responsive(md) {
-    grid-template-columns: 1fr;
-    margin: $spacing-md;
-    height: calc(100vh - 100px);
+  margin: $spacing-lg auto;
+  overflow: hidden;
+  max-width: 1200px;
+}
+
+.nav-sidebar {
+  background: linear-gradient(180deg, #2c3e50 0%, #3498db 100%);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(44, 62, 80, 0.1) 100%);
+    z-index: 1;
+  }
+
+  .nav-header {
+    padding: $spacing-md;
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: $spacing-md;
+    background: rgba(255, 255, 255, 0.05);
+    position: relative;
+    z-index: 2;
+
+    .user-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      
+      &:hover {
+        border-color: rgba(255, 255, 255, 0.8);
+        transform: scale(1.05) translateY(-2px);
+        box-shadow: 0 8px 16px rgba(52, 152, 219, 0.3);
+      }
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+
+  .nav-menu {
+    padding: $spacing-sm 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    position: relative;
+    z-index: 2;
+    height: calc(100% - 100px); // 为底部源码按钮留出空间
+    justify-content: flex-start;
+
+    .nav-item {
+      height: 64px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.7);
+      transition: all 0.3s ease;
+      position: relative;
+      margin: 0 $spacing-sm;
+      border-radius: 16px;
+      backdrop-filter: blur(8px);
+      &:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+        
+        .nav-text {
+          opacity: 1;
+          transform: scale(1.02);
+        }
+
+        i {
+          transform: scale(1.05);
+        }
+
+        &.chat-icon i {
+          color: #2ecc71;
+        }
+        
+        &.friends-icon i {
+          color: #e74c3c;
+        }
+        
+        &.groups-icon i {
+          color: #f1c40f;
+        }
+      }
+      
+      &.active {
+        color: white;
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+        &::before {
+          content: '';
+          position: absolute;
+          left: -$spacing-sm;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 3px;
+          height: 24px;
+          background: white;
+          border-radius: 0 4px 4px 0;
+          box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+        }
+        
+        .nav-text {
+          opacity: 1;
+          color: white;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        &.chat-icon i {
+          color: #2ecc71;
+        }
+        
+        &.friends-icon i {
+          color: #e74c3c;
+        }
+        
+        &.groups-icon i {
+          color: #f1c40f;
+        }
+      }
+
+      i {
+        font-size: 1.4em;
+        transition: all 0.3s ease;
+      }
+
+      .nav-text {
+        font-size: 0.85em;
+        opacity: 0.8;
+        transition: all 0.3s ease;
+        font-weight: 500;
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: -$spacing-sm;
+        transform: translateX(-50%);
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      &:last-child::after {
+        display: none;
+      }
+    }
+  }
+
+  // 添加底部源码按钮样式
+  .nav-bottom {
+    position: absolute;
+    bottom: $spacing-md;
+    left: 0;
+    right: 0;
+    padding: 0 $spacing-sm;
+    z-index: 2;
+
+    .nav-item {
+      height: 64px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.7);
+      transition: all 0.3s ease;
+      border-radius: 16px;
+      backdrop-filter: blur(8px);
+      text-decoration: none !important;
+
+      &:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+        
+        .nav-text {
+          opacity: 1;
+        }
+
+        i {
+          color: #f1c40f;
+          transform: scale(1.1);
+        }
+      }
+
+      i {
+        font-size: 1.4em;
+        transition: all 0.3s ease;
+      }
+
+      .nav-text {
+        font-size: 0.85em;
+        opacity: 0.8;
+        transition: all 0.3s ease;
+        font-weight: 500;
+      }
+    }
   }
 }
 
-.chat-sidebar {
+.chat-list-container {
+  background: var(--card-bg);
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
-  
-  @include responsive(md) {
-    display: none;
-  }
-}
+  overflow: hidden;
 
-.chat-header {
-  padding: $spacing-lg;
-  border-bottom: 1px solid var(--border-color);
-  
-  h3 {
-    color: var(--text-primary);
-    margin: 0;
-  }
-}
+  .search-box {
+    padding: $spacing-md;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--card-bg);
+    position: relative;
+    
+    &::before {
+      content: '\f002';
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+      position: absolute;
+      left: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      font-size: 0.9em;
+      opacity: 0.7;
+    }
+    
+    input {
+      width: 100%;
+      padding: $spacing-sm $spacing-xl $spacing-sm 42px;
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      background: var(--input-bg);
+      color: var(--text-primary);
+      font-size: 0.9em;
+      transition: all 0.3s ease;
+      
+      &:focus {
+        outline: none;
+        border-color: $primary;
+        box-shadow: 0 0 0 3px rgba($primary, 0.1);
+        
+        & + .search-icon {
+          color: $primary;
+        }
+      }
 
-.chat-list {
-  flex: 1;
-  overflow-y: auto;
+      &::placeholder {
+        color: var(--text-secondary);
+        opacity: 0.7;
+      }
+    }
+  }
+
+  .chat-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: $spacing-sm 0;
+  }
 }
 
 .chat-item {
+  padding: $spacing-md;
   display: grid;
   grid-template-columns: auto 1fr auto;
   gap: $spacing-md;
-  padding: $spacing-md;
+  margin: 0 $spacing-xs;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-  
+
   &:hover {
     background: var(--hover-bg);
   }
@@ -951,68 +1299,84 @@ export default {
   }
   
   .avatar {
-    width: 48px;
-    height: 48px;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
     
     img {
       width: 100%;
       height: 100%;
-      border-radius: 50%;
+      border-radius: 12px;
       object-fit: cover;
     }
   }
   
-  .chat-info {
-    max-width: 160px;
-    overflow: hidden;
+  .chat-info {    
+    min-width: 0; // 确保文本可以正确截断
     
     .name {
-      color: var(--text-primary);
-      font-weight: 500;
       margin-bottom: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 0.95em;
+      font-weight: 500;
+      color: var(--text-primary);
     }
     
     .last-message {
+      font-size: 0.85em;
       color: var(--text-secondary);
-      font-size: 0.9em;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      width: 100%;
-      display: block;
     }
   }
   
   .meta {
-    text-align: right;
+    flex-shrink: 0;
     
     .time {
-      color: var(--text-secondary);
       font-size: 0.8em;
-      margin-bottom: 4px;
+      color: var(--text-secondary);
     }
   }
+}
+
+.empty-tip {
+  padding: $spacing-lg;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.9em;
 }
 
 .chat-main {
   display: flex;
   flex-direction: column;
   height: 100%;
+  background: var(--card-bg);
+  border-left: 1px solid var(--border-color);
   position: relative;
   overflow: hidden;
   
   .chat-header {
     height: 70px;
-    flex: none;
+    flex-shrink: 0;
+    padding: $spacing-md $spacing-lg;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
     background: var(--card-bg);
     z-index: 10;
+
     .user-info {
       display: flex;
       align-items: center;
       gap: $spacing-md;
+      
+      h3 {
+        font-size: 1.1em;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+      }
       
       .status-text {
         color: var(--text-secondary);
@@ -1020,72 +1384,107 @@ export default {
       }
     }
   }
-}
 
-.messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: $spacing-lg;
-  padding-bottom: 120px;
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-lg;
-}
-
-.message {
-  display: flex;
-  gap: $spacing-md;
-  
-  &.message-self {
-    flex-direction: row-reverse;
-    
-    .message-content {
-      align-items: flex-end;
-      
-      .message-text {
-        background: $primary;
-        color: white;
-        border-radius: 16px 16px 4px 16px;
-        max-width: 700px;
-      }
-
-      .sender-name {
-        text-align: right;
-      }
-    }
-  }
-  
-  .avatar {
-    width: 40px;
-    height: 40px;
-    
-    img {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-  }
-  
-  .message-content {
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: $spacing-md $spacing-lg;
+    padding-bottom: 100px;
+    background: var(--bg);
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: $spacing-md;
     
-    .sender-name {
-      font-size: 0.9em;
-      color: var(--text-secondary);
-      margin-bottom: 2px;
+    .message {
+      display: flex;
+      gap: $spacing-sm;
+      align-items: flex-start;
+      
+      &.message-self {
+        flex-direction: row-reverse;
+        
+        .message-content {
+          align-items: flex-end;
+          
+          .message-text {
+            background: $primary;
+            color: white;
+            border-radius: 16px 16px 4px 16px;
+          }
+
+          .message-header {
+            flex-direction: row-reverse;
+          }
+
+          .sender-name {
+            text-align: right;
+          }
+        }
+      }
+      
+      .avatar {
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+        
+        img {
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+      }
+      
+      .message-content {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        max-width: 70%;
+        
+        .message-header {
+          display: flex;
+          align-items: center;
+          gap: $spacing-sm;
+          
+          .sender-name {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+          }
+        }
+        
+        .message-text {
+          background: var(--hover-bg);
+          padding: $spacing-sm $spacing-md;
+          border-radius: 16px 16px 16px 4px;
+          color: var(--text-primary);
+          word-break: break-word;
+          
+          :deep(mention) {
+            color: rgb(84, 214, 231);
+            font-weight: 500;
+            cursor: pointer;
+            
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+        
+        .message-time {
+          font-size: 0.8em;
+          color: var(--text-secondary);
+          margin-top: 2px;
+        }
+      }
     }
   }
-}
 
-.chat-input {
+  .chat-input {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: $spacing-lg;
+  padding: $spacing-md;
   border-top: 1px solid var(--border-color);
   background: var(--card-bg);
   display: flex;
@@ -1097,11 +1496,16 @@ export default {
     gap: $spacing-sm;
     align-items: center;
     
+    :deep(.emoji-picker i){
+      color: #f1c40f !important;
+    }
+    .image-upload-btn{
+      color: $primary  ;
+    }
     .toolbar-btn {
       padding: $spacing-sm;
       border: none;
       background: none;
-      color: var(--text-secondary);
       cursor: pointer;
       border-radius: 4px;
       
@@ -1110,6 +1514,11 @@ export default {
         color: $primary;
       }
     }
+  }
+  .input-area {
+    flex: 1;
+    display: flex;
+    gap: $spacing-sm;
   }
 
   textarea {
@@ -1149,12 +1558,14 @@ export default {
   }
 }
 
+}
+
 .message-text {
   background: var(--hover-bg);
-  padding: $spacing-md $spacing-lg;
-  border-radius: 16px 16px 16px 4px;
+  padding: $spacing-sm $spacing-md;
+  border-radius: 12px 12px 12px 4px;
   color: var(--text-primary);
-  max-width: 700px;
+  max-width: 600px;
   
   // 添加深度选择器来处理v-html内容的样式
   :deep(mention) {

@@ -337,7 +337,7 @@ const form = reactive({
   tagIds: [],
   content: '',
   contentMd: '',
-  readType: 0,
+  readType: 1,
   isOriginal: 1,
   originalUrl: '',
   isStick: 0,

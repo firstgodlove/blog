@@ -114,7 +114,36 @@
         </div>
 
         <!-- 文章内容 -->
-        <article class="article-content" v-html="article.content"></article>
+        <article class="article-content">
+          <!-- 免费内容 -->
+          <div v-if="article.readType === 1" v-html="article.content"></div>
+          
+          <!-- 会员内容 -->
+          <div v-else-if="article.readType === 2" class="locked-content member">
+            <div class="preview-content" v-html="getPreviewContent(article.content)"></div>
+            <div class="content-locker">
+              <div class="locker-icon">
+                <i class="fas fa-crown"></i>
+              </div>
+              <h3>会员专享内容</h3>
+              <p>成为会员即可阅读全文</p>
+              <el-button type="primary" @click="handleUpgrade">立即开通会员</el-button>
+            </div>
+          </div>
+          
+          <!-- 付费内容 -->
+          <div v-else-if="article.readType === 3" class="locked-content paid">
+            <div class="preview-content" v-html="getPreviewContent(article.content)"></div>
+            <div class="content-locker">
+              <div class="locker-icon">
+                <i class="fas fa-lock"></i>
+              </div>
+              <h3>付费阅读</h3>
+              <p>支付 1 元即可阅读全文</p>
+              <el-button type="primary" @click="handlePurchase">立即购买</el-button>
+            </div>
+          </div>
+        </article>
 
         <!-- 文章底部 -->
         <footer class="article-footer">
@@ -224,6 +253,17 @@
       </aside>
     </div>
     <mj-image-preview ref="imagePreview" />
+    <payment-dialog
+      :visible.sync="showPaymentDialog"
+      :title="article.title"
+      :price="1"
+      :article-id="$route.params.id"
+      @payment-success="handlePaymentSuccess"
+    />
+    <membership-dialog
+      :visible.sync="showMembershipDialog"
+      @payment-success="handleMembershipSuccess"
+    />
   </div>
 </template>
 
@@ -232,17 +272,24 @@ import { getArticleDetailApi, likeArticleApi } from '@/api/article'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/atom-one-dark.css'
 import Comment from '@/components/Comment/index.vue'
+import PaymentDialog from '@/components/PaymentDialog/index.vue'
+import MembershipDialog from '@/components/MembershipDialog/index.vue'
 
 export default {
   name: 'Article',
   components: {
     Comment,
+    PaymentDialog,
+    MembershipDialog
   },
   data() {
     return {
       article: {
+        title: '',
         category: {},
-        isOriginal: true
+        isOriginal: true,
+        readType: 1,
+        price: 0,
       },
       prevArticle: {
         id: 1,
@@ -263,7 +310,9 @@ export default {
       showSidebar: true,
       contentLayout: 'center',
       collapsedCodeBlocks: new Set(),
-      images: []
+      images: [],
+      showPaymentDialog: false,
+      showMembershipDialog: false
     }
   },
   computed: {
@@ -712,6 +761,50 @@ export default {
           pre.insertBefore(lineNumbers, code)
         }
       })
+    },
+    /**
+     * 获取预览内容
+     */
+    getPreviewContent(content) {
+      // 返回内容的前300个字符，并确保HTML标签完整
+      const div = document.createElement('div')
+      div.innerHTML = content
+      const text = div.textContent || div.innerText
+      return text.substring(0, 300) + '...'
+    },
+    /**
+     * 处理会员升级
+     */
+    handleUpgrade() {
+      if (!this.$store.state.userInfo) {
+        this.$message.warning('请先登录')
+        return
+      }
+      this.showMembershipDialog = true
+    },
+    /**
+     * 处理付费购买
+     */
+    handlePurchase() {
+      if (!this.$store.state.userInfo) {
+        this.$message.warning('请先登录')
+        return
+      }
+      this.showPaymentDialog = true
+    },
+    /**
+     * 处理支付成功
+     */
+    handlePaymentSuccess() {
+      // 重新获取文章信息
+      this.getArticle()
+    },
+    /**
+     * 处理会员开通成功
+     */
+    handleMembershipSuccess() {
+      // 重新获取文章信息
+      this.getArticle()
     },
   },
   async created() {
@@ -1214,6 +1307,86 @@ export default {
       padding: 0 $spacing-lg;
       color: var(--text-secondary);
       font-size: 1.2em;
+    }
+  }
+
+  .locked-content {
+    position: relative;
+    
+    .preview-content {
+      max-height: 300px;
+      overflow: hidden;
+      position: relative;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 100px;
+        background: linear-gradient(transparent, var(--card-bg));
+        pointer-events: none;
+      }
+    }
+    
+    .content-locker {
+      position: relative;
+      margin-top: -60px;
+      padding: $spacing-xl;
+      text-align: center;
+      background: var(--card-bg);
+      border-radius: $border-radius-lg;
+      box-shadow: $shadow-lg;
+      z-index: 1;
+      
+      .locker-icon {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto $spacing-lg;
+        background: rgba($primary, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        i {
+          font-size: 1.8em;
+          color: $primary;
+        }
+      }
+      
+      h3 {
+        color: var(--text-primary);
+        font-size: 1.4em;
+        margin-bottom: $spacing-sm;
+      }
+      
+      p {
+        color: var(--text-secondary);
+        margin-bottom: $spacing-lg;
+      }
+      
+      .el-button {
+        padding: $spacing-sm $spacing-xl;
+        font-size: 1.1em;
+      }
+    }
+    
+    &.member .locker-icon {
+      background: rgba(#FFD700, 0.1);
+      
+      i {
+        color: #FFD700;
+      }
+    }
+    
+    &.paid .locker-icon {
+      background: rgba(#E6162D, 0.1);
+      
+      i {
+        color: #E6162D;
+      }
     }
   }
 }

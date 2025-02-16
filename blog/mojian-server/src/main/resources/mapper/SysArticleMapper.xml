@@ -33,6 +33,7 @@
         <result property="contentMd" column="content_md"/>
         <result property="content" column="content"/>
         <result property="quantity" column="quantity"/>
+        <result property="readType" column="read_type"/>
         <result property="likeNum" column="likeNum"/>
         <result property="commentNum" column="commentNum"/>
         <result property="isOriginal" column="is_original"/>
@@ -112,6 +113,7 @@
             a.content,
             a.quantity,
             a.is_stick,
+            a.read_type,
             a.create_time,
             a.is_original,
             a.original_url,

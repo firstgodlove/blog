@@ -202,7 +202,37 @@
 
         <el-form-item label="文章内容" prop="contentMd" class="mb-20">
           <mavon-editor placeholder="输入文章内容..." style="height: 500px; width: 100%" ref="mdRef" v-model="form.contentMd"
-            @imgDel="imgDel" @imgAdd="imgAdd" />
+            @imgDel="imgDel" @imgAdd="imgAdd">
+            <template #left-toolbar-after>
+                  <el-dropdown>
+                    <span class="el-dropdown-link">
+                      <i title="上传视频"></i>
+                      <el-icon class="op-icon fa el-icon-video-camera"
+                        ><VideoPlay
+                      /></el-icon>
+                    </span>
+                    <template #dropdown>
+                      <el-dropdown-menu>
+                        <el-dropdown-item>
+                          <el-upload
+                            style="display: inline-block"
+                            :show-file-list="false"
+                            name="filedatas"
+                            action=""
+                            :http-request="uploadVideo"
+                            multiple
+                          >
+                            <span>上传视频</span>
+                          </el-upload>
+                        </el-dropdown-item>
+                        <el-dropdown-item>
+                          <div @click="dialogVisible = true">添加视频地址</div>
+                        </el-dropdown-item>
+                      </el-dropdown-menu>
+                    </template>
+                  </el-dropdown>
+                </template>
+              </mavon-editor>
         </el-form-item>
       </el-form>
 
@@ -232,11 +262,23 @@
         </div>
       </template>
     </el-dialog>
+
+    <!-- 添加视频地址对话框 -->
+    <el-dialog center title="添加视频" v-model="dialogVisible" width="30%">
+      <el-input v-model="videoInput" placeholder="视频地址"></el-input>
+
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="addVideo">确 定</el-button>
+          <el-button @click="dialogVisible = false">取 消</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox,ElLoading  } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import UploadImage from '@/components/Upload/Image.vue'
 import { getCategoryListApi } from '@/api/article/category'
@@ -312,6 +354,10 @@ const reptileForm = reactive({
 const statusOptions = ref<any>([])
 const yesNoOptions = ref<any>([])
 
+const dialogVisible = ref(false)
+const videoInput = ref('')
+
+
 // 表单校验规则
 const rules = reactive<FormRules>({
   title: [
@@ -366,6 +412,45 @@ function imgAdd(pos: any, $file: any) {
   uploadApi(formdata, 'article-content').then((res) => {
     mdRef.value.$img2Url(pos, res.data);
   });
+}
+
+// 上传视频
+const uploadVideo = (param: any) => {
+  const loading = ElLoading.service({
+    lock: true,
+    text: 'Loading',
+    background: 'rgba(0, 0, 0, 0.7)',
+  })
+  var formData = new FormData();
+  formData.append("file", param.file);
+  return uploadApi(formData, 'article-content').then((res) => {
+    const $vm = mdRef.value;
+    $vm.insertText($vm.getTextareaDom(), {
+      prefix: `<video height=100% width=100% controls autoplay src="${res.data}"></video>`,
+      subfix: "",
+      str: "",
+    });
+    return res;
+  }).finally(() => {
+    loading.close();
+  });
+}
+
+/**
+ * 添加网络视频地址
+ */
+ const addVideo = () => {
+  // 这里获取到的是mavon编辑器实例，上面挂载着很多方法
+  const $vm = mdRef.value;
+  // 将文件名与文件路径插入当前光标位置，这是mavon-editor 内置的方法
+  $vm.insertText($vm.getTextareaDom(), {
+    prefix: `<video height=100% width=100% controls autoplay src="${videoInput.value}"></video>`,
+    subfix: "",
+    str: "",
+  });
+
+  dialogVisible.value = false;
+  videoInput.value = "";
 }
 
 // 获取分类列表

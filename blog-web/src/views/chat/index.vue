@@ -45,7 +45,17 @@
       </div>
     </div>
 
-    <div class="chat-list-container">
+    <!-- 遮罩层 -->
+    <div 
+      v-if="isMobile && !isListHidden" 
+      class="mobile-overlay"
+      @click="toggleList"
+    ></div>
+
+    <div 
+      class="chat-list-container" 
+      :class="{ 'mobile-hidden': isMobile && isListHidden }"
+    >
       <div class="search-box">
         <input type="text" placeholder="搜索">
       </div>
@@ -81,8 +91,10 @@
     <div class="chat-main">
       <div class="chat-header">
         <div class="user-info">
+          <div class="toggle-list-btn" @click="toggleList" v-if="isMobile">
+            <i class="fas fa-bars"></i>
+          </div>
           <h3>{{ currentChat.name }}</h3>
-          <!-- <span class="status-text">当前在线人数: 4</span> -->
         </div>
       </div>
       
@@ -258,6 +270,8 @@ export default {
       maxReconnectAttempts: 5, // 最大重连次数
       shouldReconnect: true, // 是否需要重连的标志
       shouldScrollToBottom: true, // 添加新标志来控制是否滚动到底部
+      isMobile: false,
+      isListHidden: false,
     }
   },
   //监听this.$store.state.userInfo的变化
@@ -286,6 +300,8 @@ export default {
     this.init()
     //禁止滚动
     disableScroll()
+    this.checkMobile();
+    window.addEventListener('resize', this.checkMobile);
   },
   beforeDestroy() {
     this.shouldReconnect = false // 设置不再重连
@@ -303,6 +319,7 @@ export default {
     }
     //开启滚动
     enableScroll()
+    window.removeEventListener('resize', this.checkMobile);
   },
   methods: {
     switchNav(nav) {
@@ -979,6 +996,25 @@ export default {
       // 否则处理普通文本中的@格式
       return content.replace(/@(\S+)\s/g, '<mention>@$1</mention> ');
     },
+
+    toggleList() {
+      if (!this.isMobile) return;
+      this.isListHidden = !this.isListHidden;
+    },
+
+    /**
+     * 检查是否为移动设备
+     */
+    checkMobile() {
+      const width = window.innerWidth;
+      this.isMobile = width <= 768;
+      // 在移动端时默认隐藏列表
+      if (this.isMobile) {
+        this.isListHidden = true;
+      } else {
+        this.isListHidden = false;
+      }
+    },
   }
 }
 </script>
@@ -994,6 +1030,15 @@ export default {
   margin: $spacing-lg auto;
   overflow: hidden;
   max-width: 1200px;
+  position: relative;
+
+  @media screen and (max-width: 768px) {
+    height: 100vh;
+    margin: 0;
+    border-radius: 0;
+    grid-template-columns: 80px 1fr;
+    padding-top: 0; // 移除顶部padding
+  }
 }
 
 .nav-sidebar {
@@ -1003,6 +1048,15 @@ export default {
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   overflow: hidden;
+  z-index: 200;
+
+  @media screen and (max-width: 768px) {
+    position: fixed;
+    left: 0;
+    top: 70px; // 调整顶部位置，避免被header遮挡
+    bottom: 0;
+    width: 80px;
+  }
 
   &::before {
     content: '';
@@ -1227,6 +1281,23 @@ export default {
   flex-direction: column;
   overflow: hidden;
 
+  @media screen and (max-width: 768px) {
+    position: absolute;
+    left: 80px;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    z-index: 150;
+    background: var(--card-bg);
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    
+    &.mobile-hidden {
+      transform: translateX(-280px);
+    }
+  }
+
   .search-box {
     padding: $spacing-md;
     border-bottom: 1px solid var(--border-color);
@@ -1356,6 +1427,15 @@ export default {
   position: relative;
   overflow: hidden;
   
+  @media screen and (max-width: 768px) {
+    grid-column: 2;
+    padding-top: 60px; // 为header留出空间
+    height: 100vh; // 设置全屏高度
+    position: fixed; // 固定定位
+    right: 0; // 固定在右侧
+    left: 80px; // 留出左侧导航栏的空间
+  }
+
   .chat-header {
     height: 70px;
     flex-shrink: 0;
@@ -1370,6 +1450,7 @@ export default {
       display: flex;
       align-items: center;
       gap: $spacing-md;
+      width: 100%;
       
       h3 {
         font-size: 1.1em;
@@ -1378,9 +1459,29 @@ export default {
         margin: 0;
       }
       
-      .status-text {
-        color: var(--text-secondary);
-        font-size: 0.9em;
+      .toggle-list-btn {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--hover-bg);
+        cursor: pointer;
+        margin-right: $spacing-sm;
+        
+        @media screen and (max-width: 768px) {
+          display: flex;
+        }
+        
+        &:hover {
+          background: var(--border-color);
+        }
+        
+        i {
+          color: var(--text-primary);
+          font-size: 1.1em;
+        }
       }
     }
   }
@@ -1480,84 +1581,88 @@ export default {
   }
 
   .chat-input {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: $spacing-md;
-  border-top: 1px solid var(--border-color);
-  background: var(--card-bg);
-  display: flex;
-  gap: $spacing-md;
-  z-index: 10;
-  
-  .input-toolbar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: $spacing-md;
+    border-top: 1px solid var(--border-color);
+    background: var(--card-bg);
     display: flex;
-    gap: $spacing-sm;
-    align-items: center;
+    gap: $spacing-md;
+    z-index: 10;
     
-    :deep(.emoji-picker i){
-      color: #f1c40f !important;
+    @media screen and (max-width: 768px) {
+      position: fixed; // 固定定位
+      left: 80px; // 与左侧导航栏对齐
     }
-    .image-upload-btn{
-      color: $primary  ;
-    }
-    .toolbar-btn {
-      padding: $spacing-sm;
-      border: none;
-      background: none;
-      cursor: pointer;
-      border-radius: 4px;
+
+    .input-toolbar {
+      display: flex;
+      gap: $spacing-sm;
+      align-items: center;
       
-      &:hover {
-        background: var(--hover-bg);
-        color: $primary;
+      :deep(.emoji-picker i){
+        color: #f1c40f !important;
+      }
+      .image-upload-btn{
+        color: $primary  ;
+      }
+      .toolbar-btn {
+        padding: $spacing-sm;
+        border: none;
+        background: none;
+        cursor: pointer;
+        border-radius: 4px;
+        
+        &:hover {
+          background: var(--hover-bg);
+          color: $primary;
+        }
+      }
+    }
+    .input-area {
+      flex: 1;
+      display: flex;
+      gap: $spacing-sm;
+    }
+
+    textarea {
+      flex: 1;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: $spacing-md;
+      resize: none;
+      height: 60px;
+      background: var(--input-bg);
+      color: var(--text-primary);
+      
+      &:focus {
+        outline: none;
+        border-color: $primary;
+      }
+    }
+    
+    button {
+      width: 60px;
+      border: none;
+      border-radius: 8px;
+      background: $primary;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1em;
+      
+      &:hover:not(:disabled) {
+        background: darken($primary, 10%);
+      }
+      
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
       }
     }
   }
-  .input-area {
-    flex: 1;
-    display: flex;
-    gap: $spacing-sm;
-  }
-
-  textarea {
-    flex: 1;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: $spacing-md;
-    resize: none;
-    height: 60px;
-    background: var(--input-bg);
-    color: var(--text-primary);
-    
-    &:focus {
-      outline: none;
-      border-color: $primary;
-    }
-  }
-  
-  button {
-    width: 60px;
-    border: none;
-    border-radius: 8px;
-    background: $primary;
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1em;
-    
-    &:hover:not(:disabled) {
-      background: darken($primary, 10%);
-    }
-    
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-  }
-}
-
 }
 
 .message-text {
@@ -1707,6 +1812,22 @@ export default {
       color: white;
       font-weight: 600;
     }
+  }
+}
+
+// 添加遮罩层样式
+.mobile-overlay {
+  display: none;
+  
+  @media screen and (max-width: 768px) {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 140;
   }
 }
 </style> 

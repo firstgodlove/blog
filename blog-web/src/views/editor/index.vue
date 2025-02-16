@@ -296,7 +296,8 @@ export default {
          * 删除图片
          */
         imgDel(pos, $file) {
-            deleteFileApi($file).then(res => {
+            console.log(pos)
+            deleteFileApi(pos[0]).then(res => {
                 this.$refs.mdRef.$img2Url(pos, '');
             });
         },
@@ -306,7 +307,7 @@ export default {
         imgAdd(pos, $file) {
             const formdata = new FormData();
             formdata.append("file", $file);
-            uploadFileApi(formdata).then(res => {
+            uploadFileApi(formdata,'article-content').then(res => {
                 this.$refs.mdRef.$img2Url(pos, res.data);
             });
         },
@@ -326,7 +327,7 @@ export default {
             const formData = new FormData()
             formData.append('file', file)
 
-            uploadFileApi(formData).then(res => {
+            uploadFileApi(formData,'article-cover').then(res => {
                 if (res.code === 200) {
                     this.articleForm.cover = res.data
                     this.$message.success('上传成功')

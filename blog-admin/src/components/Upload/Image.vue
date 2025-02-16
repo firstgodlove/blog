@@ -33,7 +33,7 @@ import { ElMessage } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import type { UploadProps, UploadUserFile } from 'element-plus'
 import { getToken } from '@/utils/auth'
-import { deleteFileApi } from '@/api/file'
+import { uploadApi,deleteFileApi } from '@/api/file'
 const props = defineProps({
   modelValue: {
     type: [String, Array],
@@ -53,14 +53,14 @@ const props = defineProps({
   },
   source: {
     type: String,
-    default: 'article'
+    default: null
   }
 })
 
 const emit = defineEmits(['update:modelValue'])
 
 // 上传地址
-const uploadUrl =  import.meta.env.VITE_APP_BASE_API + '/file/upload'
+const uploadUrl =  `${import.meta.env.VITE_APP_BASE_API}/file/upload?source=${props.source}`
 
 // 请求头
 const headers = {

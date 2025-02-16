@@ -33,7 +33,7 @@
             <el-table v-loading="loading" :data="fileList" style="width: 100%">
                 <el-table-column label="文件内容" align="center" prop="filename">
                     <template #default="scope">
-                        <el-image :src="scope.row.url" style="width: 50px; height: 50px" />
+                        <el-image  :preview-src-list="[scope.row.url]"  :initial-index="0" :src="scope.row.url" style="width: 50px; height: 50px" />
                     </template>
                 </el-table-column>
                 <el-table-column label="文件名" align="center" prop="filename" show-overflow-tooltip />

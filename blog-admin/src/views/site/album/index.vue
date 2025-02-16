@@ -58,7 +58,7 @@
             class="custom-dialog">
             <el-form ref="albumFormRef" :model="albumForm" :rules="rules" label-width="80px" class="custom-form">
                 <el-form-item label="封面" prop="cover">
-                    <UploadImage v-model="albumForm.cover" :limit="1" />
+                    <UploadImage v-model="albumForm.cover" :source="'album-cover'" :limit="1" />
                 </el-form-item>
                 <el-form-item label="名称" prop="name">
                     <el-input v-model="albumForm.name" placeholder="请输入名称" clearable />

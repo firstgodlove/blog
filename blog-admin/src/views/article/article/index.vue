@@ -355,9 +355,9 @@ const rules = reactive<FormRules>({
 
 //删除图片
 function imgDel(pos: any, $file: any) {
-  // deleteFileApi($file.url).then((res) => {
-  //   ElMessage.success('删除成功')
-  // })
+   deleteFileApi(pos[0]).then((res) => {
+     ElMessage.success('删除成功')
+   })
 }
 //添加图片
 function imgAdd(pos: any, $file: any) {

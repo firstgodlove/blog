@@ -47,11 +47,14 @@
       class="custom-dialog">
       <el-form ref="momentFormRef" :model="momentForm" :rules="rules" label-width="80px" class="custom-form">
         <el-form-item label="内容" prop="content">
-          <el-input v-model="momentForm.content" type="textarea" :rows="4" show-word-limit placeholder="请输入内容"
-            clearable />
+            <div style="border: 1px solid #ccc;">
+                <Toolbar style="border-bottom: 1px solid #ccc;" :editor="editorRef" :defaultConfig="toolbarConfig" :mode="mode" />
+                <Editor style=" overflow-y: hidden;min-height: 300px;" v-model="momentForm.content" :defaultConfig="editorConfig" :mode="mode"
+                @onCreated="handleCreated"/>
+            </div>
         </el-form-item>
         <el-form-item label="图片" prop="images">
-          <UploadImage v-model="momentForm.images" :limit="9" :multiple="true" />
+          <UploadImage v-model="momentForm.images" :source="'moment'" :limit="9" :multiple="true" />
         </el-form-item>
       </el-form>
 
@@ -75,6 +78,27 @@ import {
   deleteSysMomentApi
 } from '@/api/article/moment'
 import UploadImage from '@/components/Upload/Image.vue'
+
+
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
+import '@wangeditor/editor/dist/css/style.css'
+const editorRef = shallowRef()
+const mode = 'default'
+const toolbarConfig = {}
+const editorConfig = {
+  placeholder: "请输入内容...",
+  MENU_CONF: {
+    codeSelectLang: {
+      // 代码语言
+      codeLangs: [
+        { text: "CSS", value: "css" },
+        { text: "HTML", value: "html" },
+        { text: "XML", value: "xml" },
+        { text: "Java", value: "java" },
+      ],
+    },
+  },
+}
 
 // 查询参数
 const queryParams = reactive({
@@ -186,6 +210,11 @@ const handleUpdate = (row: any) => {
   dialog.visible = true
   Object.assign(momentForm, row)
   momentForm.images = momentForm.images.split(',')
+}
+
+// 富文本编辑器创建完成
+const handleCreated = (editor:any) => {
+  editorRef.value = editor // 记录 editor 实例，重要！
 }
 
 // 提交表单

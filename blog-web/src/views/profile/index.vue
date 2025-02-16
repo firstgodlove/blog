@@ -625,7 +625,7 @@ export default {
       formData.append('file', file)
 
       // 调用上传接口
-      const response = await uploadFileApi(formData)
+      const response = await uploadFileApi(formData,'avatar')
 
       // 发送图片消息
       if (response.data) {

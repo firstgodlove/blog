@@ -47,6 +47,7 @@ public class FileDetailServiceImpl extends ServiceImpl<FileDetailMapper, FileDet
         // 构建查询条件
         wrapper.like(fileDetail.getFilename() != null, FileDetail::getFilename, fileDetail.getFilename());
         wrapper.eq(fileDetail.getExt() != null, FileDetail::getExt, fileDetail.getExt());
+        wrapper.orderByDesc(FileDetail::getCreateTime);
         return page(PageUtils.getPage(), wrapper);
     }
 

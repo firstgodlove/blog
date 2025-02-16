@@ -474,7 +474,7 @@ export default {
         formData.append('file', file)
         
         // 调用上传接口
-        const response = await uploadFileApi(formData)
+        const response = await uploadFileApi(formData,'chat')
         
         // 发送图片消息
         if (response.data) {
@@ -900,6 +900,7 @@ export default {
   border-radius: 12px;
   box-shadow: $shadow-lg;
   margin-top: $spacing-lg;
+  margin-bottom: $spacing-lg;
   
   @include responsive(md) {
     grid-template-columns: 1fr;

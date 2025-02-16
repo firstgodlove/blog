@@ -270,7 +270,7 @@ export default {
     padding: 0;
     margin: 0 10px !important;
     .hot-card-container {
-      flex: 0 0 calc(50% - #{$spacing-md} / 2);
+      flex: 0 0 100%;
     }
   }
 }

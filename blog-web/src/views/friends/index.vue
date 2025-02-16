@@ -11,8 +11,14 @@
         <p>与优秀的人同行，分享技术与生活</p>
         <div class="site-info">
           <div class="site-avatar">
-            <el-avatar class="avatar" :src="$store.state.webSiteInfo.logo" />
-            <div class="avatar-border"></div>
+            <div class="avatar-wrapper">
+              <el-avatar class="avatar" :src="$store.state.webSiteInfo.logo" />
+              <div class="copy-overlay" @click="copyLogoUrl">
+                <i class="fas fa-copy"></i>
+                <span>复制图片链接</span>
+                <input type="text" :value="$store.state.webSiteInfo.logo" readonly ref="logoInput" style="position: absolute; opacity: 0;">
+              </div>
+            </div>
           </div>
           <div class="site-details">
             <h2>{{ $store.state.webSiteInfo.name }}</h2>
@@ -203,6 +209,12 @@ export default {
         }
       })
 
+    },
+    copyLogoUrl() {
+      const input = this.$refs.logoInput
+      input.select()
+      document.execCommand('copy')
+      this.$message.success('Logo链接已复制到剪贴板')
     },
     copyUrl() {
       const input = this.$refs.urlInput
@@ -429,14 +441,59 @@ export default {
     flex-shrink: 0;
     position: relative;
 
-    .avatar {
+    .avatar-wrapper {
       width: 100%;
       height: 100%;
+      position: relative;
+      cursor: pointer;
       border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid var(--border-color);
-      background: var(--card-bg);
-      transition: transform 0.5s ease;
+      overflow: hidden;
+
+      .avatar {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--border-color);
+        background: var(--card-bg);
+        transition: transform 0.5s ease;
+      }
+
+      .copy-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        color: white;
+        border-radius: 50%;
+
+        i {
+          font-size: 1.5em;
+          margin-bottom: 5px;
+        }
+
+        span {
+          font-size: 0.8em;
+        }
+      }
+
+      &:hover {
+        .copy-overlay {
+          opacity: 1;
+        }
+
+        .avatar {
+          transform: scale(1.05);
+        }
+      }
     }
   }
 

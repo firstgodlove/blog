@@ -57,7 +57,7 @@
             class="custom-dialog">
             <el-form ref="photoFormRef" :model="photoForm" :rules="rules" label-width="80px" class="custom-form">
                 <el-form-item label="封面" prop="url">
-                    <UploadImage v-model="photoForm.url" :limit="1" />
+                    <UploadImage v-model="photoForm.url" :source="'photo'" :limit="1" />
                 </el-form-item>
                 <el-form-item label="描述" prop="description">
                     <el-input v-model="photoForm.description" type="textarea" :rows="4" show-word-limit placeholder="请输入描述"

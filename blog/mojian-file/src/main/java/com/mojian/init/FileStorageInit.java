@@ -72,6 +72,7 @@ public class FileStorageInit {
                 config.setDomain(sysFileOss.getDomain());
                 config.setBucketName(sysFileOss.getBucket());
                 config.setBasePath(sysFileOss.getBasePath());
+                config.setEndPoint(sysFileOss.getDomain());
                 service.getFileStorageList().addAll(FileStorageServiceBuilder
                         .buildMinioFileStorage(Collections.singletonList(config),null));
 

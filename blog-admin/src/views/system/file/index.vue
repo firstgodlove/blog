@@ -33,7 +33,8 @@
             <el-table v-loading="loading" :data="fileList" style="width: 100%">
                 <el-table-column label="文件内容" align="center" prop="filename">
                     <template #default="scope">
-                        <el-image  :preview-src-list="[scope.row.url]"  :initial-index="0" :src="scope.row.url" style="width: 50px; height: 50px" />
+                        <el-image :preview-src-list="[scope.row.url]" :initial-index="0" :src="scope.row.url"
+                            style="width: 50px; height: 50px" />
                     </template>
                 </el-table-column>
                 <el-table-column label="文件名" align="center" prop="filename" show-overflow-tooltip />
@@ -98,6 +99,9 @@
                     <el-form-item label="空间名" prop="bucket">
                         <el-input v-model="ossConfigForm.bucket" placeholder="请输入空间名" />
                     </el-form-item>
+                    <el-form-item label="地域" prop="region">
+                        <el-input v-model="ossConfigForm.region" placeholder="请输入地域" />
+                    </el-form-item>
                 </div>
 
                 <el-form-item label="域名" prop="domain">
@@ -110,13 +114,12 @@
                     <el-form-item label="本地存储路径" prop="storagePath" label-width="120px">
                         <el-input v-model="ossConfigForm.storagePath" placeholder="请输入本地存储路径，/结尾,如 D:/Temp/" />
                     </el-form-item>
-                    <el-form-item label="启用访问" prop="enableAccess">
-                        <el-switch v-model="ossConfigForm.enableAccess" :active-value="1" :inactive-value="0" />
-                    </el-form-item>
                     <el-form-item label="访问路径" v-if="ossConfigForm.enableAccess === 1" prop="pathPatterns"
                         label-width="120px">
-                        <el-input v-model="ossConfigForm.pathPatterns"
-                            placeholder="访问路经要与域名后面的路径一致,并/**结尾" />
+                        <el-input v-model="ossConfigForm.pathPatterns" placeholder="访问路经要与域名后面的路径一致,并/**结尾" />
+                    </el-form-item>
+                    <el-form-item label="启用访问" prop="enableAccess">
+                        <el-switch v-model="ossConfigForm.enableAccess" :active-value="1" :inactive-value="0" />
                     </el-form-item>
                 </div>
                 <el-form-item label="启用存储" prop="isEnable">
@@ -126,8 +129,8 @@
 
             </el-form>
             <div class="dialog-footer">
-                <el-button type="primary" v-permission="['sys:oss:submit']" icon="CircleCheck" :loading="ossConfigLoading"
-                    @click="handleSaveOssConfig">保存</el-button>
+                <el-button type="primary" v-permission="['sys:oss:submit']" icon="CircleCheck"
+                    :loading="ossConfigLoading" @click="handleSaveOssConfig">保存</el-button>
             </div>
         </el-drawer>
     </div>
@@ -257,6 +260,7 @@ const handleChangePlatform = () => {
     ossConfigForm.value.domain = ''
     ossConfigForm.value.basePath = ''
     ossConfigForm.value.storagePath = ''
+    ossConfigForm.value.region = ''
     ossConfigForm.value.isEnable = 0
 
     const ossConfig = ossConfigList.value.find((item: any) => {

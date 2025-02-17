@@ -164,7 +164,7 @@ export default {
      */
     copyToClipboard(item) {
       if (item.icCopy) {
-        navigator.clipboard.writeText(item.title).then(() => {
+        navigator.clipboard.writeText(item.link).then(() => {
           this.$message.success(`${item.title.toUpperCase()}账号已复制到剪贴板`);
         }).catch(() => {
           this.$message.error('复制失败，请手动复制');

@@ -317,6 +317,7 @@ export default {
         await addCommentApi(newComment);
         this.getComments();
         this.$message.success("评论成功");
+        this.$emit('comment-added');
 
         this.commentContent = "";
         this.start()
@@ -358,6 +359,7 @@ export default {
         await addCommentApi(newReply);
         this.getComments();
         this.$message.success("回复成功");
+        this.$emit('comment-added');
 
         // 清空输入框并关闭回复框
         this.replyContent = "";
@@ -553,15 +555,6 @@ export default {
       this.replyContent = "";
     },
     /**
-     * 取消回复
-     */
-    cancelReply() {
-      this.replyingTo = null;
-      this.showReplyBox = false;
-      this.activeReplyId = null;
-      this.replyContent = "";
-    },
-    /**
      * 提交子评论
      */
     async submitChildReply(reply) {
@@ -583,6 +576,7 @@ export default {
         };
         await addCommentApi(params);
         this.$message.success("回复成功");
+        this.$emit('comment-added');
         this.cancelReply();
         this.getComments();
       } catch (error) {

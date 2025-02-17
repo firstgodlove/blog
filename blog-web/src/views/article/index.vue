@@ -224,8 +224,13 @@
         </footer>
 
         <!-- 添加评论组件 -->
-        <Comment :article-id="$route.params.id" :comment-count="article.commentNum || 0"
-          :article-author-id="article.userId || ''" />
+        <Comment 
+          :article-id="$route.params.id" 
+          :comment-count="article.commentNum || 0"
+          :article-author-id="article.userId || ''" 
+          @comment-added="handleCommentAdded"
+          @comment-deleted="handleCommentDeleted"
+        />
       </main>
 
       <!-- 侧边栏 -->
@@ -805,6 +810,19 @@ export default {
     handleMembershipSuccess() {
       // 重新获取文章信息
       this.getArticle()
+    },
+    /**
+     * 处理评论添加
+     */
+    handleCommentAdded() {
+      this.article.commentNum = (this.article.commentNum || 0) + 1;
+    },
+
+    /**
+     * 处理评论删除
+     */
+    handleCommentDeleted() {
+      this.article.commentNum = Math.max((this.article.commentNum || 0) - 1, 0);
     },
   },
   async created() {

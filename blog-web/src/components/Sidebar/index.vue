@@ -17,7 +17,7 @@
         <p class="bio">{{ $store.state.webSiteInfo.authorInfo }}</p>
       </div>
       <div class="social-links">
-        <div v-for="item in socialLinks" :key="item.type">
+        <div v-for="item in socialLinksWithData" :key="item.type">
           <el-tooltip placement="top" :content="item.content">
             <a v-if="$store.state.webSiteInfo.showList.indexOf(item.type) !== -1" href="javascript:void(0)"
                 :title="item.title" :class="`social-btn ${item.type}`" @click="copyToClipboard(item)">
@@ -87,23 +87,19 @@ export default {
         {
           icon: 'fab fa-github',
           type: 'github',
-          link: this.$store.state.webSiteInfo.github,
           content: '点击跳转GitHub主页',
           icCopy: false
         },
         {
           icon: 'fab fa-git-alt',
           type: 'gitee',
-          link: this.$store.state.webSiteInfo.gitee,
           content: '点击跳转GitEE主页',
           icCopy: false
         },
-
         {
           icon: 'fab fa-qq',
           title: 'QQ',
           type: 'qq',
-          link: this.$store.state.webSiteInfo.qqNumber,
           content: '点击复制QQ号',
           icCopy: true
         },
@@ -111,7 +107,6 @@ export default {
           icon: 'fas fa-users',
           title: 'QQ群',
           type: 'qqGroup',
-          link: this.$store.state.webSiteInfo.qqGroup,
           content: '点击复制QQ群号',
           icCopy: true
         },
@@ -119,7 +114,6 @@ export default {
           icon: 'fas fa-at',
           title: '邮箱',
           type: 'email',
-          link: this.$store.state.webSiteInfo.email,
           content: '点击复制邮箱',
           icCopy: true
         },
@@ -127,12 +121,29 @@ export default {
           icon: 'fab fa-weixin',
           title: '微信',
           type: 'wechat',
-          link: this.$store.state.webSiteInfo.wechat,
           content: '点击复制微信号',
           icCopy: true
         }
       ],
       tags: [],
+    }
+  },
+  computed: {
+    socialLinksWithData() {
+      return this.socialLinks.map(item => {
+        const linkMap = {
+          github: this.$store.state.webSiteInfo.github,
+          gitee: this.$store.state.webSiteInfo.gitee,
+          qq: this.$store.state.webSiteInfo.qqNumber,
+          qqGroup: this.$store.state.webSiteInfo.qqGroup,
+          email: this.$store.state.webSiteInfo.email,
+          wechat: this.$store.state.webSiteInfo.wechat
+        }
+        return {
+          ...item,
+          link: linkMap[item.type]
+        }
+      })
     }
   },
   watch: {
@@ -165,7 +176,7 @@ export default {
     copyToClipboard(item) {
       if (item.icCopy) {
         navigator.clipboard.writeText(item.link).then(() => {
-          this.$message.success(`${item.title.toUpperCase()}账号已复制到剪贴板`);
+          this.$message.success(`${item.title}账号已复制到剪贴板`);
         }).catch(() => {
           this.$message.error('复制失败，请手动复制');
         });

@@ -1048,7 +1048,8 @@ INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`,
 VALUES (130, '128', '', '', '删除', 2, '', 'BUTTON', '2025-02-13 17:05:09', NULL, '', '', 1, 'sys:file:delete', 0);
 INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `component`, `title`, `sort`, `icon`, `type`, `create_time`,
                         `update_time`, `redirect`, `name`, `hidden`, `perm`, `is_external`)
-VALUES (131, '128', '', '', '保存oss配置', 2, '', 'BUTTON', '2025-02-13 17:05:09', NULL, '', '', 1, 'sys:oss:submit', 0);
+VALUES (131, '128', '', '', '保存oss配置', 2, '', 'BUTTON', '2025-02-13 17:05:09', NULL, '', '', 1, 'sys:oss:submit',
+        0);
 
 
 -- ----------------------------
@@ -1534,13 +1535,14 @@ CREATE TABLE `sys_file_oss`
     `storage_path`  varchar(255) COLLATE utf8mb4_general_ci                      DEFAULT NULL COMMENT '本地存储路径',
     `enable_access` int                                                          DEFAULT NULL COMMENT '本地启用访问',
     `path_patterns` varchar(64) COLLATE utf8mb4_general_ci                       DEFAULT NULL COMMENT '本地访问路径',
+    `region`        varchar(64) COLLATE utf8mb4_general_ci                       DEFAULT NULL COMMENT '仓库所在地域',
     `create_time`   datetime                                                     DEFAULT NULL COMMENT '创建时间',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='存储平台';
 
 INSERT INTO `sys_file_oss` (`id`, `domain`, `access_key`, `secret_key`, `bucket`, `base_path`, `platform`, `is_enable`,
-                            `storage_path`, `enable_access`, `path_patterns`, `create_time`)
-VALUES (1, 'http://127.0.0.1:8800/localFile/', '', '', '', 'local-plus/', 'local', 1, 'D:/Temp/', 1, 'localFile/**',
+                            `storage_path`, `enable_access`, `path_patterns`,region, `create_time`)
+VALUES (1, 'http://127.0.0.1:8800/localFile/', '', '', '', 'local-plus/', 'local', 1, 'D:/Temp/', 1, 'localFile/**',null,
         '2025-02-14 10:52:33');
 
 SET

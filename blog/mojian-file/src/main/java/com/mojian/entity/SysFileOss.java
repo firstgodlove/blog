@@ -46,6 +46,9 @@ public class SysFileOss implements Serializable {
     @Schema(description = "本地访问路径")
     private String pathPatterns;
 
+    @Schema(description = "仓库所在地域")
+    private String region;
+
     @Schema(description = "创建时间")
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

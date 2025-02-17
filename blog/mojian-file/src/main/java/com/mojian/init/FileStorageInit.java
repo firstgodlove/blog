@@ -40,6 +40,7 @@ public class FileStorageInit {
                 config.setDomain(sysFileOss.getDomain());
                 config.setBucketName(sysFileOss.getBucket());
                 config.setBasePath(sysFileOss.getBasePath());
+                config.setEndPoint(sysFileOss.getDomain());
                 service.getFileStorageList().addAll(FileStorageServiceBuilder
                         .buildAliyunOssFileStorage(Collections.singletonList(config),null));
             } else if (sysFileOss.getPlatform().equals("qiniu")) {
@@ -61,6 +62,7 @@ public class FileStorageInit {
                 config.setDomain(sysFileOss.getDomain());
                 config.setBucketName(sysFileOss.getBucket());
                 config.setBasePath(sysFileOss.getBasePath());
+                config.setRegion(sysFileOss.getRegion());
                 service.getFileStorageList().addAll(FileStorageServiceBuilder
                         .buildTencentCosFileStorage(Collections.singletonList(config),null));
 

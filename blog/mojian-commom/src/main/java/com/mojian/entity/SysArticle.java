@@ -2,7 +2,7 @@ package com.mojian.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.mojian.utils.DateUtils;
+import com.mojian.utils.DateUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -74,13 +74,17 @@ public class SysArticle implements Serializable {
     @Schema(description = "关键词")
     private String keywords;
 
+
+    @Schema(description = "Ai生成的简短描述")
+    private String aiDescribe;
+
     @Schema(description = "创建时间")
     @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = DateUtils.YYYY_MM_DD_HH_MM_SS)
+    @JsonFormat(pattern = DateUtil.YYYY_MM_DD_HH_MM_SS)
     private LocalDateTime createTime;
 
     @Schema(description = "修改时间")
     @TableField(fill = FieldFill.UPDATE)
-    @JsonFormat(pattern = DateUtils.YYYY_MM_DD_HH_MM_SS)
+    @JsonFormat(pattern = DateUtil.YYYY_MM_DD_HH_MM_SS)
     private LocalDateTime updateTime;
 }

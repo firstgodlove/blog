@@ -1,7 +1,7 @@
 package com.mojian.vo.comment;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.mojian.utils.DateUtils;
+import com.mojian.utils.DateUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -35,6 +35,6 @@ public class SysCommentVO {
     private String content;
 
     @Schema(description = "评论时间")
-    @JsonFormat(pattern = DateUtils.YYYY_MM_DD_HH_MM_SS,timezone="GMT+8")
+    @JsonFormat(pattern = DateUtil.YYYY_MM_DD_HH_MM_SS,timezone="GMT+8")
     private LocalDateTime createTime;
 }

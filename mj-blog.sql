@@ -387,6 +387,7 @@ CREATE TABLE `sys_article`
     `original_url` varchar(255) NULL DEFAULT NULL COMMENT '转载地址',
     `quantity`     bigint NULL DEFAULT 0 COMMENT '文章阅读量',
     `keywords`     varchar(200) NULL DEFAULT NULL COMMENT '关键词',
+    `ai_describe` mediumtext COMMENT 'Ai生成的简短描述',
     `create_time`  datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`  datetime NULL DEFAULT NULL COMMENT '修改时间',
     PRIMARY KEY (`id`) USING BTREE,
@@ -402,7 +403,7 @@ VALUES (292, 1, 20, '个人开发的管理系统  Neat-Admin', 'https://img.shiy
         '基于vue3+typescript+elmentui-plus开发的一款后台管理系统，功能跟若依差不多，主要不同的是样式美化，要比若依更漂亮',
         '<h4><a id=\"_0\"></a>前言</h4>\r\n<p>本后台管理系统基于当下前沿的技术栈 vue3、typescript 以及 elementui-plus 进行精心构建。在功能维度上，其与若依系统具备相当的完整性与丰富度，涵盖了诸如用户管理、权限控制、数据统计分析、业务流程处理等一系列核心后台管理功能模块，能够高效地支撑各类企业级业务运营需求。然而，本系统在视觉呈现方面展现出独特的优势，通过对样式的深度美化与精心雕琢，采用了更为先进的 UI 设计理念与精细化的布局策略，运用精致的色彩搭配、优雅的字体选择以及灵动的交互元素设计，使其整体视觉效果相较于若依更为美观、精致且专业，能够为用户带来更舒适、高效且具品质感的操作体验，极大地提升了后台管理工作的愉悦度与便捷性，彰显出卓越的专业性与高端品质形象。</p>\r\n<h4><a id=\"_4\"></a>视频预览</h4>\r\n<p><video height=\"100%\" width=\"100%\" src=\"http://127.0.0.1:8800/localFile/local-plus/upload/20241120_230652.mp4\" controls autoplay></video></p>\r\n<h4><a id=\"_8\"></a>仓库地址</h4>\r\n<p><a href=\"https://gitee.com/quequnlong/vue-neat-admin\" target=\"_blank\">Neat-Admin</a></p>\r\n',
         '#### 前言\r\n\r\n  本后台管理系统基于当下前沿的技术栈 vue3、typescript 以及 elementui-plus 进行精心构建。在功能维度上，其与若依系统具备相当的完整性与丰富度，涵盖了诸如用户管理、权限控制、数据统计分析、业务流程处理等一系列核心后台管理功能模块，能够高效地支撑各类企业级业务运营需求。然而，本系统在视觉呈现方面展现出独特的优势，通过对样式的深度美化与精心雕琢，采用了更为先进的 UI 设计理念与精细化的布局策略，运用精致的色彩搭配、优雅的字体选择以及灵动的交互元素设计，使其整体视觉效果相较于若依更为美观、精致且专业，能够为用户带来更舒适、高效且具品质感的操作体验，极大地提升了后台管理工作的愉悦度与便捷性，彰显出卓越的专业性与高端品质形象。\r\n  \r\n  #### 视频预览\r\n    <video height=100% width=100% src=\"http://127.0.0.1:8800/localFile/local-plus/upload/20241120_230652.mp4\" controls autoplay></video>\r\n  \r\n  \r\n  #### 仓库地址\r\n  [Neat-Admin](https://gitee.com/quequnlong/vue-neat-admin)',
-        0, 0, 1, 1, 1, 0, NULL, 263, NULL, '2024-11-27 22:05:36', '2024-12-27 04:00:00');
+        0, 0, 1, 1, 1, 0, NULL, 263, NULL,NULL, '2024-11-27 22:05:36', '2024-12-27 04:00:00');
 
 -- ----------------------------
 -- Table structure for sys_article_like

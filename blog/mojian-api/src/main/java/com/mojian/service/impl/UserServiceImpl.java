@@ -8,7 +8,7 @@ import com.mojian.entity.SysComment;
 import com.mojian.entity.SysUser;
 import com.mojian.mapper.*;
 import com.mojian.service.UserService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import com.mojian.vo.article.ArticleListVo;
 import com.mojian.vo.comment.CommentListVo;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public IPage<CommentListVo> selectMyComment() {
-        return commentMapper.selectMyComment(PageUtils.getPage(), StpUtil.getLoginIdAsLong());
+        return commentMapper.selectMyComment(PageUtil.getPage(), StpUtil.getLoginIdAsLong());
     }
 
     @Override
@@ -50,12 +50,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public IPage<ArticleListVo> selectMyLike() {
-        return articleMapper.selectMyLike(PageUtils.getPage(),StpUtil.getLoginIdAsLong());
+        return articleMapper.selectMyLike(PageUtil.getPage(),StpUtil.getLoginIdAsLong());
     }
 
     @Override
     public IPage<CommentListVo> getMyReply() {
-        return commentMapper.getMyReply(PageUtils.getPage(),StpUtil.getLoginIdAsLong());
+        return commentMapper.getMyReply(PageUtil.getPage(),StpUtil.getLoginIdAsLong());
     }
 
     @Override
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public IPage<ArticleListVo> selectMyArticle(SysArticle article) {
         article.setUserId(StpUtil.getLoginIdAsLong());
-        return articleMapper.selectMyArticle(PageUtils.getPage(),article);
+        return articleMapper.selectMyArticle(PageUtil.getPage(),article);
     }
 
 }

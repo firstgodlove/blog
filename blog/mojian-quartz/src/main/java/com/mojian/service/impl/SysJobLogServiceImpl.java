@@ -7,7 +7,7 @@ import com.mojian.dto.JobLogQuery;
 import com.mojian.entity.SysJobLog;
 import com.mojian.mapper.SysJobLogMapper;
 import com.mojian.service.SysJobLogService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class SysJobLogServiceImpl extends ServiceImpl<SysJobLogMapper, SysJobLog
                 .eq(StringUtils.isNotBlank(query.getStatus()), SysJobLog::getStatus, query.getStatus())
                 .orderByDesc(SysJobLog::getCreateTime);
 
-        return page(PageUtils.getPage(), wrapper);
+        return page(PageUtil.getPage(), wrapper);
     }
 
     @Override
@@ -36,4 +36,4 @@ public class SysJobLogServiceImpl extends ServiceImpl<SysJobLogMapper, SysJobLog
     public void cleanJobLog() {
         baseMapper.cleanJobLog();
     }
-} 
+}

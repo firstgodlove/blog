@@ -3,7 +3,7 @@ package com.mojian.quartz;
 import com.mojian.common.RedisConstants;
 import com.mojian.entity.SysArticle;
 import com.mojian.mapper.SysArticleMapper;
-import com.mojian.utils.RedisUtils;
+import com.mojian.utils.RedisUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TaskQuartz {
 
-    private final RedisUtils redisUtils;
+    private final RedisUtil redisUtil;
 
     private final SysArticleMapper articleMapper;
 
@@ -37,7 +37,7 @@ public class TaskQuartz {
     public void syncQuantity() {
         // 获取带阅读量的前缀key集合
         List<SysArticle> articles = new ArrayList<>();
-        Map<Object, Object> map = redisUtils.hGetAll(RedisConstants.ARTICLE_QUANTITY);
+        Map<Object, Object> map = redisUtil.hGetAll(RedisConstants.ARTICLE_QUANTITY);
         // 取出所有数据更新到数据库
         for (Map.Entry<Object, Object> stringEntry : map.entrySet()) {
             Object id = stringEntry.getKey();

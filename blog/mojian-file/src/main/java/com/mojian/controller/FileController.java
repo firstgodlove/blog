@@ -9,7 +9,7 @@ import com.mojian.entity.FileDetail;
 import com.mojian.entity.SysFileOss;
 import com.mojian.exception.ServiceException;
 import com.mojian.service.FileDetailService;
-import com.mojian.utils.DateUtils;
+import com.mojian.utils.DateUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -74,7 +74,7 @@ public class FileController {
     @PostMapping("/upload")
     @Operation(description = "上传文件")
     public Result<String> upload(MultipartFile file, String source) {
-        String path = DateUtils.parseDateToStr(DateUtils.YYYYMMDD, DateUtils.getNowDate()) + "/";
+        String path = DateUtil.parseDateToStr(DateUtil.YYYYMMDD, DateUtil.getNowDate()) + "/";
         //这个source可在前端上传文件时提供，可用来区分是头像还是文章图片等
         if (StringUtils.isNotBlank(source)) {
             path = path + source + "/";

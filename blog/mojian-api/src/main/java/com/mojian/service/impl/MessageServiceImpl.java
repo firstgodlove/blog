@@ -3,7 +3,7 @@ package com.mojian.service.impl;
 import com.mojian.service.MessageService;
 import com.mojian.entity.SysMessage;
 import com.mojian.mapper.SysMessageMapper;
-import com.mojian.utils.IpUtils;
+import com.mojian.utils.IpUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +22,9 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Boolean add(SysMessage sysMessage) {
-        String ip = IpUtils.getIp();
+        String ip = IpUtil.getIp();
         sysMessage.setIp(ip);
-        sysMessage.setSource(IpUtils.getIp2region(ip));
+        sysMessage.setSource(IpUtil.getIp2region(ip));
         messageMapper.insert(sysMessage);
         return true;
     }

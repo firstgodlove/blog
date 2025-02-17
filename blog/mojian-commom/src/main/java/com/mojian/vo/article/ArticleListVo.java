@@ -1,7 +1,7 @@
 package com.mojian.vo.article;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.mojian.utils.DateUtils;
+import com.mojian.utils.DateUtil;
 import com.mojian.vo.tag.TagListVo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -71,7 +71,7 @@ public class ArticleListVo {
     private Integer likeNum;
 
     @Schema(description = "创建时间")
-    @JsonFormat(pattern = DateUtils.YYYY_MM_DD_HH_MM_SS)
+    @JsonFormat(pattern = DateUtil.YYYY_MM_DD_HH_MM_SS)
     private LocalDateTime createTime;
 
 

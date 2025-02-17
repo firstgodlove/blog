@@ -2,8 +2,8 @@ package com.mojian.aspect;
 
 import com.mojian.annotation.AccessLimit;
 import com.mojian.exception.ServiceException;
-import com.mojian.utils.IpUtils;
-import com.mojian.utils.RedisUtils;
+import com.mojian.utils.IpUtil;
+import com.mojian.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -25,27 +25,27 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class AccessLimitAspect {
 
-    private final RedisUtils redisUtils;
+    private final RedisUtil redisUtil;
 
     @Before("@annotation(accessLimit)")
     public void doBefore(JoinPoint joinPoint, AccessLimit accessLimit) throws Throwable {
         int time = accessLimit.time();
 
-        HttpServletRequest request = IpUtils.getRequest();
+        HttpServletRequest request = IpUtil.getRequest();
         // 拼接redis key = IP + Api限流
-        String key = IpUtils.getIp() + request.getRequestURI();
+        String key = IpUtil.getIp() + request.getRequestURI();
         // 获取redis的value
         Integer maxTimes = null;
-        Object value = redisUtils.get(key);
+        Object value = redisUtil.get(key);
         if (value != null) {
             maxTimes = Integer.parseInt(value.toString());
         }
         if (maxTimes == null) {
             // 如果redis中没有该ip对应的时间则表示第一次调用，保存key到redis
-            redisUtils.set(key,"1",time, TimeUnit.SECONDS);
+            redisUtil.set(key,"1",time, TimeUnit.SECONDS);
         } else if (maxTimes < accessLimit.count()) {
             // 如果redis中的时间比注解上的时间小则表示可以允许访问,这是修改redis的value时间
-            redisUtils.set(key, (maxTimes + 1) + "", time, TimeUnit.SECONDS);
+            redisUtil.set(key, (maxTimes + 1) + "", time, TimeUnit.SECONDS);
         } else {
             // 请求过于频繁
             log.info("API请求限流拦截启动,{} 请求过于频繁", key);

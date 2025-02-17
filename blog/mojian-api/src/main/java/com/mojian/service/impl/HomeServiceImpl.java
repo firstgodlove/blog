@@ -7,13 +7,12 @@ import com.mojian.common.Constants;
 import com.mojian.common.RedisConstants;
 import com.mojian.common.Result;
 import com.mojian.entity.SysNotice;
-import com.mojian.enums.NoticePosttionEnum;
 import com.mojian.mapper.SysNoticeMapper;
 import com.mojian.service.HomeService;
 import com.mojian.entity.SysWebConfig;
 import com.mojian.mapper.SysWebConfigMapper;
-import com.mojian.utils.IpUtils;
-import com.mojian.utils.RedisUtils;
+import com.mojian.utils.IpUtil;
+import com.mojian.utils.RedisUtil;
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.OperatingSystem;
 import eu.bitwalker.useragentutils.UserAgent;
@@ -30,7 +29,7 @@ public class HomeServiceImpl implements HomeService {
 
     private final SysWebConfigMapper sysWebConfigMapper;
 
-    private final RedisUtils redisUtils;
+    private final RedisUtil redisUtil;
 
     private final SysNoticeMapper noticeMapper;
 
@@ -43,11 +42,11 @@ public class HomeServiceImpl implements HomeService {
         //获取浏览量和访问量
         long blogViewsCount = 0;
         long visitorCount = 0;
-        if (redisUtils.hasKey(RedisConstants.BLOG_VIEWS_COUNT)) {
-            blogViewsCount = Long.parseLong(redisUtils.get(RedisConstants.BLOG_VIEWS_COUNT).toString());
+        if (redisUtil.hasKey(RedisConstants.BLOG_VIEWS_COUNT)) {
+            blogViewsCount = Long.parseLong(redisUtil.get(RedisConstants.BLOG_VIEWS_COUNT).toString());
         }
-        if (redisUtils.hasKey(RedisConstants.UNIQUE_VISITOR_COUNT)) {
-            visitorCount = Long.parseLong(redisUtils.get(RedisConstants.UNIQUE_VISITOR_COUNT).toString());
+        if (redisUtil.hasKey(RedisConstants.UNIQUE_VISITOR_COUNT)) {
+            visitorCount = Long.parseLong(redisUtil.get(RedisConstants.UNIQUE_VISITOR_COUNT).toString());
         }
 
         return Result.success(sysWebConfig).putExtra("blogViewsCount", blogViewsCount).putExtra("visitorCount", visitorCount);
@@ -66,23 +65,23 @@ public class HomeServiceImpl implements HomeService {
     @Override
     public void report() {
         // 获取ip
-        String ipAddress = IpUtils.getIp();
+        String ipAddress = IpUtil.getIp();
         // 通过浏览器解析工具类UserAgent获取访问设备信息
-        UserAgent userAgent = IpUtils.getUserAgent(Objects.requireNonNull(IpUtils.getRequest()));
+        UserAgent userAgent = IpUtil.getUserAgent(Objects.requireNonNull(IpUtil.getRequest()));
         Browser browser = userAgent.getBrowser();
         OperatingSystem operatingSystem = userAgent.getOperatingSystem();
         // 生成唯一用户标识
         String uuid = ipAddress + browser.getName() + operatingSystem.getName();
         String md5 = DigestUtils.md5DigestAsHex(uuid.getBytes());
         // 判断是否访问
-        if (!redisUtils.sIsMember(RedisConstants.UNIQUE_VISITOR, md5)) {
+        if (!redisUtil.sIsMember(RedisConstants.UNIQUE_VISITOR, md5)) {
             // 访客量+1
-            redisUtils.increment(RedisConstants.UNIQUE_VISITOR_COUNT, 1);
+            redisUtil.increment(RedisConstants.UNIQUE_VISITOR_COUNT, 1);
             // 保存唯一标识
-            redisUtils.sAdd(RedisConstants.UNIQUE_VISITOR, md5);
+            redisUtil.sAdd(RedisConstants.UNIQUE_VISITOR, md5);
         }
         // 访问量+1
-        redisUtils.increment(RedisConstants.BLOG_VIEWS_COUNT, 1);
+        redisUtil.increment(RedisConstants.BLOG_VIEWS_COUNT, 1);
     }
 
     @Override

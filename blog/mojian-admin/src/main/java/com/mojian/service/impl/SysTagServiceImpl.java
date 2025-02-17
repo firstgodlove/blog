@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.mojian.mapper.SysTagMapper;
 import com.mojian.entity.SysTag;
 import com.mojian.service.SysTagService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -30,7 +30,7 @@ public class SysTagServiceImpl extends ServiceImpl<SysTagMapper, SysTag> impleme
     public IPage<SysTag> selectPage(SysTag sysTag) {
         LambdaQueryWrapper<SysTag> wrapper = new LambdaQueryWrapper<SysTag>()
                 .like(StringUtils.isNotBlank(sysTag.getName()), SysTag::getName, sysTag.getName());
-        return page(PageUtils.getPage(), wrapper);
+        return page(PageUtil.getPage(), wrapper);
     }
 
     /**

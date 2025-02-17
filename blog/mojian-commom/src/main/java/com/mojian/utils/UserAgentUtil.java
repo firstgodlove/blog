@@ -1,6 +1,6 @@
 package com.mojian.utils;
 
-public class UserAgentUtils {
+public class UserAgentUtil {
 
     /**
      * 获取操作系统信息

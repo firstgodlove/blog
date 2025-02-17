@@ -6,8 +6,8 @@ import com.mojian.service.CommentService;
 import com.mojian.vo.comment.CommentListVo;
 import com.mojian.entity.SysComment;
 import com.mojian.mapper.SysCommentMapper;
-import com.mojian.utils.IpUtils;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.IpUtil;
+import com.mojian.utils.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public IPage<CommentListVo> getComments(Integer articleId,String sortType) {
-        IPage<CommentListVo> page = sysCommentMapper.getComments(PageUtils.getPage(),articleId,sortType);
+        IPage<CommentListVo> page = sysCommentMapper.getComments(PageUtil.getPage(),articleId,sortType);
         //获取所有子评论
         page.getRecords().forEach(commentListVo -> {
             List<CommentListVo> children = sysCommentMapper.getChildrenComment(commentListVo.getId());
@@ -33,9 +33,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Boolean add(SysComment sysComment) {
 
-        String ip = IpUtils.getIp();
+        String ip = IpUtil.getIp();
         sysComment.setIp(ip);
-        sysComment.setIpSource(IpUtils.getIp2region(ip));
+        sysComment.setIpSource(IpUtil.getIp2region(ip));
         sysComment.setUserId(StpUtil.getLoginIdAsInt());
 
         sysCommentMapper.insert(sysComment);

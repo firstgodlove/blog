@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GenUtils {
+public class GenUtil {
     private static final Map<String, String> javaTypeMap = new HashMap<>();
 
     static {

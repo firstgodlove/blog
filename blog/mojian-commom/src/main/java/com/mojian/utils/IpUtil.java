@@ -19,9 +19,9 @@ import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.util.Map;
 
-public class IpUtils {
+public class IpUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(IpUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(IpUtil.class);
     private final static String format_url = "https://apis.map.qq.com/ws/location/v1/ip?ip={}&key=XJIBZ-ZNUWU-ZHGVM-2Z3JG-VQKF2-HXFTB";
 
     private final static String localIp = "127.0.0.1";
@@ -34,7 +34,7 @@ public class IpUtils {
     static {
         // 1、从 dbPath 加载整个 xdb 到内存。
         byte[] cBuff = new byte[0];
-        InputStream inputStream = IpUtils.class.getClassLoader().getResourceAsStream(resource_name);
+        InputStream inputStream = IpUtil.class.getClassLoader().getResourceAsStream(resource_name);
         try {
             File file = new File("ip2region.xdb");
             FileUtil.writeFromStream(inputStream, file);

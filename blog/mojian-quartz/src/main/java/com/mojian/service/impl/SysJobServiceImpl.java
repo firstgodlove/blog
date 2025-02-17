@@ -10,7 +10,7 @@ import com.mojian.mapper.SysJobMapper;
 import com.mojian.quartz.ScheduleConstants;
 import com.mojian.quartz.TaskException;
 import com.mojian.utils.CronUtils;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import com.mojian.utils.ScheduleUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -66,7 +66,7 @@ public class SysJobServiceImpl extends ServiceImpl<SysJobMapper, SysJob> impleme
                 .eq(StringUtils.isNotBlank(jobGroup), SysJob::getJobGroup,jobGroup)
                 .eq(StringUtils.isNotBlank(status), SysJob::getStatus,status);
 
-        return page(PageUtils.getPage(),queryWrapper);
+        return page(PageUtil.getPage(),queryWrapper);
     }
 
     /**

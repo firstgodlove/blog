@@ -35,6 +35,7 @@
         <result property="quantity" column="quantity"/>
         <result property="readType" column="read_type"/>
         <result property="likeNum" column="likeNum"/>
+        <result property="aiDescribe" column="ai_describe"/>
         <result property="commentNum" column="commentNum"/>
         <result property="isOriginal" column="is_original"/>
         <result property="originalUrl" column="original_Url"/>
@@ -117,6 +118,7 @@
             a.create_time,
             a.is_original,
             a.original_url,
+            a.ai_describe,
             c.id AS categoryId,
             c.name AS categoryName,
             u.nickname,

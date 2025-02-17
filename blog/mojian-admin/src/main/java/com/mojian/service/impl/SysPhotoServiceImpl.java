@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import com.mojian.mapper.SysPhotoMapper;
 import com.mojian.entity.SysPhoto;
 import com.mojian.service.SysPhotoService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -33,7 +33,7 @@ public class SysPhotoServiceImpl extends ServiceImpl<SysPhotoMapper, SysPhoto> i
         wrapper.eq(sysPhoto.getRecordTime() != null, SysPhoto::getRecordTime, sysPhoto.getRecordTime());
         wrapper.eq(sysPhoto.getSort() != null, SysPhoto::getSort, sysPhoto.getSort());
         wrapper.eq(sysPhoto.getCreateTime() != null, SysPhoto::getCreateTime, sysPhoto.getCreateTime());
-        return page(PageUtils.getPage(), wrapper);
+        return page(PageUtil.getPage(), wrapper);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.mojian.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.thread.ThreadUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -14,7 +15,8 @@ import com.mojian.exception.ServiceException;
 import com.mojian.mapper.SysArticleMapper;
 import com.mojian.mapper.SysTagMapper;
 import com.mojian.service.SysArticleService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.AiUtil;
+import com.mojian.utils.PageUtil;
 import com.mojian.vo.article.ArticleListVo;
 import com.mojian.vo.article.SysArticleDetailVo;
 import com.vladsch.flexmark.html2md.converter.FlexmarkHtmlConverter;
@@ -39,9 +41,11 @@ public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArti
 
     private final SysTagMapper sysTagMapper;
 
+    private final AiUtil aiUtil;
+
     @Override
     public IPage<ArticleListVo> selectPage(ArticleQueryDto articleQueryDto) {
-        return baseMapper.selectPageList(PageUtils.getPage(), articleQueryDto);
+        return baseMapper.selectPageList(PageUtil.getPage(), articleQueryDto);
     }
 
     @Override
@@ -69,6 +73,14 @@ public class SysArticleServiceImpl extends ServiceImpl<SysArticleMapper, SysArti
 
         //添加标签
         sysTagMapper.addArticleTagRelations(obj.getId(), sysArticle.getTagIds());
+
+        ThreadUtil.execAsync(() -> {
+            String res = aiUtil.send(obj.getContent() + "请提供一段简短的介绍描述该文章的内容");
+            if (StringUtils.isNotBlank(res)) {
+                obj.setAiDescribe(res);
+                baseMapper.updateById(obj);
+            }
+        });
         return true;
     }
 

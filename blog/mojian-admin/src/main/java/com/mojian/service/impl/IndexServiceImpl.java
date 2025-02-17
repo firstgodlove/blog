@@ -7,11 +7,10 @@ import com.mojian.mapper.SysArticleMapper;
 import com.mojian.mapper.SysMessageMapper;
 import com.mojian.mapper.SysUserMapper;
 import com.mojian.service.IndexService;
-import com.mojian.utils.RedisUtils;
+import com.mojian.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +24,7 @@ public class IndexServiceImpl implements IndexService {
 
     private final SysMessageMapper sysMessageMapper;
 
-    private final RedisUtils redisUtils;
+    private final RedisUtil redisUtil;
 
     @Override
     public IndexVo index() {
@@ -34,7 +33,7 @@ public class IndexServiceImpl implements IndexService {
         Long messageCount = sysMessageMapper.selectCount(null);
 
         int visitCount = 0;
-        Object e = redisUtils.get(RedisConstants.BLOG_VIEWS_COUNT);
+        Object e = redisUtil.get(RedisConstants.BLOG_VIEWS_COUNT);
         if (e != null) {
             visitCount = Integer.parseInt(e.toString());
         }

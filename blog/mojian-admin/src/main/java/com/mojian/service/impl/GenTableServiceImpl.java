@@ -2,13 +2,13 @@ package com.mojian.service.impl;
 
 import com.mojian.config.VelocityInitializer;
 import com.mojian.service.GenTableService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import com.mojian.entity.GenTable;
 import com.mojian.entity.GenTableColumn;
 import com.mojian.mapper.GenTableMapper;
 import com.mojian.common.Constants;
-import com.mojian.utils.GenUtils;
-import com.mojian.utils.VelocityUtils;
+import com.mojian.utils.GenUtil;
+import com.mojian.utils.VelocityUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -57,7 +57,7 @@ public class GenTableServiceImpl implements GenTableService {
                 break;
             }
         }
-        VelocityContext context = VelocityUtils.prepareContext(table, columns);
+        VelocityContext context = VelocityUtil.prepareContext(table, columns);
 
         // 获取模板列表
         List<String> templates = getTemplateList();
@@ -164,8 +164,8 @@ public class GenTableServiceImpl implements GenTableService {
                     column.setQueryType(oldColumn.getQueryType());
                     column.setHtmlType(oldColumn.getHtmlType());
                     // 更新数据类型相关的信息
-                    column.setJavaType(GenUtils.getJavaType(column.getColumnType()));
-                    column.setJavaField(GenUtils.toCamelCase(column.getColumnName()));
+                    column.setJavaType(GenUtil.getJavaType(column.getColumnType()));
+                    column.setJavaField(GenUtil.toCamelCase(column.getColumnName()));
                 }
             });
             if (!updateColumns.isEmpty()) {
@@ -186,10 +186,10 @@ public class GenTableServiceImpl implements GenTableService {
     @Override
     public Map<String, Object> selectDbTableList(GenTable genTable) {
         // 计算偏移量
-        int offset = (PageUtils.getPageQuery().getPageNum() - 1) * PageUtils.getPageQuery().getPageSize();
+        int offset = (PageUtil.getPageQuery().getPageNum() - 1) * PageUtil.getPageQuery().getPageSize();
         // 设置分页参数
         genTable.setOffset(offset);
-        genTable.setPageSize(PageUtils.getPageQuery().getPageSize());
+        genTable.setPageSize(PageUtil.getPageQuery().getPageSize());
 
         // 查询数据
         List<GenTable> list = genTableMapper.selectDbTableList(genTable);
@@ -245,10 +245,10 @@ public class GenTableServiceImpl implements GenTableService {
 
         // 设置java字段名
         column.setTableId(table.getTableId());
-        column.setJavaField(GenUtils.toCamelCase(columnName));
+        column.setJavaField(GenUtil.toCamelCase(columnName));
 
         // 设置默认类型
-        column.setJavaType(GenUtils.getJavaType(dataType));
+        column.setJavaType(GenUtil.getJavaType(dataType));
 
         // 设置默认显示类型
         column.setQueryType("EQ");
@@ -293,7 +293,7 @@ public class GenTableServiceImpl implements GenTableService {
 
     private void generateFiles(GenTable table, List<GenTableColumn> columns) {
         try {
-            VelocityContext context = VelocityUtils.prepareContext(table, columns);
+            VelocityContext context = VelocityUtil.prepareContext(table, columns);
 
             // 获取模板列表
             List<String> templates = getTemplateList();
@@ -317,7 +317,7 @@ public class GenTableServiceImpl implements GenTableService {
     }
 
     private String getGeneratePath(String template, GenTable table) {
-        String className = VelocityUtils.convertClassName(table.getTableName());
+        String className = VelocityUtil.convertClassName(table.getTableName());
         String packagePath = "src/main/java/com/neat/demo/";
         String resourcePath = "src/main/resources/";
 
@@ -334,7 +334,7 @@ public class GenTableServiceImpl implements GenTableService {
         } else if (template.contains("mapper.xml.vm")) {
             return resourcePath + "mapper/" + className + "Mapper.xml";
         } else if (template.contains("vue.vue.vm")) {
-            return "vue/" + VelocityUtils.convertToCamelCase(table.getTableName()) + "/index.vue";
+            return "vue/" + VelocityUtil.convertToCamelCase(table.getTableName()) + "/index.vue";
         }else if (template.contains("api.ts.vm")) {
             return "api/" +  className + "index.ts";
         }
@@ -359,7 +359,7 @@ public class GenTableServiceImpl implements GenTableService {
 
                 // 生成代码
                 VelocityInitializer.initVelocity();
-                VelocityContext context = VelocityUtils.prepareContext(table, columns);
+                VelocityContext context = VelocityUtil.prepareContext(table, columns);
 
                 // 获取模板列表
                 List<String> templates = getTemplateList();

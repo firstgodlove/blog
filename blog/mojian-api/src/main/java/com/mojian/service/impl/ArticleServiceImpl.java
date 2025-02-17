@@ -9,15 +9,15 @@ import com.mojian.common.RedisConstants;
 import com.mojian.entity.SysArticle;
 import com.mojian.entity.SysCategory;
 import com.mojian.service.ArticleService;
-import com.mojian.utils.IpUtils;
-import com.mojian.utils.RedisUtils;
+import com.mojian.utils.IpUtil;
+import com.mojian.utils.RedisUtil;
 import com.mojian.vo.article.ArchiveListVo;
 import com.mojian.vo.article.ArticleDetailVo;
 import com.mojian.vo.article.ArticleListVo;
 import com.mojian.vo.article.CategoryListVo;
 import com.mojian.mapper.SysArticleMapper;
 import com.mojian.mapper.SysCategoryMapper;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,11 +34,11 @@ public class ArticleServiceImpl implements ArticleService {
     private final SysArticleMapper sysArticleMapper;
 
     private final SysCategoryMapper sysCategoryMapper;
-    private final RedisUtils redisUtils;
+    private final RedisUtil redisUtil;
 
     @Override
     public IPage<ArticleListVo> getArticleList(Integer tagId, Integer categoryId, String keyword) {
-        return sysArticleMapper.getArticleListApi(PageUtils.getPage(), tagId, categoryId, keyword);
+        return sysArticleMapper.getArticleListApi(PageUtil.getPage(), tagId, categoryId, keyword);
     }
 
     @Override
@@ -51,9 +51,9 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         //添加阅读量
-        String ip = IpUtils.getIp();
+        String ip = IpUtil.getIp();
         ThreadUtil.execAsync(() -> {
-            Map<Object, Object> map = redisUtils.hGetAll(RedisConstants.ARTICLE_QUANTITY);
+            Map<Object, Object> map = redisUtil.hGetAll(RedisConstants.ARTICLE_QUANTITY);
             List<String> ipList = (List<String> ) map.get(id.toString());
             if (ipList != null) {
                 if (!ipList.contains(ip)) {
@@ -64,7 +64,7 @@ public class ArticleServiceImpl implements ArticleService {
                 ipList.add(ip);
             }
             map.put(id.toString(),ipList);
-            redisUtils.hSetAll(RedisConstants.ARTICLE_QUANTITY,map);
+            redisUtil.hSetAll(RedisConstants.ARTICLE_QUANTITY,map);
         });
         return detailVo;
     }

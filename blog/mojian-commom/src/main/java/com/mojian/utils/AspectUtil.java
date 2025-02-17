@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 /**
  * AOP相关的工具
  */
-public enum AspectUtils {
+public enum AspectUtil {
     /**
      * 实例
      */

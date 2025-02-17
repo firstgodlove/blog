@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import com.mojian.mapper.SysOperateLogMapper;
 import com.mojian.entity.SysOperateLog;
 import com.mojian.service.SysOperateLogService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -23,6 +23,6 @@ public class SysOperateLogServiceImpl extends ServiceImpl<SysOperateLogMapper, S
     @Override
     public IPage<SysOperateLog> listSysOperateLog(SysOperateLog sysOperateLog) {
         LambdaQueryWrapper<SysOperateLog> wrapper = new LambdaQueryWrapper<>();
-        return page(PageUtils.getPage(), wrapper);
+        return page(PageUtil.getPage(), wrapper);
     }
 }

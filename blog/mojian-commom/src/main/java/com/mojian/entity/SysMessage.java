@@ -2,7 +2,7 @@ package com.mojian.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.mojian.utils.DateUtils;
+import com.mojian.utils.DateUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -40,6 +40,6 @@ public class SysMessage implements Serializable {
 
     @Schema(description = "创建时间")
     @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = DateUtils.YYYY_MM_DD_HH_MM_SS)
+    @JsonFormat(pattern = DateUtil.YYYY_MM_DD_HH_MM_SS)
     private LocalDateTime createTime;
 }

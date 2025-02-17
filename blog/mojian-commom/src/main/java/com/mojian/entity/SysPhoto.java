@@ -2,7 +2,7 @@ package com.mojian.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.mojian.utils.DateUtils;
+import com.mojian.utils.DateUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -32,7 +32,7 @@ public class SysPhoto implements Serializable {
     private Integer sort;
 
     @Schema(description = "记录时间")
-    @JsonFormat(pattern = DateUtils.YYYY_MM_DD, timezone = "GMT+8")
+    @JsonFormat(pattern = DateUtil.YYYY_MM_DD, timezone = "GMT+8")
     private LocalDate recordTime;
 
     @Schema(description = "创建时间")

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * @apiNote
  */
 @Component
-public class SpringUtils implements ApplicationContextAware {
+public class SpringUtil implements ApplicationContextAware {
     /** Spring应用上下文环境
      * -- GETTER --
      *  获取applicationContext
@@ -29,7 +29,7 @@ public class SpringUtils implements ApplicationContextAware {
     @Override
     public void setApplicationContext(@NotNull ApplicationContext applicationContext) throws BeansException
     {
-        SpringUtils.applicationContext = applicationContext;
+        SpringUtil.applicationContext = applicationContext;
     }
 
 

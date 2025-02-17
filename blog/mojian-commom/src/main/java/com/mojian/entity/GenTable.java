@@ -1,7 +1,7 @@
 package com.mojian.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.mojian.utils.DateUtils;
+import com.mojian.utils.DateUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import java.util.Date;
@@ -19,11 +19,11 @@ public class GenTable {
     @Schema(description = "表描述")
     private String tableComment;
 
-    @JsonFormat(pattern = DateUtils.YYYY_MM_DD_HH_MM_SS, timezone = "GMT+8")
+    @JsonFormat(pattern = DateUtil.YYYY_MM_DD_HH_MM_SS, timezone = "GMT+8")
     private Date createTime;
 
 
-    @JsonFormat(pattern = DateUtils.YYYY_MM_DD_HH_MM_SS, timezone = "GMT+8")
+    @JsonFormat(pattern = DateUtil.YYYY_MM_DD_HH_MM_SS, timezone = "GMT+8")
     private Date updateTime;
 
 
@@ -45,4 +45,4 @@ public class GenTable {
 
     @Schema(description = "生成业务名")
     private String businessName;
-} 
+}

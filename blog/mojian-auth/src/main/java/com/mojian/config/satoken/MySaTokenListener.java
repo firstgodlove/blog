@@ -6,9 +6,9 @@ import cn.hutool.json.JSONUtil;
 import com.mojian.common.RedisConstants;
 import com.mojian.entity.SysUser;
 import com.mojian.mapper.SysUserMapper;
-import com.mojian.utils.IpUtils;
-import com.mojian.utils.RedisUtils;
-import com.mojian.utils.UserAgentUtils;
+import com.mojian.utils.IpUtil;
+import com.mojian.utils.RedisUtil;
+import com.mojian.utils.UserAgentUtil;
 import com.mojian.vo.user.OnlineUserVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -30,7 +30,7 @@ public class MySaTokenListener implements SaTokenListener {
 
     private final HttpServletRequest request;
 
-    private final RedisUtils redisUtils;
+    private final RedisUtil redisUtil;
 
     @Value("${sa-token.timeout}")
     private Integer timeout;
@@ -39,43 +39,43 @@ public class MySaTokenListener implements SaTokenListener {
     @Override
     public void doLogin(String loginType, Object loginId, String tokenValue, SaLoginModel loginModel) {
 
-        String ip = IpUtils.getIp();
+        String ip = IpUtil.getIp();
         SysUser user = userMapper.selectById((Integer) loginId);
         // 更新登录信息
         String userAgent = request.getHeader("User-Agent");
         user.setLastLoginTime(LocalDateTime.now());
         user.setIp(ip);
-        user.setIpLocation(IpUtils.getIp2region(ip));
-        user.setOs(UserAgentUtils.getOs(userAgent));
-        user.setBrowser(UserAgentUtils.getBrowser(userAgent));
+        user.setIpLocation(IpUtil.getIp2region(ip));
+        user.setOs(UserAgentUtil.getOs(userAgent));
+        user.setBrowser(UserAgentUtil.getBrowser(userAgent));
         userMapper.updateById(user);
 
         OnlineUserVo onlineUserVo = new OnlineUserVo();
         BeanUtils.copyProperties(user, onlineUserVo);
         onlineUserVo.setTokenValue(tokenValue);
         onlineUserVo.setPassword("");
-        redisUtils.set(RedisConstants.LOGIN_TOKEN + tokenValue, JSONUtil.toJsonStr(onlineUserVo),timeout, TimeUnit.SECONDS);
+        redisUtil.set(RedisConstants.LOGIN_TOKEN + tokenValue, JSONUtil.toJsonStr(onlineUserVo),timeout, TimeUnit.SECONDS);
         System.out.println("---------- 自定义侦听器实现 doLogin");
     }
 
     /** 每次注销时触发 */
     @Override
     public void doLogout(String loginType, Object loginId, String tokenValue) {
-        redisUtils.delete(RedisConstants.LOGIN_TOKEN + tokenValue);
+        redisUtil.delete(RedisConstants.LOGIN_TOKEN + tokenValue);
         System.out.println("---------- 自定义侦听器实现 doLogout");
     }
 
     /** 每次被踢下线时触发 */
     @Override
     public void doKickout(String loginType, Object loginId, String tokenValue) {
-        redisUtils.delete(RedisConstants.LOGIN_TOKEN + tokenValue);
+        redisUtil.delete(RedisConstants.LOGIN_TOKEN + tokenValue);
         System.out.println("---------- 自定义侦听器实现 doKickout");
     }
 
     /** 每次被顶下线时触发 */
     @Override
     public void doReplaced(String loginType, Object loginId, String tokenValue) {
-        redisUtils.delete(RedisConstants.LOGIN_TOKEN + tokenValue);
+        redisUtil.delete(RedisConstants.LOGIN_TOKEN + tokenValue);
         System.out.println("---------- 自定义侦听器实现 doReplaced");
     }
 

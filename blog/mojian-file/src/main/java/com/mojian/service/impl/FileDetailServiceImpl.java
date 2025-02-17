@@ -16,7 +16,7 @@ import com.mojian.entity.SysFileOss;
 import com.mojian.mapper.FileDetailMapper;
 import com.mojian.mapper.SysFileOssMapper;
 import com.mojian.service.FileDetailService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.dromara.x.file.storage.core.FileInfo;
@@ -48,7 +48,7 @@ public class FileDetailServiceImpl extends ServiceImpl<FileDetailMapper, FileDet
         wrapper.like(fileDetail.getFilename() != null, FileDetail::getFilename, fileDetail.getFilename());
         wrapper.eq(fileDetail.getExt() != null, FileDetail::getExt, fileDetail.getExt());
         wrapper.orderByDesc(FileDetail::getCreateTime);
-        return page(PageUtils.getPage(), wrapper);
+        return page(PageUtil.getPage(), wrapper);
     }
 
     /**

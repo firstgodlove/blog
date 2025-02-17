@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author neat
  */
-public class VelocityUtils {
+public class VelocityUtil {
 
     public static VelocityContext prepareContext(GenTable genTable, List<GenTableColumn> columns) {
         VelocityContext context = new VelocityContext();
@@ -32,7 +32,7 @@ public class VelocityUtils {
         context.put("basePackage", packageName);
         context.put("packageName", packageName);
         context.put("author", "neat");
-        context.put("datetime", DateUtils.getDate());
+        context.put("datetime", DateUtil.getDate());
         context.put("columns", columns);
 
         return context;

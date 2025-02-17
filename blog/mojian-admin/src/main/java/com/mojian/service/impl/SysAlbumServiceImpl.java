@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.mojian.mapper.SysAlbumMapper;
 import com.mojian.entity.SysAlbum;
 import com.mojian.service.SysAlbumService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -37,7 +37,7 @@ public class SysAlbumServiceImpl extends ServiceImpl<SysAlbumMapper, SysAlbum> i
         wrapper.eq(sysAlbum.getPassword() != null, SysAlbum::getPassword, sysAlbum.getPassword());
         wrapper.eq(sysAlbum.getSort() != null, SysAlbum::getSort, sysAlbum.getSort());
         wrapper.eq(sysAlbum.getCreateTime() != null, SysAlbum::getCreateTime, sysAlbum.getCreateTime());
-        return page(PageUtils.getPage(), wrapper);
+        return page(PageUtil.getPage(), wrapper);
     }
 
     /**

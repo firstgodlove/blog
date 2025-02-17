@@ -8,12 +8,12 @@ import com.mojian.common.Constants;
 import com.mojian.common.RedisConstants;
 import com.mojian.dto.user.SysUserAddAndUpdateDto;
 import com.mojian.mapper.SysRoleMapper;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import com.mojian.entity.SysUser;
 import com.mojian.exception.ServiceException;
 import com.mojian.mapper.SysUserMapper;
 import com.mojian.service.SysUserService;
-import com.mojian.utils.RedisUtils;
+import com.mojian.utils.RedisUtil;
 import com.mojian.vo.user.OnlineUserVo;
 import com.mojian.vo.user.SysUserVo;
 import com.mojian.vo.user.SysUserProfileVo;
@@ -36,12 +36,12 @@ import com.mojian.dto.user.UpdatePwdDTO;
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
 
     private final SysRoleMapper roleMapper;
-    private final RedisUtils redisUtils;
+    private final RedisUtil redisUtil;
     private final SysUserMapper sysUserMapper;
 
     @Override
     public IPage<SysUserVo> listUsers(SysUser sysUser) {
-        return baseMapper.selectUserPage(PageUtils.getPage(),sysUser);
+        return baseMapper.selectUserPage(PageUtil.getPage(),sysUser);
     }
 
     @Override
@@ -132,15 +132,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public IPage<OnlineUserVo> getOnlineUserList(String username) {
-        Integer pageNum = PageUtils.getPageQuery().getPageNum();
-        Integer pageSize = PageUtils.getPageQuery().getPageSize();
+        Integer pageNum = PageUtil.getPageQuery().getPageNum();
+        Integer pageSize = PageUtil.getPageQuery().getPageSize();
 
         // 返回数据对象
-        Collection<String> keys = redisUtils.keys(RedisConstants.LOGIN_TOKEN.concat( "*"));
+        Collection<String> keys = redisUtil.keys(RedisConstants.LOGIN_TOKEN.concat( "*"));
 
         List<OnlineUserVo> totalList = new ArrayList<>();
         for (String key : keys) {
-            Object userObj = redisUtils.get(key);
+            Object userObj = redisUtil.get(key);
             OnlineUserVo onlineUser = JSONUtil.toBean(userObj.toString(), OnlineUserVo.class);
             if (StringUtils.isNotBlank(username)) {
                 if (onlineUser.getUsername().contains(username)) {

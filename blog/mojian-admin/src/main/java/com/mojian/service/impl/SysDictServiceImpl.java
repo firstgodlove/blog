@@ -3,7 +3,7 @@ package com.mojian.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import com.mojian.entity.SysDict;
 import com.mojian.mapper.SysDictDataMapper;
 import com.mojian.mapper.SysDictMapper;
@@ -25,7 +25,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
                 .eq(status != null,SysDict::getStatus, status)
                 .orderByAsc(SysDict::getSort);
 
-        return baseMapper.selectPage(PageUtils.getPage(), wrapper);
+        return baseMapper.selectPage(PageUtil.getPage(), wrapper);
     }
 
     @Override
@@ -66,4 +66,4 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
         }
         return baseMapper.selectCount(wrapper) > 0;
     }
-} 
+}

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mojian.service.SysRoleService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import com.mojian.entity.SysRole;
 import com.mojian.mapper.SysRoleMapper;
 import org.springframework.stereotype.Service;
@@ -23,8 +23,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         LambdaQueryWrapper<SysRole> wrapper = new LambdaQueryWrapper<SysRole>()
                 .like(StringUtils.hasText(name),SysRole::getName, name)
                 .orderByDesc(SysRole::getCreateTime);
-        
-        return baseMapper.selectPage(PageUtils.getPage(), wrapper);
+
+        return baseMapper.selectPage(PageUtil.getPage(), wrapper);
     }
 
     @Override
@@ -85,4 +85,4 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         }
         return baseMapper.selectCount(wrapper) > 0;
     }
-} 
+}

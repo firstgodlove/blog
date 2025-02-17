@@ -28,7 +28,7 @@ public class JobInvokeUtils {
 
         if (!isValidClassName(beanName))
         {
-            Object bean = SpringUtils.getBean(beanName);
+            Object bean = SpringUtil.getBean(beanName);
             invokeMethod(bean, methodName, methodParams);
         }
         else

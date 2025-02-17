@@ -2,7 +2,7 @@ package com.mojian.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.mojian.utils.DateUtils;
+import com.mojian.utils.DateUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @TableName("sys_dict")
 @Schema(description = "字典类型")
 public class SysDict implements Serializable {
-    
+
     @TableId(type = IdType.AUTO)
     private Long id;
 
@@ -34,9 +34,9 @@ public class SysDict implements Serializable {
     private Integer sort;
 
     @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = DateUtils.YYYY_MM_DD_HH_MM_SS, timezone = "GMT+8")
+    @JsonFormat(pattern = DateUtil.YYYY_MM_DD_HH_MM_SS, timezone = "GMT+8")
     private LocalDateTime createTime;
 
     @TableField(fill = FieldFill.UPDATE)
     private LocalDateTime updateTime;
-} 
+}

@@ -1,7 +1,7 @@
 package com.mojian.vo.article;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.mojian.utils.DateUtils;
+import com.mojian.utils.DateUtil;
 import com.mojian.vo.tag.TagListVo;
 import com.mojian.entity.SysCategory;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -60,10 +60,13 @@ public class ArticleDetailVo {
     @Schema(description = "分类")
     private SysCategory category;
 
+    @Schema(description = "Ai生成的简短描述")
+    private String aiDescribe;
+
     @Schema(description = "标签列表")
     private List<TagListVo> tags;
 
     @Schema(description = "创建时间")
-    @JsonFormat(pattern = DateUtils.YYYY_MM_DD)
+    @JsonFormat(pattern = DateUtil.YYYY_MM_DD)
     private LocalDateTime createTime;
 }

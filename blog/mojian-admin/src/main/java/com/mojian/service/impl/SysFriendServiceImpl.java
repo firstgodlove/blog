@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mojian.entity.SysFriend;
 import com.mojian.mapper.SysFriendMapper;
 import com.mojian.service.SysFriendService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ public class SysFriendServiceImpl extends ServiceImpl<SysFriendMapper, SysFriend
         LambdaQueryWrapper<SysFriend> wrapper = new LambdaQueryWrapper<SysFriend>()
                 .eq(sysFriend.getName() != null, SysFriend::getName, sysFriend.getName())
                 .eq(sysFriend.getStatus() != null, SysFriend::getStatus, sysFriend.getStatus());
-        return page(PageUtils.getPage(), wrapper);
+        return page(PageUtil.getPage(), wrapper);
     }
 
     /**

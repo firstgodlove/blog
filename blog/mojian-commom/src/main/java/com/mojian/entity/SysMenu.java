@@ -3,7 +3,7 @@ package com.mojian.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mojian.enums.MenuTypeEnum;
-import com.mojian.utils.DateUtils;
+import com.mojian.utils.DateUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -15,7 +15,7 @@ import java.util.List;
 @TableName("sys_menu")
 @Schema(description = "菜单信息")
 public class SysMenu implements Serializable {
-    
+
     @TableId(type = IdType.AUTO)
     private Integer id;
 
@@ -56,13 +56,13 @@ public class SysMenu implements Serializable {
     private String perm;
 
     @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = DateUtils.YYYY_MM_DD_HH_MM_SS, timezone = "GMT+8")
+    @JsonFormat(pattern = DateUtil.YYYY_MM_DD_HH_MM_SS, timezone = "GMT+8")
     private LocalDateTime createTime;
 
     @TableField(fill = FieldFill.UPDATE)
-    @JsonFormat(pattern = DateUtils.YYYY_MM_DD_HH_MM_SS, timezone = "GMT+8")
+    @JsonFormat(pattern = DateUtil.YYYY_MM_DD_HH_MM_SS, timezone = "GMT+8")
     private LocalDateTime updateTime;
 
     @TableField(exist = false)
     private List<SysMenu> children;
-} 
+}

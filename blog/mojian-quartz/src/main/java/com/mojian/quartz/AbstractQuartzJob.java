@@ -4,7 +4,7 @@ import com.mojian.common.Constants;
 import com.mojian.entity.SysJob;
 import com.mojian.entity.SysJobLog;
 import com.mojian.mapper.SysJobLogMapper;
-import com.mojian.utils.SpringUtils;
+import com.mojian.utils.SpringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
@@ -15,7 +15,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 
 /**
@@ -87,7 +86,7 @@ public abstract class AbstractQuartzJob implements org.quartz.Job {
             }
 
             // 写入数据库当中
-            SpringUtils.getBean(SysJobLogMapper.class).insert(jobLog);
+            SpringUtil.getBean(SysJobLogMapper.class).insert(jobLog);
         }
 
     }

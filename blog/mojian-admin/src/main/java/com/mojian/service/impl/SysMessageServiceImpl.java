@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mojian.entity.SysMessage;
 import com.mojian.mapper.SysMessageMapper;
 import com.mojian.service.SysMessageService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +22,6 @@ public class SysMessageServiceImpl extends ServiceImpl<SysMessageMapper, SysMess
     @Override
     public Page<SysMessage> selectList() {
         LambdaQueryWrapper<SysMessage> wrapper = new LambdaQueryWrapper<SysMessage>().orderByDesc(SysMessage::getCreateTime);
-        return baseMapper.selectPage(PageUtils.getPage(),wrapper);
+        return baseMapper.selectPage(PageUtil.getPage(),wrapper);
     }
 }

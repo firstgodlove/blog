@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.mojian.mapper.SysNoticeMapper;
 import com.mojian.entity.SysNotice;
 import com.mojian.service.SysNoticeService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -32,7 +32,7 @@ public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice
         wrapper.like(sysNotice.getContent() != null, SysNotice::getContent, sysNotice.getContent());
         wrapper.eq(sysNotice.getIsShow() != null, SysNotice::getIsShow, sysNotice.getIsShow());
         wrapper.eq(sysNotice.getPosition() != null, SysNotice::getPosition, sysNotice.getPosition());
-        return page(PageUtils.getPage(), wrapper);
+        return page(PageUtil.getPage(), wrapper);
     }
 
     /**

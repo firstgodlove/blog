@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.mojian.mapper.SysFeedbackMapper;
 import com.mojian.entity.SysFeedback;
 import com.mojian.service.SysFeedbackService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class SysFeedbackServiceImpl extends ServiceImpl<SysFeedbackMapper, SysFe
         if (!Constants.ADMIN.equals(feedbackQueryDto.getSource())) {
             feedbackQueryDto.setUserId(StpUtil.getLoginIdAsLong());
         }
-        return baseMapper.page(PageUtils.getPage(), feedbackQueryDto);
+        return baseMapper.page(PageUtil.getPage(), feedbackQueryDto);
     }
 
     /**

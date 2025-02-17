@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mojian.entity.SysComment;
 import com.mojian.mapper.SysCommentMapper;
 import com.mojian.service.SysCommentService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import com.mojian.vo.comment.SysCommentVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +21,6 @@ public class SysCommentServiceImpl extends ServiceImpl<SysCommentMapper,SysComme
 
     @Override
     public Page<SysCommentVO> selectList() {
-        return baseMapper.selectPage(PageUtils.getPage());
+        return baseMapper.selectPage(PageUtil.getPage());
     }
 }

@@ -94,22 +94,14 @@
           </div>
         </header>
 
-        <!-- 版权声明提示 -->
-        <div class="copyright-notice">
-          <div class="notice-content">
-            <i class="fas fa-info-circle"></i>
-            <div class="notice-text">
-              <p v-if="article.isOriginal">
-                本文为原创文章，遵循
-                <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">
-                  CC BY-NC-SA 4.0
-                </a>
-                版权协议，转载请注明出处。
-              </p>
-              <p v-else>
-                本文转载自 {{ article.originalUrl || '未知来源' }}，版权归原作者所有。如有侵权，请联系删除。
-              </p>
-            </div>
+        <!-- AI简短介绍 -->
+        <div v-if="article.aiDescribe" class="ai-description">
+          <div class="ai-header">
+            <i class="fas fa-robot"></i>
+            <span>AI 摘要</span>
+          </div>
+          <div class="ai-content">
+            <span class="typing-text" ref="typingText"></span>
           </div>
         </div>
 
@@ -147,7 +139,40 @@
 
         <!-- 文章底部 -->
         <footer class="article-footer">
-
+          <!-- 版权声明提示 -->
+          <div class="copyright-notice">
+            <div class="notice-header">
+              <i class="fas fa-copyright"></i>
+              <span>版权声明</span>
+            </div>
+            <div class="notice-content">
+              <div v-if="article.isOriginal" class="notice-item">
+                <i class="fas fa-check-circle"></i>
+                <span>本文由 {{ article.nickname }} 原创发布</span>
+              </div>
+              <div v-else class="notice-item">
+                <i class="fas fa-share-alt"></i>
+                <span>本文转载自：<a :href="article.originalUrl" target="_blank" rel="noopener noreferrer">{{ article.originalUrl || '未知来源' }}</a></span>
+              </div>
+              <div class="notice-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span>发布时间：{{ article.createTime }}</span>
+              </div>
+              <div class="notice-item">
+                <i class="fab fa-creative-commons-sa"></i>
+                <span>
+                  版权协议：
+                  <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">
+                    CC BY-NC-SA 4.0
+                  </a>
+                </span>
+              </div>
+              <div class="notice-item notice-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>未经许可，禁止转载、摘编、复制或建立镜像。欢迎转发分享！</span>
+              </div>
+            </div>
+          </div>
 
           <!-- 标签部分保持不变 -->
           <div class="tags-section">
@@ -279,6 +304,7 @@ import 'highlight.js/styles/atom-one-dark.css'
 import Comment from '@/components/Comment/index.vue'
 import PaymentDialog from '@/components/PaymentDialog/index.vue'
 import MembershipDialog from '@/components/MembershipDialog/index.vue'
+import { marked } from 'marked'
 
 export default {
   name: 'Article',
@@ -317,7 +343,7 @@ export default {
       collapsedCodeBlocks: new Set(),
       images: [],
       showPaymentDialog: false,
-      showMembershipDialog: false
+      showMembershipDialog: false,
     }
   },
   computed: {
@@ -357,6 +383,15 @@ export default {
           
           // 添加一个额外的延时来处理代码块的展开/折叠
           this.initializeCodeBlocks()
+          
+          // AI摘要
+          if (this.article.aiDescribe) {
+            const typingText = this.$refs.typingText
+            if (!typingText) return
+            // 使用marked解析Markdown文本
+            const htmlContent = marked(this.article.aiDescribe || '')
+            typingText.innerHTML = htmlContent
+          }
         }, 100)
 
         // 计算阅读时间
@@ -824,6 +859,7 @@ export default {
     handleCommentDeleted() {
       this.article.commentNum = Math.max((this.article.commentNum || 0) - 1, 0);
     },
+   
   },
   async created() {
     await this.getArticle()
@@ -843,6 +879,8 @@ export default {
     images.forEach(img => {
       img.removeEventListener('click', this.handleImageClick)
     })
+    // 清理打字机定时器
+    this.resetTypingAnimation()
   },
   watch: {
     // 监听路由参数变化
@@ -1413,13 +1451,13 @@ export default {
   padding: $spacing-md * 2;
   border-top: 1px solid var(--border-color);
 
-  .copyright-info {
+  .copyright-notice {
     margin-bottom: $spacing-xl;
     background: var(--hover-bg);
     border-radius: $border-radius-lg;
     overflow: hidden;
 
-    .copyright-header {
+    .notice-header {
       padding: $spacing-md $spacing-lg;
       background: rgba($primary, 0.1);
       color: $primary;
@@ -1429,33 +1467,45 @@ export default {
       gap: $spacing-sm;
     }
 
-    .copyright-content {
+    .notice-content {
       padding: $spacing-lg;
       color: var(--text-secondary);
       font-size: 0.95em;
       line-height: 1.6;
 
-      p {
-        margin: $spacing-sm 0;
+      .notice-item {
+        display: flex;
+        align-items: center;
+        gap: $spacing-sm;
+        padding: $spacing-xs 0;
 
-        &:last-child {
-          margin-bottom: 0;
+        i {
+          color: $primary;
+          font-size: 1em;
+          width: 16px;
+          text-align: center;
         }
-      }
 
-      strong {
-        color: var(--text-primary);
-        font-weight: 500;
-      }
+        a {
+          color: $primary;
+          text-decoration: none;
+          border-bottom: 1px dashed $primary;
+          transition: all 0.2s ease;
 
-      a {
-        color: $primary;
-        text-decoration: none;
-        border-bottom: 1px dashed $primary;
-        transition: all 0.3s ease;
+          &:hover {
+            border-bottom-style: solid;
+          }
+        }
 
-        &:hover {
-          border-bottom-style: solid;
+        &.notice-warning {
+          margin-top: $spacing-sm;
+          padding: $spacing-sm;
+          background: rgba($primary, 0.05);
+          border-radius: $border-radius-sm;
+
+          i {
+            color: #ff9800;
+          }
         }
       }
     }
@@ -1877,38 +1927,46 @@ export default {
 }
 
 .copyright-notice {
-  margin: $spacing-md $spacing-xl;
+  margin: 0 0 $spacing-xl;
   border-radius: $border-radius-lg;
-  background: rgba($primary, 0.05);
-  border: 1px solid rgba($primary, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   transition: all 0.3s ease;
+  overflow: hidden;
 
-  &:hover {
-    background: rgba($primary, 0.08);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba($primary, 0.1);
-  }
-
-  .notice-content {
+  .notice-header {
     padding: $spacing-md;
+    background: var(--hover-bg);
+    color: var(--text-primary);
+    font-weight: 500;
     display: flex;
-    align-items: flex-start;
-    gap: $spacing-md;
+    align-items: center;
+    gap: $spacing-sm;
+    border-bottom: 1px solid var(--border-color);
 
     i {
       color: $primary;
-      font-size: 1.2em;
-      margin-top: 3px;
+      font-size: 1.1em;
     }
+  }
 
-    .notice-text {
-      flex: 1;
+  .notice-content {
+    padding: $spacing-md $spacing-lg;
+
+    .notice-item {
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      padding: $spacing-xs 0;
       color: var(--text-secondary);
       font-size: 0.95em;
       line-height: 1.6;
 
-      p {
-        margin: 0;
+      i {
+        color: $primary;
+        font-size: 1em;
+        width: 16px;
+        text-align: center;
       }
 
       a {
@@ -1921,89 +1979,21 @@ export default {
           border-bottom-style: solid;
         }
       }
-    }
-  }
-}
 
-@include responsive(md) {
-  .article-page {
-    padding: $spacing-md;
-  }
+      &.notice-warning {
+        margin-top: $spacing-sm;
+        padding: $spacing-sm;
+        background: rgba($primary, 0.05);
+        border-radius: $border-radius-sm;
 
-  .article-header {
-    padding: $spacing-md;
-
-    &::before {
-      position: static;
-      display: block;
-      text-align: right;
-      margin-bottom: $spacing-xs;
-      font-size: 0.8em;
-    }
-
-    .article-title {
-      font-size: 1.6em;
-      margin-bottom: $spacing-md;
-    }
-
-    .article-info {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: $spacing-lg;
-    }
-
-    .author-info {
-      width: 100%;
-    }
-
-    .article-stats {
-      width: 100%;
-      justify-content: flex-start;
-      gap: $spacing-lg;
-      padding-top: $spacing-md;
-      border-top: 1px solid var(--border-color);
-    }
-  }
-
-  .article-content {
-    padding: $spacing-lg;
-    font-size: 1em;
-  }
-
-  .article-footer {
-    padding: $spacing-lg;
-
-    .article-nav {
-      grid-template-columns: 1fr;
-      gap: $spacing-md;
-    }
-
-    .copyright-info {
-      margin: $spacing-lg 0;
-    }
-
-    .tags-section {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: $spacing-sm;
-
-      .tags-list {
-        width: 100%;
-      }
-    }
-
-    .article-actions {
-      flex-direction: column;
-      gap: $spacing-md;
-
-      .action-btn {
-        width: 100%;
-        justify-content: center;
+        i {
+          color: #ff9800;
+        }
       }
     }
   }
 
-  .copyright-notice {
+  @include responsive(md) {
     margin: $spacing-md;
   }
 }
@@ -2143,6 +2133,55 @@ export default {
         transform: translateY(-50%) translateX(8px);
       }
     }
+  }
+}
+
+.ai-description {
+  margin: $spacing-md $spacing-xl;
+  border-radius: $border-radius-lg;
+  background: rgba(0, 150, 136, 0.05);
+  border: 1px solid rgba(0, 150, 136, 0.1);
+  transition: all 0.3s ease;
+  overflow: hidden;
+
+  &:hover {
+    background: rgba(0, 150, 136, 0.08);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 150, 136, 0.1);
+  }
+
+  .ai-header {
+    padding: $spacing-sm $spacing-md;
+    background: rgba(0, 150, 136, 0.1);
+    color: #009688;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+
+    i {
+      font-size: 1.1em;
+    }
+  }
+
+  .ai-content {
+    padding: $spacing-md;
+    color: var(--text-secondary);
+    font-size: 0.95em;
+    line-height: 1.6;
+    position: relative;
+    min-height: 24px;
+
+ 
+  }
+}
+
+@keyframes cursorBlink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
   }
 }
 </style>

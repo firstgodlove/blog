@@ -23,9 +23,9 @@ import com.mojian.exception.ServiceException;
 import com.mojian.mapper.SysMenuMapper;
 import com.mojian.mapper.SysRoleMapper;
 import com.mojian.mapper.SysUserMapper;
-import com.mojian.utils.EmailUtils;
-import com.mojian.utils.IpUtils;
-import com.mojian.utils.RedisUtils;
+import com.mojian.utils.EmailUtil;
+import com.mojian.utils.IpUtil;
+import com.mojian.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
@@ -61,9 +61,9 @@ public class AuthServiceImpl implements AuthService {
 
     private final SysMenuMapper menuMapper;
 
-    private final EmailUtils emailUtils;
+    private final EmailUtil emailUtil;
 
-    private final RedisUtils redisUtils;
+    private final RedisUtil redisUtil;
 
     private final SysUserMapper sysUserMapper;
 
@@ -154,7 +154,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Boolean sendEmailCode(String email) throws MessagingException {
-        emailUtils.sendCode(email);
+        emailUtil.sendCode(email);
         return true;
     }
 
@@ -184,7 +184,7 @@ public class AuthServiceImpl implements AuthService {
         //添加用户角色信息
         insertRole(sysUser);
 
-        redisUtils.delete(RedisConstants.CAPTCHA_CODE_KEY + dto.getEmail());
+        redisUtil.delete(RedisConstants.CAPTCHA_CODE_KEY + dto.getEmail());
         return true;
     }
 
@@ -198,7 +198,7 @@ public class AuthServiceImpl implements AuthService {
         }
         sysUser.setPassword(BCrypt.hashpw(dto.getPassword()));
         sysUserMapper.updateById(sysUser);
-        redisUtils.delete(RedisConstants.CAPTCHA_CODE_KEY + dto.getEmail());
+        redisUtil.delete(RedisConstants.CAPTCHA_CODE_KEY + dto.getEmail());
         return true;
     }
 
@@ -206,13 +206,13 @@ public class AuthServiceImpl implements AuthService {
     public String getWechatLoginCode() {
         //随机获取4位数字
         String code = "DL" + (int) ((Math.random() * 9 + 1) * 1000);
-        redisUtils.set(RedisConstants.WX_LOGIN_USER_CODE + code, "NOT-LOGIN", RedisConstants.MINUTE_EXPIRE, TimeUnit.SECONDS);
+        redisUtil.set(RedisConstants.WX_LOGIN_USER_CODE + code, "NOT-LOGIN", RedisConstants.MINUTE_EXPIRE, TimeUnit.SECONDS);
         return code;
     }
 
     @Override
     public LoginUserInfo getWechatIsLogin(String loginCode) {
-        Object value = redisUtils.get(RedisConstants.WX_LOGIN_USER + loginCode);
+        Object value = redisUtil.get(RedisConstants.WX_LOGIN_USER + loginCode);
 
         if (value == null) {
             throw new ServiceException("登录失败");
@@ -230,13 +230,13 @@ public class AuthServiceImpl implements AuthService {
     public String wechatLogin(WxMpXmlMessage message) {
         String code = message.getContent().toUpperCase();
         //先判断登录码是否已过期
-        Object e = redisUtils.hasKey(RedisConstants.WX_LOGIN_USER_CODE + code);
+        Object e = redisUtil.hasKey(RedisConstants.WX_LOGIN_USER_CODE + code);
         if (e == null) {
             return "验证码已过期";
         }
         LoginUserInfo loginUserInfo = wechatLogin(message.getFromUser());
         //修改redis缓存 以便监听是否已经授权成功
-        redisUtils.set(RedisConstants.WX_LOGIN_USER + code, JSONUtil.toJsonStr(loginUserInfo), RedisConstants.MINUTE_EXPIRE, TimeUnit.SECONDS);
+        redisUtil.set(RedisConstants.WX_LOGIN_USER + code, JSONUtil.toJsonStr(loginUserInfo), RedisConstants.MINUTE_EXPIRE, TimeUnit.SECONDS);
         return "网站登录成功！(若页面长时间未跳转请刷新验证码)";
     }
 
@@ -263,8 +263,8 @@ public class AuthServiceImpl implements AuthService {
         com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(result);
         Object uuid = jsonObject.get("uuid");
         // 获取用户ip信息
-        String ipAddress = IpUtils.getIp();
-        String ipSource = IpUtils.getIp2region(ipAddress);
+        String ipAddress = IpUtil.getIp();
+        String ipSource = IpUtil.getIp2region(ipAddress);
         // 判断是否已注册
         SysUser user = userMapper.selectOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, uuid));
         if (ObjectUtils.isEmpty(user)) {
@@ -295,14 +295,14 @@ public class AuthServiceImpl implements AuthService {
         SysUser user = userMapper.selectByUsername(code);
 
         if (user == null) {
-            String ip = IpUtils.getIp();
+            String ip = IpUtil.getIp();
             String avatar = avatarList[(int) (Math.random() * avatarList.length)];
             user = SysUser.builder()
                     .username(code)
                     .password(UUID.randomUUID().toString())
                     .loginType(LoginTypeEnum.APPLET.getType())
                     .lastLoginTime(LocalDateTime.now())
-                    .ipLocation(IpUtils.getIp2region(ip))
+                    .ipLocation(IpUtil.getIp2region(ip))
                     .ip(ip)
                     .status(Constants.YES)
                     .nickname("applet-" + getRandomString(6))
@@ -327,7 +327,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private void validateEmailCode(EmailRegisterDto dto) {
-        Object code = redisUtils.get(RedisConstants.CAPTCHA_CODE_KEY + dto.getEmail());
+        Object code = redisUtil.get(RedisConstants.CAPTCHA_CODE_KEY + dto.getEmail());
         if (code == null || !code.equals(dto.getCode())) {
             throw new ServiceException("验证码已过期或输入错误");
         }
@@ -337,8 +337,8 @@ public class AuthServiceImpl implements AuthService {
 
         SysUser user = userMapper.selectByUsername(openId);
         if (ObjectUtils.isEmpty(user)) {
-            String ip = IpUtils.getIp();
-            String ipSource = IpUtils.getIp2region(ip);
+            String ip = IpUtil.getIp();
+            String ipSource = IpUtil.getIp2region(ip);
 
             // 保存账号信息
             user = SysUser.builder()

@@ -8,7 +8,7 @@ import com.mojian.entity.SysCategory;
 import com.mojian.exception.ServiceException;
 import com.mojian.mapper.SysCategoryMapper;
 import com.mojian.service.SysCategoryService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class SysCategoryServiceImpl extends ServiceImpl<SysCategoryMapper, SysCa
     public IPage<SysCategory> selectPage(SysCategory sysCategory) {
         LambdaQueryWrapper<SysCategory> wrapper = new LambdaQueryWrapper<SysCategory>()
                 .like(StringUtils.isNotBlank(sysCategory.getName()), SysCategory::getName, sysCategory.getName());
-        return page(PageUtils.getPage(), wrapper);
+        return page(PageUtil.getPage(), wrapper);
     }
 
     /**

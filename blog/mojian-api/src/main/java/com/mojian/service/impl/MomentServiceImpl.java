@@ -3,7 +3,7 @@ package com.mojian.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.mojian.mapper.SysMomentMapper;
 import com.mojian.service.MomentService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import com.mojian.vo.moment.MomentPageVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +21,6 @@ public class MomentServiceImpl implements MomentService {
 
     @Override
     public IPage<MomentPageVo> getMomentList() {
-        return baseMapper.selectPage(PageUtils.getPage());
+        return baseMapper.selectPage(PageUtil.getPage());
     }
 }

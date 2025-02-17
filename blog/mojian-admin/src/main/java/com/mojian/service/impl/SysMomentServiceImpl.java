@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import com.mojian.mapper.SysMomentMapper;
 import com.mojian.entity.SysMoment;
 import com.mojian.service.SysMomentService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -23,7 +23,7 @@ public class SysMomentServiceImpl extends ServiceImpl<SysMomentMapper, SysMoment
      */
     @Override
     public IPage<SysMoment> selectPage(SysMoment sysMoment) {
-        return page(PageUtils.getPage(), new LambdaQueryWrapper<SysMoment>()
+        return page(PageUtil.getPage(), new LambdaQueryWrapper<SysMoment>()
                 .orderByDesc(SysMoment::getCreateTime));
     }
 

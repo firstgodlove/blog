@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class EmailUtils {
+public class EmailUtil {
 
 
     @Value("${mail.smtp.email}")
@@ -37,7 +37,7 @@ public class EmailUtils {
     @Value("${mail.smtp.host}")
     private String host;
 
-    private final RedisUtils redisUtils;
+    private final RedisUtil redisUtil;
 
     private final JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
 
@@ -122,8 +122,8 @@ public class EmailUtils {
         this.send(email, content);
         log.info("邮箱验证码发送成功,邮箱:{},验证码:{}",email,code);
 
-        redisUtils.set(RedisConstants.CAPTCHA_CODE + email, code +"");
-        redisUtils.expire(RedisConstants.CAPTCHA_CODE + email, RedisConstants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
+        redisUtil.set(RedisConstants.CAPTCHA_CODE + email, code +"");
+        redisUtil.expire(RedisConstants.CAPTCHA_CODE + email, RedisConstants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
     }
 
     private void send(String email, String template) throws MessagingException {
@@ -138,7 +138,7 @@ public class EmailUtils {
         // 设置邮件接收者，可以有多个接收者，中间用逗号隔开
         mineHelper.setTo(email);
         // 设置邮件发送日期
-        mineHelper.setSentDate(DateUtils.getNowDate());
+        mineHelper.setSentDate(DateUtil.getNowDate());
         // 设置邮件的正文
         mineHelper.setText(template,true);
         // 发送邮件

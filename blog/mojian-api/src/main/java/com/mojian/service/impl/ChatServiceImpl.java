@@ -4,12 +4,12 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.mojian.exception.ServiceException;
-import com.mojian.utils.IpUtils;
+import com.mojian.utils.IpUtil;
 import com.mojian.vo.chat.ChatSendMsgVo;
 import com.mojian.entity.ChatMsg;
 import com.mojian.mapper.SysChatMsgMapper;
 import com.mojian.service.ChatService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import com.mojian.websocket.WebSocketServer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -27,7 +27,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public IPage<ChatSendMsgVo> getChatMsgList() {
-        return chatMsgMapper.getChatMsgList(PageUtils.getPage());
+        return chatMsgMapper.getChatMsgList(PageUtil.getPage());
     }
 
     @Override
@@ -36,8 +36,8 @@ public class ChatServiceImpl implements ChatService {
         chatMsg.setSenderId(StpUtil.getLoginIdAsLong());
         chatMsg.setType(chatSendMsgVo.getType());
         chatMsg.setContent(chatSendMsgVo.getContent());
-        chatMsg.setIp(IpUtils.getIp());
-        chatMsg.setLocation(IpUtils.getIp2region(chatMsg.getIp()));
+        chatMsg.setIp(IpUtil.getIp());
+        chatMsg.setLocation(IpUtil.getIp2region(chatMsg.getIp()));
         chatMsgMapper.insert(chatMsg);
 
         chatSendMsgVo.setId(chatMsg.getId());

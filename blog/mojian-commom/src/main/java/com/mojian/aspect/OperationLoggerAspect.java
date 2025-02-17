@@ -8,9 +8,9 @@ import com.mojian.common.Constants;
 import com.mojian.dto.user.LoginUserInfo;
 import com.mojian.entity.SysOperateLog;
 import com.mojian.mapper.SysOperateLogMapper;
-import com.mojian.utils.AspectUtils;
-import com.mojian.utils.DateUtils;
-import com.mojian.utils.IpUtils;
+import com.mojian.utils.AspectUtil;
+import com.mojian.utils.DateUtil;
+import com.mojian.utils.IpUtil;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -51,13 +51,13 @@ public class OperationLoggerAspect {
 
     @Around(value = "pointcut(operationLogger)")
     public Object doAround(ProceedingJoinPoint joinPoint, OperationLogger operationLogger) throws Throwable {
-        HttpServletRequest request = IpUtils.getRequest();
+        HttpServletRequest request = IpUtil.getRequest();
         StpUtil.checkLogin();
         //因给了演示账号所有权限以供用户观看，所以执行业务前需判断是否是管理员操作
         if  (!StpUtil.hasRole(Constants.ADMIN)) {
             throw new NotPermissionException("无权限");
         }
-        startTime = DateUtils.getNowDate();
+        startTime = DateUtil.getNowDate();
 
         //先执行业务
         Object result = joinPoint.proceed();
@@ -80,14 +80,14 @@ public class OperationLoggerAspect {
      */
     private void handle(ProceedingJoinPoint point, HttpServletRequest request) throws Exception {
 
-        Method currentMethod = AspectUtils.INSTANCE.getMethod(point);
+        Method currentMethod = AspectUtil.INSTANCE.getMethod(point);
 
         //获取操作名称
         OperationLogger annotation = currentMethod.getAnnotation(OperationLogger.class);
 
         boolean save = annotation.save();
 
-        String operationName = AspectUtils.INSTANCE.parseParams(point.getArgs(), annotation.value());
+        String operationName = AspectUtil.INSTANCE.parseParams(point.getArgs(), annotation.value());
         if (!save) {
             return;
         }
@@ -97,7 +97,7 @@ public class OperationLoggerAspect {
         // 当前操作用户
         LoginUserInfo user = (LoginUserInfo) StpUtil.getSession().get(Constants.CURRENT_USER);
         String type = request.getMethod();
-        String ip = IpUtils.getIp();
+        String ip = IpUtil.getIp();
         String url = request.getRequestURI();
 
         // 存储日志
@@ -106,7 +106,7 @@ public class OperationLoggerAspect {
 
         SysOperateLog operateLog = SysOperateLog.builder()
                 .ip(ip)
-                .source(IpUtils.getIp2region(ip))
+                .source(IpUtil.getIp2region(ip))
                 .type(type)
                 .username(user.getUsername())
                 .paramsJson(paramsJson)

@@ -4,7 +4,7 @@ import com.mojian.common.Constants;
 import com.mojian.entity.SysDict;
 import com.mojian.mapper.SysDictMapper;
 import com.mojian.service.SysDictDataService;
-import com.mojian.utils.PageUtils;
+import com.mojian.utils.PageUtil;
 import com.mojian.entity.SysDictData;
 import com.mojian.mapper.SysDictDataMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -13,7 +13,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
         // 构建查询条件
         wrapper.eq(SysDictData::getDictId,dictId)
                 .orderByAsc(SysDictData::getSort);
-        return page(PageUtils.getPage(), wrapper);
+        return page(PageUtil.getPage(), wrapper);
     }
 
     @Override

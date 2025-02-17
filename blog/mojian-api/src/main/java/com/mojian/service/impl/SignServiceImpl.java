@@ -3,7 +3,7 @@ package com.mojian.service.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import com.mojian.common.RedisConstants;
 import com.mojian.service.SignService;
-import com.mojian.utils.RedisUtils;
+import com.mojian.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,24 +19,24 @@ import java.time.temporal.ChronoUnit;
 @RequiredArgsConstructor
 public class SignServiceImpl implements SignService {
 
-    private final RedisUtils redisUtils;
+    private final RedisUtil redisUtil;
 
 
     @Override
     public Boolean sign(){
         // 记录签到
-        redisUtils.setBit(RedisConstants.USER_SIGN + StpUtil.getLoginIdAsString(), getOffset(),true);
+        redisUtil.setBit(RedisConstants.USER_SIGN + StpUtil.getLoginIdAsString(), getOffset(),true);
         return Boolean.TRUE;
     }
 
     @Override
     public Boolean isSignedToday(){
-        return redisUtils.getBit(RedisConstants.USER_SIGN + StpUtil.getLoginIdAsString(),getOffset());
+        return redisUtil.getBit(RedisConstants.USER_SIGN + StpUtil.getLoginIdAsString(),getOffset());
     }
 
     @Override
     public Long getCumulativeSignDays(){
-        return redisUtils.bitCount(RedisConstants.USER_SIGN + StpUtil.getLoginIdAsString(),0,getOffset());
+        return redisUtil.bitCount(RedisConstants.USER_SIGN + StpUtil.getLoginIdAsString(),0,getOffset());
     }
 
     @Override
@@ -46,7 +46,7 @@ public class SignServiceImpl implements SignService {
 
         long endOffset = getOffset();
         for (long offset = endOffset; offset >= 0; offset--) {
-            boolean isSigned = redisUtils.getBit(RedisConstants.USER_SIGN + StpUtil.getLoginIdAsString(), offset);
+            boolean isSigned = redisUtil.getBit(RedisConstants.USER_SIGN + StpUtil.getLoginIdAsString(), offset);
             if (isSigned) {
                 consecutiveDays++;
                 maxConsecutiveDays = Math.max(maxConsecutiveDays, consecutiveDays);

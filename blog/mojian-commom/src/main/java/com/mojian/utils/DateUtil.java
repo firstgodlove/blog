@@ -13,8 +13,8 @@ import java.util.Date;
 /**
  * 时间工具类
  */
-public class DateUtils {
-    
+public class DateUtil {
+
     /** 常用时间格式 */
     public static final String YYYY = "yyyy";
     public static final String YYYY_MM = "yyyy-MM";
@@ -24,14 +24,14 @@ public class DateUtils {
     public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
     public static final String HH_MM = "HH:mm";
     public static final String HH_MM_SS = "HH:mm:ss";
-    
+
     /** 一天的秒数 */
     public static final long SECONDS_PER_DAY = 86400;
     /** 一小时的秒数 */
     public static final long SECONDS_PER_HOUR = 3600;
     /** 一分钟的秒数 */
     public static final long SECONDS_PER_MINUTE = 60;
-    
+
     private static final String[] PARSE_PATTERNS = {
             "yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM",
             "yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd HH:mm", "yyyy/MM",
@@ -211,7 +211,7 @@ public class DateUtils {
         return t / (60 * 1000);
     }
 
-    /** 
+    /**
      * 获取当前时间的开始时间
      */
     public static Date getStartTime(Date date) {
@@ -223,7 +223,7 @@ public class DateUtils {
         return calendar.getTime();
     }
 
-    /** 
+    /**
      * 获取当前时间的结束时间
      */
     public static Date getEndTime(Date date) {
@@ -360,4 +360,4 @@ public class DateUtils {
         }
         return sb.toString();
     }
-} 
+}

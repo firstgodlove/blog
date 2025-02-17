@@ -1,7 +1,7 @@
 package com.mojian.vo.chat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.mojian.utils.DateUtils;
+import com.mojian.utils.DateUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -36,6 +36,6 @@ public class ChatSendMsgVo {
     private Boolean isRecalled;
 
     @Schema(description = "发送时间")
-    @JsonFormat(pattern = DateUtils.YYYY_MM_DD_HH_MM_SS)
+    @JsonFormat(pattern = DateUtil.YYYY_MM_DD_HH_MM_SS)
     private LocalDateTime time;
 }

@@ -65,6 +65,15 @@ const routes = [
                 }
               },
               {
+                path: '/moments',
+                name: 'Moments',
+                component: () => import('@/views/moments/index.vue'),
+                meta: {
+                  title: '说说 - 拾壹博客',
+                  icon: 'fas fa-comment-dots'
+                }
+              },
+              {
                 path: '/photos',
                 name: 'Photos',
                 component: Photos,
@@ -88,7 +97,7 @@ const routes = [
               {
                 path: '/hotSearch',
                 name: 'HotSearch',
-                component: () => import(/* webpackPrefetch: true */ '@/views/hotSearch/index.vue'),
+                component: () => import(/* webpackPrefetch: true */ '@/views/hotSearch/index2.vue'),
                 meta: { 
                   transition: 'fade',
                   title: '热搜 - 拾壹博客',
@@ -134,15 +143,7 @@ const routes = [
                   hidden: true
                 }
               },
-              {
-                path: '/moments',
-                name: 'Moments',
-                component: () => import('@/views/moments/index.vue'),
-                meta: {
-                  title: '说说 - 拾壹博客',
-                  icon: 'fas fa-comment-dots'
-                }
-              },
+      
               {
                 path: '/user/profile',
                 name: 'Profile',

@@ -1053,7 +1053,7 @@ export default {
   @media screen and (max-width: 768px) {
     position: fixed;
     left: 0;
-    top: 70px; // 调整顶部位置，避免被header遮挡
+    top: 70px;
     bottom: 0;
     width: 80px;
   }

@@ -201,6 +201,9 @@ export default {
     font-size: 15px;
     white-space: pre-wrap;
     word-break: break-word;
+    :deep(li) {
+      margin-left: 30px;
+    }
   }
 
   .moment-images {

@@ -19,29 +19,36 @@ import java.util.List;
 @Component
 public class AiUtil {
 
-    @Value("${ark.apiKey}")
+    @Value("${ai.apiKey}")
     private String apiKey;
 
-    @Value("${ark.baseUrl}")
+    @Value("${ai.baseUrl}")
     private String baseUrl;
 
-    @Value("${ark.model}")
+    @Value("${ai.model}")
     private String model;
 
-    private final ArkService service = ArkService.builder()
-            .apiKey(apiKey)
-            .timeout(Duration.ofMinutes(30)) //因为deep-seek深度搜索时间较长，所以设置较长的等待时间
-            .baseUrl(baseUrl)
-            .build();
+    private ArkService service = null;
 
     //这里可以初始化AI的角色
 //    public final List<ChatMessage> messages = new ArrayList<>(Collections.singletonList(ChatMessage.builder()
 //            .role(ChatMessageRole.SYSTEM).content("你是豆包，是由字节跳动开发的 AI 人工智能助手").build()));
 
 
+    private void initService(){
+        if (service == null){
+            service = ArkService.builder()
+                    .apiKey(apiKey)
+                    .timeout(Duration.ofMinutes(30)) //因为deep-seek深度搜索时间较长，所以设置较长的等待时间
+                    .baseUrl(baseUrl)
+                    .build();
+        }
+    }
+
 
 
     public String send(String content) {
+        initService();
         // 初始化消息列表
         List<ChatMessage> messages = new ArrayList<>();
         // 创建用户消息

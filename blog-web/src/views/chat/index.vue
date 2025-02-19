@@ -3,7 +3,7 @@
     <div class="nav-sidebar">
       <div class="nav-header">
         <div class="user-avatar">
-          <img :src="$store.state.userInfo.avatar" alt="avatar">
+          <img :src="$store.state.userInfo.avatar" >
         </div>
       </div>
       <div class="nav-menu">
@@ -68,7 +68,7 @@
             :class="{ active: currentChat.id === chat.id }"
           >
             <div class="avatar">
-              <img :src="chat.avatar" alt="avatar">
+              <img :src="chat.avatar" >
             </div>
             <div class="chat-info">
               <div class="name">{{ chat.name }}</div>
@@ -80,15 +80,25 @@
           </div>
         </template>
         <template v-else-if="currentNav === 'friends'">
-          <div class="empty-tip">好友列表开发中...</div>
-        </template>
-        <template v-else>
-          <div class="empty-tip">群聊列表开发中...</div>
+          <div 
+            v-for="friend in friendsList"
+            :key="friend.id"
+            class="friend-item"
+            :class="{ active: selectedFriend && selectedFriend.id === friend.id }"
+            @click="selectFriend(friend)"
+          >
+            <div class="avatar">
+              <img :src="friend.avatar" >
+            </div>
+            <div class="friend-info">
+              <div class="name">{{ friend.name }}</div>
+            </div>
+          </div>
         </template>
       </div>
     </div>
     
-    <div class="chat-main">
+    <div class="chat-main" v-if="currentNav === 'chat'">
       <div class="chat-header">
         <div class="user-info">
           <div class="toggle-list-btn" @click="toggleList" v-if="isMobile">
@@ -110,7 +120,7 @@
           :class="['message', { 'message-self': msg.userId === $store.state.userInfo.id }]"
         >
           <div class="avatar" @contextmenu.prevent="handleAvatarContextMenu(msg, $event)">
-            <img :src="msg.avatar" alt="avatar">
+            <img :src="msg.avatar">
           </div>
           <div class="message-content">
             <div class="message-header">
@@ -216,6 +226,15 @@
       </template>
     </div>
 
+    <!-- 好友信息显示区域 -->
+    <div v-if="selectedFriend" class="friend-details">
+      <h3>{{ selectedFriend.name }}</h3>
+      <p class="signature">签名：{{ selectedFriend.signature || '这个人很懒，什么都没写。' }}</p>
+      <p class="gender">性别：{{ selectedFriend.gender || '未知' }}</p>
+      <el-button type="primary" size="small" icon="el-icon-message" @click="sendMessageToFriend">发送信息</el-button>
+      <el-button type="danger" size="small" icon="el-icon-delete" @click="deleteFriend">删除好友</el-button>
+    </div>
+
   </div>
 </template>
 
@@ -236,6 +255,22 @@ export default {
           avatar: this.$store.state.webSiteInfo.logo,
           lastMessage: '',
           lastTime: '',
+        }
+      ],
+      friendsList: [
+        {
+          id: 1,
+          name: '张三',
+          avatar: 'https://foruda.gitee.com/avatar/1677004143848886034/2106773_hhf1237_1647845148.png',
+          signature: '热爱生活，热爱编程。',
+          gender: '男'
+        },
+        {
+          id: 2,
+          name: '李四',
+          avatar: 'https://foruda.gitee.com/avatar/1677079463351115261/7467101_unique_perfect_1638710768.png',
+          signature: '旅行是我的灵魂。',
+          gender: '女'
         }
       ],
       messageText: '',
@@ -272,6 +307,7 @@ export default {
       shouldScrollToBottom: true, // 添加新标志来控制是否滚动到底部
       isMobile: false,
       isListHidden: false,
+      selectedFriend: null, // 用于存储选中的好友信息
     }
   },
   //监听this.$store.state.userInfo的变化
@@ -323,7 +359,13 @@ export default {
   },
   methods: {
     switchNav(nav) {
-      this.currentNav = nav
+      this.currentNav = nav;
+      this.selectedFriend = null
+      if (nav === 'chat') {
+        this.$nextTick(() => {
+          this.scrollToBottom();
+        });
+      }
     },
     /**
      * 初始化
@@ -1015,6 +1057,20 @@ export default {
         this.isListHidden = false;
       }
     },
+
+    selectFriend(friend) {
+      this.selectedFriend = friend;
+    },
+
+    sendMessageToFriend() {
+      // 实现发送信息的逻辑
+      this.$message.info(`发送信息给 ${this.selectedFriend.name}`);
+    },
+
+    deleteFriend() {
+      // 实现删除好友的逻辑
+      this.$message.info(`删除好友 ${this.selectedFriend.name}`);
+    },
   }
 }
 </script>
@@ -1349,6 +1405,41 @@ export default {
     overflow-y: auto;
     padding: $spacing-sm 0;
   }
+
+  .friend-item {
+    padding: $spacing-md;
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    margin: $spacing-sm $spacing-xs;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover, &.active {
+      background: var(--hover-bg);
+    }
+    
+    .avatar {
+      width: 42px;
+      height: 42px;
+      flex-shrink: 0;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    }
+    
+    .friend-info {
+      .name {
+        font-size: 0.95em;
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+    }
+  }
 }
 
 .chat-item {
@@ -1390,6 +1481,7 @@ export default {
       font-size: 0.95em;
       font-weight: 500;
       color: var(--text-primary);
+      
     }
     
     .last-message {
@@ -1398,6 +1490,7 @@ export default {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      width: 170px;
     }
   }
   
@@ -1829,5 +1922,28 @@ export default {
     background: rgba(0, 0, 0, 0.5);
     z-index: 140;
   }
+}
+
+.friend-details {
+  padding: $spacing-lg;
+  border-radius: 12px;
+  margin: $spacing-lg auto;
+  max-width: 600px;
+  text-align: center;
+
+  h3 {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: $spacing-md;
+  }
+
+  .signature, .gender {
+    font-size: 1em;
+    color: var(--text-secondary);
+    margin-bottom: $spacing-md;
+  }
+  
+
 }
 </style> 

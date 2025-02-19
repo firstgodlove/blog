@@ -77,15 +77,15 @@ public class EmailUtil {
                 "          <tbody>\n" +
                 "            <tr style=\"background-color: #f8f8f8;\">\n" +
                 "              <td>\n" +
-                "                <img style=\"padding: 15px 0 15px 30px;width:50px\" src=\"https://img.shiyit.com/9cf1222617fd4fa197991476a53cc883.jpg\">" +
-                "                <span>墨笺博客. </span>\n" +
+                "                <img style=\"padding: 15px 0 15px 30px;width:50px\" src=\"https://foruda.gitee.com/avatar/1739413372327645883/13781_d029020a68_1739413372.png\" />" +
+                "                <span>拾壹博客 </span>\n" +
                 "              </td>\n" +
                 "            </tr>\n" +
                 "            <tr>\n" +
                 "              <td class=\"p-intro\">\n" +
                 "                <h1 style=\"font-size: 26px; font-weight: bold;\">验证您的邮箱地址</h1>\n" +
-                "                <p style=\"line-height:1.75em;\">感谢您使用 墨笺博客. </p>\n" +
-                "                <p style=\"line-height:1.75em;\">以下是您的邮箱验证码，请将它输入到 墨笺博客 的邮箱验证码输入框中:</p>\n" +
+                "                <p style=\"line-height:1.75em;\">感谢您使用 拾壹博客. </p>\n" +
+                "                <p style=\"line-height:1.75em;\">以下是您的邮箱验证码，请将它输入到  <span style=\"color:#409eff;\">拾壹博客</span> 的邮箱验证码输入框中:</p>\n" +
                 "              </td>\n" +
                 "            </tr>\n" +
                 "            <tr>\n" +
@@ -95,13 +95,13 @@ public class EmailUtil {
                 "            </tr>\n" +
                 "            <tr>\n" +
                 "              <td class=\"p-intro\">\n" +
-                "                <p style=\"line-height:1.75em;\">这一封邮件包括一些您的私密的 墨笺博客 账号信息，请不要回复或转发它，以免带来不必要的信息泄露风险。 </p>\n" +
+                "                <p style=\"line-height:1.75em;\">这一封邮件包括一些您的私密信息，请不要回复或转发它，以免带来不必要的信息泄露风险。 </p>\n" +
                 "              </td>\n" +
                 "            </tr>\n" +
                 "            <tr>\n" +
                 "              <td class=\"p-intro\">\n" +
                 "                <hr>\n" +
-                "                <p style=\"text-align: center;line-height:1.75em;\">shiyi - <a href='https://www.shiyit.com' style='text-decoration: none;color:#ff6574'>墨笺博客</a></p>\n" +
+                "                <p style=\"text-align: center;line-height:1.75em;\">shiyi - <a href='https://www.shiyit.com' style='text-decoration: none;color:#409eff'>拾壹博客</a></p>\n" +
                 "              </td>\n" +
                 "            </tr>\n" +
                 "          </tbody>\n" +
@@ -132,7 +132,7 @@ public class EmailUtil {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mineHelper = new MimeMessageHelper(mimeMessage, true);
         // 设置邮件主题
-        mineHelper.setSubject("墨笺博客");
+        mineHelper.setSubject("您有一封来自 拾壹博客 的回执！");
         // 设置邮件发送者
         mineHelper.setFrom(Objects.requireNonNull(javaMailSender.getUsername()));
         // 设置邮件接收者，可以有多个接收者，中间用逗号隔开

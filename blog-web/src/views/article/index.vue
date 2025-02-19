@@ -96,12 +96,16 @@
 
         <!-- AI简短介绍 -->
         <div v-if="article.aiDescribe" class="ai-description">
-          <div class="ai-header">
+          <div class="ai-header" @click="isAiDescriptionExpanded = !isAiDescriptionExpanded">
             <i class="fas fa-robot"></i>
             <span>AI 摘要</span>
+            <i class="fas" :class="isAiDescriptionExpanded ? 'fa-chevron-up' : 'fa-chevron-down'" style="margin-left:auto;"></i>
           </div>
-          <div class="ai-content">
+          <div class="ai-content" v-show="isAiDescriptionExpanded">
             <span class="typing-text" ref="typingText"></span>
+            <div class="ai-description-text">
+              摘要由平台通过智能技术生成
+            </div>
           </div>
         </div>
 
@@ -344,6 +348,7 @@ export default {
       images: [],
       showPaymentDialog: false,
       showMembershipDialog: false,
+      isAiDescriptionExpanded: true,
     }
   },
   computed: {
@@ -397,6 +402,7 @@ export default {
         // 计算阅读时间
         const textContent = this.article.content.replace(/<[^>]+>/g, ' ')
         this.readTime = Math.ceil(textContent.split(/\s+/).length / 300)
+
       } catch (error) {
         this.$message.error('获取文章详情失败')
       } finally {
@@ -859,7 +865,6 @@ export default {
     handleCommentDeleted() {
       this.article.commentNum = Math.max((this.article.commentNum || 0) - 1, 0);
     },
-   
   },
   async created() {
     await this.getArticle()
@@ -1668,57 +1673,6 @@ export default {
       }
     }
   }
-
-  .article-nav {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: $spacing-lg;
-    margin-top: $spacing-xl;
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: $spacing-md;
-      padding: $spacing-lg;
-      background: var(--hover-bg);
-      border-radius: $border-radius-lg;
-      cursor: pointer;
-      transition: all 0.3s ease;
-
-      &:hover {
-        background: rgba($primary, 0.1);
-        transform: translateY(-2px);
-      }
-
-      &.next {
-        text-align: right;
-      }
-
-      .nav-content {
-        flex: 1;
-        min-width: 0;
-
-        .label {
-          display: block;
-          color: var(--text-secondary);
-          font-size: 0.9em;
-          margin-bottom: $spacing-xs;
-        }
-
-        .title {
-          color: var(--text-primary);
-          font-weight: 500;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-      }
-
-      i {
-        color: $primary;
-      }
-    }
-  }
 }
 
 .article-sidebar {
@@ -2139,25 +2093,22 @@ export default {
 .ai-description {
   margin: $spacing-md $spacing-xl;
   border-radius: $border-radius-lg;
-  background: rgba(0, 150, 136, 0.05);
+  background-image: linear-gradient(180deg, rgba(247, 232, 255, .54), rgba(191, 223, 255, .35));
   border: 1px solid rgba(0, 150, 136, 0.1);
   transition: all 0.3s ease;
   overflow: hidden;
+  
 
-  &:hover {
-    background: rgba(0, 150, 136, 0.08);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 150, 136, 0.1);
-  }
 
   .ai-header {
     padding: $spacing-sm $spacing-md;
-    background: rgba(0, 150, 136, 0.1);
-    color: #009688;
     font-weight: 500;
     display: flex;
     align-items: center;
     gap: $spacing-sm;
+    justify-content: flex-start;
+    color: #a855f7;
+    cursor: pointer;
 
     i {
       font-size: 1.1em;
@@ -2166,22 +2117,12 @@ export default {
 
   .ai-content {
     padding: $spacing-md;
-    color: var(--text-secondary);
-    font-size: 0.95em;
-    line-height: 1.6;
-    position: relative;
-    min-height: 24px;
-
- 
+    overflow: hidden;
+  }
+  .ai-description-text {
+    margin-top: $spacing-sm;
+    color: #8c8a8e;
   }
 }
 
-@keyframes cursorBlink {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
-}
 </style>

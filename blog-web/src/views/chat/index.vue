@@ -690,10 +690,10 @@ export default {
      * 监听消息容器的滚动
      */
     handleScroll() {
-      const container = this.$refs.messageContainer
+      const container = this.$refs.messageContainer;
       // 当滚动到接近顶部时加载更多消息
       if (container.scrollTop <= 100 && !this.loading && this.hasMore) {
-        this.loadMoreMessages()
+        this.loadMoreMessages();
       }
     },
 
@@ -701,42 +701,42 @@ export default {
      * 加载更多历史消息
      */
     async loadMoreMessages() {
-      if (this.loading || !this.hasMore) return
+      if (this.loading || !this.hasMore) return;
 
-      this.loading = true
-      this.shouldScrollToBottom = false // 加载历史消息时设置为false
+      this.loading = true;
+      this.shouldScrollToBottom = false; // 加载历史消息时设置为false
       try {
-        const container = this.$refs.messageContainer
-        const oldScrollHeight = container.scrollHeight
+        const container = this.$refs.messageContainer;
+        const oldScrollHeight = container.scrollHeight;
 
-        this.params.pageNum++
+        this.params.pageNum++;
         
-        const response = await getChatMsgListApi(this.params)
+        const response = await getChatMsgListApi(this.params);
         
         if (response.data && response.data.records && response.data.records.length > 0) {
           const formattedMessages = response.data.records.map(msg => ({
             ...msg,
             time: formatTime(msg.time)
-          }))
+          }));
           
-          this.currentChat.messages.unshift(...formattedMessages.reverse())
+          this.currentChat.messages.unshift(...formattedMessages.reverse());
           
           if (response.data.records.length < this.params.pageSize) {
-            this.hasMore = false
+            this.hasMore = false;
           }
 
           this.$nextTick(() => {
-            const newScrollHeight = container.scrollHeight
-            container.scrollTop = newScrollHeight - oldScrollHeight
-          })
+            const newScrollHeight = container.scrollHeight;
+            container.scrollTop = newScrollHeight - oldScrollHeight;
+          });
         } else {
-          this.hasMore = false
+          this.hasMore = false;
         }
       } catch (error) {
-        console.error('加载历史消息失败:', error)
-        this.$message.error('加载历史消息失败')
+        console.error('加载历史消息失败:', error);
+        this.$message.error('加载历史消息失败');
       } finally {
-        this.loading = false
+        this.loading = false;
       }
     },
 

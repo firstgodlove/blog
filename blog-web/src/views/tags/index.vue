@@ -132,8 +132,7 @@ export default {
     const res = await getTagsApi()
     this.tags = res.data
     if(this.$route.query.tagId){
-      this.params.tagId = this.$route.params.tagId
-      this.selectTag(this.$route.query.tagName,this.params.tagId)
+      this.selectTag(this.$route.query.tagName,this.$route.query.tagId)
     }else{
       if (this.tags.length) {
         const randomTag = this.tags[0]

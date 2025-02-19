@@ -551,9 +551,7 @@ export default {
       transition: all 0.3s ease;
       font-weight: 500;
 
-      &:hover {
-        background: lighten($primary, 35%);
-      }
+
 
       &.active {
         background: $primary;

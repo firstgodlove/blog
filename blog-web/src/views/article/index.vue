@@ -101,12 +101,19 @@
             <span>AI 摘要</span>
             <i class="fas" :class="isAiDescriptionExpanded ? 'fa-chevron-up' : 'fa-chevron-down'" style="margin-left:auto;"></i>
           </div>
-          <div class="ai-content" v-show="isAiDescriptionExpanded">
-            <span class="typing-text" ref="typingText"></span>
-            <div class="ai-description-text">
-              摘要由平台通过智能技术生成
+          <transition
+                name="expand"
+                @enter="startTransition"
+                @leave="endTransition"
+                mode="out-in"
+          >
+            <div class="ai-content" v-show="isAiDescriptionExpanded">
+              <span class="typing-text" ref="typingText"></span>
+              <div class="ai-description-text">
+                摘要由平台通过智能技术生成
+              </div>
             </div>
-          </div>
+          </transition>
         </div>
 
         <!-- 文章内容 -->
@@ -865,6 +872,21 @@ export default {
     handleCommentDeleted() {
       this.article.commentNum = Math.max((this.article.commentNum || 0) - 1, 0);
     },
+
+    startTransition(element) {
+      element.style.height = 'auto'
+      const height = element.scrollHeight
+      element.style.height = '0px'
+      // 触发回流
+      element.offsetHeight
+      element.style.height = height + 'px'
+    },
+    endTransition(element) {
+      element.style.height = element.scrollHeight + 'px'
+      // 触发回流
+      element.offsetHeight
+      element.style.height = '0px'
+    }
   },
   async created() {
     await this.getArticle()
@@ -884,15 +906,13 @@ export default {
     images.forEach(img => {
       img.removeEventListener('click', this.handleImageClick)
     })
-    // 清理打字机定时器
-    this.resetTypingAnimation()
   },
   watch: {
     // 监听路由参数变化
     '$route'(to, from) {
       if (to.params.id !== from.params.id) {
         // 重新获取文章数据
-        this.getArticleData() // 假设这是获取文章数据的方法
+        this.getArticleData() 
       }
     }
   }
@@ -2123,6 +2143,23 @@ export default {
     margin-top: $spacing-sm;
     color: #8c8a8e;
   }
+}
+
+.expand-enter-active,
+.expand-leave-active {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.expand-enter-from,
+.expand-leave-to {
+  opacity: 0;
+  height: 0;
+}
+
+.expand-enter-to,
+.expand-leave-from {
+  opacity: 1;
 }
 
 </style>

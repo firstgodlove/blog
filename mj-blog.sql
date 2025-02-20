@@ -33,55 +33,12 @@ CREATE TABLE `chat_msg`
     `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发送时间',
     `ip`          varchar(200) NULL DEFAULT NULL COMMENT 'ip地址',
     `location`    varchar(200) NULL DEFAULT NULL COMMENT 'ip归属地',
+    `file_name` varchar(255) DEFAULT NULL COMMENT '消息是文件时，存的文件名',
+    `file_size` double DEFAULT NULL COMMENT '文件大小',
+    `duration` int(11) DEFAULT NULL COMMENT '语音时长',
     PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 82 CHARACTER SET = utf8mb4  COMMENT = '聊天消息' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4  COMMENT = '聊天消息' ROW_FORMAT = DYNAMIC;
 
--- ----------------------------
--- Records of chat_msg
--- ----------------------------
-INSERT INTO `chat_msg`
-VALUES (46, NULL, 1, 'image', 'https://media.giphy.com/media/10JhviFuU2gWD6/giphy.gif', 0, '2024-12-25 09:33:39', NULL,
-        NULL);
-INSERT INTO `chat_msg`
-VALUES (60, NULL, 1, 'image', 'https://media.giphy.com/media/62PP2yEIAZF6g/giphy.gif', 0, '2024-12-25 09:55:13', NULL,
-        NULL);
-INSERT INTO `chat_msg`
-VALUES (61, NULL, 1, 'image', '消息已撤回', 0, '2024-12-25 09:55:15', NULL, NULL);
-INSERT INTO `chat_msg`
-VALUES (62, NULL, 1809, 'text', '😀', 0, '2024-12-28 13:59:11', NULL, NULL);
-INSERT INTO `chat_msg`
-VALUES (63, NULL, 1, 'text', '消息已撤回', 0, '2024-12-28 13:59:20', NULL, NULL);
-INSERT INTO `chat_msg`
-VALUES (64, NULL, 1, 'text', '消息已撤回', 0, '2024-12-28 13:59:38', NULL, NULL);
-INSERT INTO `chat_msg`
-VALUES (65, NULL, 1809, 'text', '好', 0, '2024-12-28 14:00:10', NULL, NULL);
-INSERT INTO `chat_msg`
-VALUES (66, NULL, 1809, 'text', '哈哈哈', 0, '2024-12-28 14:04:09', NULL, NULL);
-INSERT INTO `chat_msg`
-VALUES (67, NULL, 1, 'text', '消息已撤回', 1, '2024-12-28 19:36:10', NULL, NULL);
-INSERT INTO `chat_msg`
-VALUES (71, NULL, 1, 'image', 'https://media.giphy.com/media/10JhviFuU2gWD6/giphy.gif', 0, '2024-12-28 19:47:14', NULL,
-        NULL);
-INSERT INTO `chat_msg`
-VALUES (73, NULL, 1, 'text', '啊啊啊\n', 0, '2024-12-28 19:49:11', NULL, NULL);
-INSERT INTO `chat_msg`
-VALUES (74, NULL, 1, 'text', '哦哦可ok佛山你是否年服务费啊\n', 0, '2024-12-28 19:49:16', NULL, NULL);
-INSERT INTO `chat_msg`
-VALUES (75, NULL, 1, 'image', 'https://media.giphy.com/media/MeIucAjPKoA120R7sN/giphy.gif', 0, '2024-12-28 19:50:27',
-        NULL, NULL);
-INSERT INTO `chat_msg`
-VALUES (76, NULL, 1, 'text', '啊啊', 0, '2024-12-28 20:30:22', '127.0.0.1', '内网IP|内网IP');
-INSERT INTO `chat_msg`
-VALUES (77, NULL, 1, 'text', '方法', 0, '2024-12-28 20:31:08', '127.0.0.1', '内网IP|内网IP');
-INSERT INTO `chat_msg`
-VALUES (78, NULL, 1, 'text', '啊啊', 0, '2024-12-28 20:31:50', '127.0.0.1', '内网IP|内网IP');
-INSERT INTO `chat_msg`
-VALUES (79, NULL, 1, 'text', '啊啊啊', 0, '2024-12-28 20:35:36', '127.0.0.1', '内网IP|内网IP');
-INSERT INTO `chat_msg`
-VALUES (80, NULL, 1809, 'text', '哦啦啦啦', 0, '2024-12-28 20:42:59', '127.0.0.1', '内网IP|内网IP');
-INSERT INTO `chat_msg`
-VALUES (81, NULL, 1, 'image', 'https://media.giphy.com/media/10JhviFuU2gWD6/giphy.gif', 0, '2024-12-31 15:28:53',
-        '127.0.0.1', '内网IP|内网IP');
 
 -- ----------------------------
 -- Table structure for gen_table

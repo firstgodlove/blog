@@ -36,6 +36,15 @@ public class ChatSendMsgVo {
     @ApiModelProperty(value = "是否撤回，默认false")
     private Boolean isRecalled;
 
+    @ApiModelProperty(value = "消息是文件时，存的文件名")
+    private String fileName;
+
+    @ApiModelProperty(value = "文件大小")
+    private String fileSize;
+
+    @ApiModelProperty(value = "语音时长")
+    private Integer duration;
+
     @ApiModelProperty(value = "发送时间")
     @JsonFormat(pattern = DateUtil.YYYY_MM_DD_HH_MM_SS)
     private LocalDateTime time;

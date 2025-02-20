@@ -3,19 +3,19 @@
     <div class="nav-sidebar">
       <div class="nav-header">
         <div class="user-avatar">
-          <img :src="$store.state.userInfo.avatar" >
+          <img :src="$store.state.userInfo.avatar" />
         </div>
       </div>
       <div class="nav-menu">
-        <div 
-          class="nav-item chat-icon" 
+        <div
+          class="nav-item chat-icon"
           :class="{ active: currentNav === 'chat' }"
           @click="switchNav('chat')"
         >
           <i class="fas fa-comment"></i>
           <span class="nav-text">聊天</span>
         </div>
-        <div 
+        <div
           class="nav-item friends-icon"
           :class="{ active: currentNav === 'friends' }"
           @click="switchNav('friends')"
@@ -23,7 +23,7 @@
           <i class="fas fa-user-friends"></i>
           <span class="nav-text">好友</span>
         </div>
-        <div 
+        <div
           class="nav-item groups-icon"
           :class="{ active: currentNav === 'groups' }"
           @click="switchNav('groups')"
@@ -33,9 +33,9 @@
         </div>
       </div>
       <div class="nav-bottom">
-        <a 
-          class="nav-item" 
-          href="https://gitee.com/quequnlong/shiyi-blog" 
+        <a
+          class="nav-item"
+          href="https://gitee.com/quequnlong/shiyi-blog"
           target="_blank"
           title="查看源码"
         >
@@ -46,29 +46,29 @@
     </div>
 
     <!-- 遮罩层 -->
-    <div 
-      v-if="isMobile && !isListHidden" 
+    <div
+      v-if="isMobile && !isListHidden"
       class="mobile-overlay"
       @click="toggleList"
     ></div>
 
-    <div 
-      class="chat-list-container" 
+    <div
+      class="chat-list-container"
       :class="{ 'mobile-hidden': isMobile && isListHidden }"
     >
       <div class="search-box">
-        <input type="text" placeholder="搜索">
+        <input type="text" placeholder="搜索" />
       </div>
       <div class="chat-list">
         <template v-if="currentNav === 'chat'">
-          <div 
+          <div
             v-for="chat in chatList"
             :key="chat.id"
             class="chat-item"
             :class="{ active: currentChat.id === chat.id }"
           >
             <div class="avatar">
-              <img :src="chat.avatar" >
+              <img :src="chat.avatar" />
             </div>
             <div class="chat-info">
               <div class="name">{{ chat.name }}</div>
@@ -80,15 +80,17 @@
           </div>
         </template>
         <template v-else-if="currentNav === 'friends'">
-          <div 
+          <div
             v-for="friend in friendsList"
             :key="friend.id"
             class="friend-item"
-            :class="{ active: selectedFriend && selectedFriend.id === friend.id }"
+            :class="{
+              active: selectedFriend && selectedFriend.id === friend.id,
+            }"
             @click="selectFriend(friend)"
           >
             <div class="avatar">
-              <img :src="friend.avatar" >
+              <img :src="friend.avatar" />
             </div>
             <div class="friend-info">
               <div class="name">{{ friend.name }}</div>
@@ -97,7 +99,7 @@
         </template>
       </div>
     </div>
-    
+
     <div class="chat-main" v-if="currentNav === 'chat'">
       <div class="chat-header">
         <div class="user-info">
@@ -107,91 +109,179 @@
           <h3>{{ currentChat.name }}</h3>
         </div>
       </div>
-      
+
       <div class="messages" ref="messageContainer">
         <div v-if="loading" class="loading-messages">
           <i class="fas fa-spinner fa-spin"></i>
           加载中...
         </div>
-        
-        <div 
-          v-for="(msg, index) in currentChat.messages" 
+
+        <div
+          v-for="(msg, index) in currentChat.messages"
           :key="msg.id || 'msg-' + index"
-          :class="['message', { 'message-self': msg.userId === $store.state.userInfo.id }]"
+          :class="[
+            'message',
+            { 'message-self': msg.userId === $store.state.userInfo.id },
+          ]"
         >
-          <div class="avatar" @contextmenu.prevent="handleAvatarContextMenu(msg, $event)">
-            <img :src="msg.avatar">
+          <div
+            class="avatar"
+            @contextmenu.prevent="handleAvatarContextMenu(msg, $event)"
+          >
+            <img :src="msg.avatar" />
           </div>
           <div class="message-content">
             <div class="message-header">
-              <div v-if="currentChat.isGroup && msg.userId !== $store.state.userInfo.id" class="sender-name">
+              <div
+                v-if="
+                  currentChat.isGroup && msg.userId !== $store.state.userInfo.id
+                "
+                class="sender-name"
+              >
                 {{ msg.name }}
                 <span v-if="msg.userId === 1" class="author-tag">作者</span>
-                <span class="location">({{ splitIpAddress(msg.location) }})</span>
+                <span class="location"
+                  >({{ splitIpAddress(msg.location) }})</span
+                >
               </div>
             </div>
             <div v-if="msg.isRecalled" class="message-recalled">
               <span>消息已撤回</span>
             </div>
             <template v-else>
-              <div 
-                v-if="msg.type === 'text'" 
-                class="message-text" 
+              <div
+                v-if="msg.type === 'text'"
+                class="message-text"
                 v-html="formatMessageContent(msg.content)"
                 @contextmenu.prevent="showMessageActions(msg, $event)"
               ></div>
-              <img 
-                v-else-if="msg.type === 'image'" 
-                v-lazy="msg.content" 
+              <img
+                v-else-if="msg.type === 'image'"
+                v-lazy="msg.content"
                 :key="'img-' + (msg.id || index)"
                 class="message-image"
                 @click="previewImage(msg.content)"
                 @load="handleImageLoad"
                 @contextmenu.prevent="showMessageActions(msg, $event)"
+              />
+              <div
+                v-else-if="msg.type === 'file'"
+                class="message-file"
+                @contextmenu.prevent="showMessageActions(msg, $event)"
               >
+                <i class="fas fa-file-download"></i>
+                <div class="file-info">
+                  <a :href="msg.content" target="_blank" download>{{
+                    msg.fileName
+                  }}</a>
+                  <span class="file-size">{{
+                    formatFileSize(msg.fileSize)
+                  }}</span>
+                </div>
+              </div>
+              <div
+                v-else-if="msg.type === 'audio'"
+                class="message-audio"
+                @contextmenu.prevent="showMessageActions(msg, $event)"
+              >
+                <div
+                  class="audio-bubble"
+                  @click="toggleAudioPlayback(msg, $event)"
+                >
+                  <i
+                    :class="['fas', msg.isPlaying ? 'fa-pause' : 'fa-play']"
+                  ></i>
+                  <span>{{ msg.duration }}秒</span>
+                </div>
+              </div>
             </template>
             <div class="message-time">{{ msg.time }}</div>
           </div>
         </div>
       </div>
-      
+
       <div class="chat-input">
         <div class="input-toolbar">
-          <mj-emoji
-            size="1.1rem"
-            class="emoji-picker"
-            @select="insertEmoji"
-          />
+          <mj-emoji size="1.1rem" class="emoji-picker" @select="insertEmoji" />
 
-          <label class="toolbar-btn image-upload-btn" for="image-upload">
+          <label
+            class="toolbar-btn image-upload-btn"
+            for="image-upload"
+            title="上传图片"
+          >
             <i class="fas fa-image"></i>
           </label>
-          <input 
+          <input
             id="image-upload"
             type="file"
             accept="image/*"
             style="display: none"
             @change="handleImageUpload"
+          />
+
+          <!-- 新增文件上传按钮 -->
+          <label
+            class="toolbar-btn file-upload-btn"
+            for="file-upload"
+            title="上传文件"
           >
+            <i class="fas fa-folder"></i>
+          </label>
+          <input
+            id="file-upload"
+            type="file"
+            style="display: none"
+            @change="handleFileUpload"
+          />
+
+          <!-- 新增语音录制按钮 -->
+          <label
+            @click="toggleVoiceMode"
+            class="toolbar-btn voice-toggle-btn"
+            title="语音输入"
+          >
+            <i class="fas fa-microphone"></i>
+          </label>
+          <!-- <button 
+            class="toolbar-btn voice-toggle-btn" 
+            @click="toggleVoiceMode"
+            title="语音输入"
+          >
+            <i class="fas fa-microphone"></i>
+          </button> -->
         </div>
-        
+
         <div class="input-area">
-          <textarea 
-            ref="messageTextarea"
-            v-model="messageText" 
-            @keydown.enter.prevent="handleEnterKey"
-            @input="handleInput"
-            @keydown="handleMentionKeydown"
-            placeholder="输入消息..."
-          ></textarea>
-          
-          <button 
-            @click="sendMessage" 
+          <template v-if="isVoiceMode">
+            <!-- 改进的语音录制按钮 -->
+            <button
+              :class="['voice-record-btn', { recording: isRecording }]"
+              @mousedown="startRecording"
+              @mouseup="stopRecording"
+              @mouseleave="cancelRecording"
+              @touchstart="startRecording"
+              @touchend="stopRecording"
+            >
+              {{ isRecording ? "正在说话中..." : "按住说话" }}
+            </button>
+          </template>
+          <template v-else>
+            <textarea
+              ref="messageTextarea"
+              v-model="messageText"
+              @keydown.enter.prevent="handleEnterKey"
+              @input="handleInput"
+              @keydown="handleMentionKeydown"
+              placeholder="输入消息..."
+            ></textarea>
+          </template>
+
+          <button
+            v-if="!isVoiceMode"
+            @click="sendMessage"
             :disabled="!messageText.trim() || countdown > 0"
           >
-            <template v-if="countdown > 0">
-              {{ countdown }}s
-            </template>
+            <template v-if="countdown > 0"> {{ countdown }}s </template>
             <i v-else class="fas fa-paper-plane"></i>
           </button>
         </div>
@@ -201,19 +291,26 @@
     <!-- 图片预览 -->
     <mj-image-preview ref="imagePreview" />
 
-    <div v-if="showActionsMenu" class="message-actions-menu" :style="actionMenuPosition">
+    <div
+      v-if="showActionsMenu"
+      class="message-actions-menu"
+      :style="actionMenuPosition"
+    >
       <template v-if="selectedMessage">
-        <div 
-          v-if="selectedMessage.userId !== $store.state.userInfo.id" 
-          class="action-item" 
+        <div
+          v-if="selectedMessage.userId !== $store.state.userInfo.id"
+          class="action-item"
           @click="mentionUser"
         >
           <i class="fas fa-at"></i>
           TA
         </div>
-        <div 
-          v-if="!selectedMessage.isRecalled && selectedMessage.userId === $store.state.userInfo.id" 
-          class="action-item" 
+        <div
+          v-if="
+            !selectedMessage.isRecalled &&
+            selectedMessage.userId === $store.state.userInfo.id
+          "
+          class="action-item"
           @click="recallMessage"
         >
           <i class="fas fa-undo"></i>
@@ -229,145 +326,176 @@
     <!-- 好友信息显示区域 -->
     <div v-if="selectedFriend" class="friend-details">
       <h3>{{ selectedFriend.name }}</h3>
-      <p class="signature">签名：{{ selectedFriend.signature || '这个人很懒，什么都没写。' }}</p>
-      <p class="gender">性别：{{ selectedFriend.gender || '未知' }}</p>
-      <el-button type="primary" size="small" icon="el-icon-message" @click="sendMessageToFriend">发送信息</el-button>
-      <el-button type="danger" size="small" icon="el-icon-delete" @click="deleteFriend">删除好友</el-button>
+      <p class="signature">
+        签名：{{ selectedFriend.signature || "这个人很懒，什么都没写。" }}
+      </p>
+      <p class="gender">性别：{{ selectedFriend.gender || "未知" }}</p>
+      <el-button
+        type="primary"
+        size="small"
+        icon="el-icon-message"
+        @click="sendMessageToFriend"
+        >发送信息</el-button
+      >
+      <el-button
+        type="danger"
+        size="small"
+        icon="el-icon-delete"
+        @click="deleteFriend"
+        >删除好友</el-button
+      >
     </div>
-
   </div>
 </template>
 
 <script>
-import { sendMsg,getChatMsgListApi,recallMsgApi } from '@/api/chat'
-import { formatTime } from '@/utils/time'
-import { uploadFileApi } from '@/api/file'
-import { disableScroll,enableScroll } from '@/utils/scroll'
+import { sendMsg, getChatMsgListApi, recallMsgApi } from "@/api/chat";
+import { formatTime } from "@/utils/time";
+import { uploadFileApi } from "@/api/file";
+import { disableScroll, enableScroll } from "@/utils/scroll";
+import { showLoading, hideLoading } from "@/utils/loading";
 export default {
-  name: 'Chat',
+  name: "Chat",
   data() {
     return {
-      currentNav: 'chat',
+      currentNav: "chat",
       chatList: [
         {
           id: 1,
-          name: '博客交流群',
+          name: "博客交流群",
           avatar: this.$store.state.webSiteInfo.logo,
-          lastMessage: '',
-          lastTime: '',
-        }
+          lastMessage: "",
+          lastTime: "",
+        },
       ],
       friendsList: [
         {
           id: 1,
-          name: '张三',
-          avatar: 'https://foruda.gitee.com/avatar/1677004143848886034/2106773_hhf1237_1647845148.png',
-          signature: '热爱生活，热爱编程。',
-          gender: '男'
+          name: "张三",
+          avatar:
+            "https://foruda.gitee.com/avatar/1677004143848886034/2106773_hhf1237_1647845148.png",
+          signature: "热爱生活，热爱编程。",
+          gender: "男",
         },
         {
           id: 2,
-          name: '李四',
-          avatar: 'https://foruda.gitee.com/avatar/1677079463351115261/7467101_unique_perfect_1638710768.png',
-          signature: '旅行是我的灵魂。',
-          gender: '女'
-        }
+          name: "李四",
+          avatar:
+            "https://foruda.gitee.com/avatar/1677079463351115261/7467101_unique_perfect_1638710768.png",
+          signature: "旅行是我的灵魂。",
+          gender: "女",
+        },
       ],
-      messageText: '',
+      messageText: "",
       ws: null, // WebSocket实例
       currentChat: {
         id: 1,
-        name: '博客交流群',
+        name: "博客交流群",
         avatar: this.$store.state.webSiteInfo.logo,
-        lastMessage: '',
-        lastTime: '12:30',
+        lastMessage: "",
+        lastTime: "12:30",
         isGroup: true,
         members: [],
-        messages: []
+        messages: [
+          {
+            id: 1,
+            type: "audio",
+            content: "audio_url_here",
+            isPlaying: false, // 确保初始化时存在
+            // 其他属性...
+          },
+          // 其他消息...
+        ],
       },
       showActionsMenu: false,
       selectedMessage: null,
       actionMenuPosition: {
-        top: '0px',
-        left: '0px'
+        top: "0px",
+        left: "0px",
       },
       params: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
       },
-      loading: false,  // 是否正在加载更多消息
-      hasMore: true,   // 是否还有更多消息
-      countdown: 0,    // 倒计时秒数
+      loading: false, // 是否正在加载更多消息
+      hasMore: true, // 是否还有更多消息
+      countdown: 0, // 倒计时秒数
       countdownTimer: null, // 计时器实例
-      heartbeatTimer: null,    // 心跳定时器
+      heartbeatTimer: null, // 心跳定时器
       heartbeatInterval: 30000, // 心跳间隔，30秒
-      reconnectAttempts: 0,    // 重连次数
+      reconnectAttempts: 0, // 重连次数
       maxReconnectAttempts: 5, // 最大重连次数
       shouldReconnect: true, // 是否需要重连的标志
       shouldScrollToBottom: true, // 添加新标志来控制是否滚动到底部
       isMobile: false,
       isListHidden: false,
       selectedFriend: null, // 用于存储选中的好友信息
-    }
+      isVoiceMode: false, // 新增语音模式状态
+      mediaRecorder: null,
+      audioChunks: [],
+      isRecording: false, // 新增录音状态
+      audioStartTime: null, // 新增音频开始时间
+      audioEndTime: null, // 新增音频结束时间
+    };
   },
   //监听this.$store.state.userInfo的变化
   watch: {
-    '$store.state.userInfo': {
-        handler(newVal, oldVal) {
-            // 有值就连接ws, 没有就移除
-            if (newVal) {
-                this.init()
-            } else {
-                this.$store.commit('SET_LOGIN_VISIBLE', true);
-                if (this.ws) {
-                    this.ws.close();
-                }
-            }
-        },
-        deep: true
-    }
+    "$store.state.userInfo": {
+      handler(newVal, oldVal) {
+        // 有值就连接ws, 没有就移除
+        if (newVal) {
+          this.init();
+        } else {
+          this.$store.commit("SET_LOGIN_VISIBLE", true);
+          if (this.ws) {
+            this.ws.close();
+          }
+        }
+      },
+      deep: true,
+    },
   },
   created() {
     // 如果用户信息存在，则连接WebSocket
     if (!this.$store.state.userInfo) {
-      this.$store.commit('SET_LOGIN_VISIBLE', true)
-      return
+      this.$store.commit("SET_LOGIN_VISIBLE", true);
+      return;
     }
-    this.init()
+    this.init();
     //禁止滚动
-    disableScroll()
+    disableScroll();
     this.checkMobile();
-    window.addEventListener('resize', this.checkMobile);
+    window.addEventListener("resize", this.checkMobile);
   },
   beforeDestroy() {
-    this.shouldReconnect = false // 设置不再重连
-    this.stopHeartbeat() // 清理心跳定时器
+    this.shouldReconnect = false; // 设置不再重连
+    this.stopHeartbeat(); // 清理心跳定时器
     if (this.ws) {
-      this.ws.close()
+      this.ws.close();
     }
     // 移除滚动事件监听
-    const container = this.$refs.messageContainer
+    const container = this.$refs.messageContainer;
     if (container) {
-      container.removeEventListener('scroll', this.handleScroll)
+      container.removeEventListener("scroll", this.handleScroll);
     }
     if (this.countdownTimer) {
-      clearInterval(this.countdownTimer)
+      clearInterval(this.countdownTimer);
     }
     //开启滚动
-    enableScroll()
-    window.removeEventListener('resize', this.checkMobile);
+    enableScroll();
+    window.removeEventListener("resize", this.checkMobile);
   },
   methods: {
     switchNav(nav) {
       this.currentNav = nav;
       this.selectedFriend = null;
-      if (nav === 'chat') {
+      if (nav === "chat") {
         this.$nextTick(() => {
           this.scrollToBottom();
           // 重新添加滚动事件监听器
           const container = this.$refs.messageContainer;
           if (container) {
-            container.addEventListener('scroll', this.handleScroll);
+            container.addEventListener("scroll", this.handleScroll);
           }
           // 重置加载状态
           this.hasMore = true;
@@ -378,38 +506,44 @@ export default {
     /**
      * 初始化
      */
-    async init(){
-      this.connectWebSocket()
-      await this.getChatList()
+    async init() {
+      this.connectWebSocket();
+      await this.getChatList();
 
       // 添加滚动事件监听
       this.$nextTick(() => {
-
-        const container = this.$refs.messageContainer
+        const container = this.$refs.messageContainer;
         if (container) {
-          container.addEventListener('scroll', this.handleScroll)
+          container.addEventListener("scroll", this.handleScroll);
         }
 
         setTimeout(() => {
-          this.scrollToBottom()
-        }, 300)
-      })
+          this.scrollToBottom();
+        }, 300);
+      });
     },
     /**
      * 获取聊天列表
      */
     async getChatList() {
-      const res = await getChatMsgListApi(this.params)
-      this.currentChat.messages = res.data.records
-      if(this.params.pageNum === 1 && this.currentChat.messages.length > 0){
-        this.currentChat.lastTime = formatTime(this.currentChat.messages[0].time)
-        this.currentChat.lastMessage = this.currentChat.messages[0].type === 'text' ? this.currentChat.messages[0].content : '[图片]'
+      const res = await getChatMsgListApi(this.params);
+      this.currentChat.messages = res.data.records;
+      if (this.params.pageNum === 1 && this.currentChat.messages.length > 0) {
+        this.currentChat.lastTime = formatTime(
+          this.currentChat.messages[0].time
+        );
+        this.currentChat.lastMessage =
+          this.currentChat.messages[0].type === "text"
+            ? this.currentChat.messages[0].content
+            : this.currentChat.messages[0].type === "image"
+            ? "[图片]"
+            : "[文件]";
       }
       //获取到的数据是最新时间的，应该要把这个顺序反过来
-      this.currentChat.messages.reverse()
-      this.currentChat.messages.forEach(msg => {
-        msg.time = formatTime(msg.time)
-      })
+      this.currentChat.messages.reverse();
+      this.currentChat.messages.forEach((msg) => {
+        msg.time = formatTime(msg.time);
+      });
     },
     /**
      * 连接WebSocket
@@ -420,37 +554,37 @@ export default {
         this.ws = new WebSocket(wsUrl + this.$store.state.userInfo.id);
 
         this.ws.onopen = () => {
-          console.log('WebSocket连接已建立')
-          this.reconnectAttempts = 0
-          this.startHeartbeat()
-        }
+          console.log("WebSocket连接已建立");
+          this.reconnectAttempts = 0;
+          this.startHeartbeat();
+        };
 
         this.ws.onmessage = (event) => {
-          console.log('收到原始消息:', event.data)
+          console.log("收到原始消息:", event.data);
           try {
-            const message = JSON.parse(event.data)
+            const message = JSON.parse(event.data);
             // 如果是心跳响应，则不处理
-            if (message.type === 'ping') {
-              return
+            if (message.type === "ping") {
+              return;
             }
-            this.handleIncomingMessage(message)
+            this.handleIncomingMessage(message);
           } catch (error) {
-            console.error('解析消息失败:', error)
+            console.error("解析消息失败:", error);
           }
-        }
+        };
 
         this.ws.onclose = () => {
-          console.log('WebSocket连接已关闭')
-          this.stopHeartbeat() // 停止心跳
-          this.reconnect() // 尝试重连
-        }
+          console.log("WebSocket连接已关闭");
+          this.stopHeartbeat(); // 停止心跳
+          this.reconnect(); // 尝试重连
+        };
 
         this.ws.onerror = (error) => {
-          console.error('WebSocket错误:', error)
-          this.stopHeartbeat() // 停止心跳
-        }
+          console.error("WebSocket错误:", error);
+          this.stopHeartbeat(); // 停止心跳
+        };
       } catch (error) {
-        console.error('建立WebSocket连接失败:', error)
+        console.error("建立WebSocket连接失败:", error);
       }
     },
 
@@ -458,97 +592,115 @@ export default {
      * 处理接收到的消息
      */
     handleIncomingMessage(message) {
-      console.log('收到消息:', message)
-      
-      if (typeof message === 'string') {
+      console.log("收到消息:", message);
+
+      if (typeof message === "string") {
         try {
-          message = JSON.parse(message)
+          message = JSON.parse(message);
         } catch (e) {
-          console.error('消息格式错误:', e)
-          return
+          console.error("消息格式错误:", e);
+          return;
         }
       }
-      if(message.isRecalled){
-        const index = this.currentChat.messages.findIndex(msg => msg.id === message.id)
-        if(index !== -1){
-          this.currentChat.messages[index].content = message.content
-          this.currentChat.messages[index].isRecalled = message.isRecalled
+      if (message.isRecalled) {
+        const index = this.currentChat.messages.findIndex(
+          (msg) => msg.id === message.id
+        );
+        if (index !== -1) {
+          this.currentChat.messages[index].content = message.content;
+          this.currentChat.messages[index].isRecalled = message.isRecalled;
         }
-        return
+        return;
       }
-      if (message.type === 'text') {
-        message.content = message.content.replace(/@(\S+)\s/g, '<mention>@$1</mention> ')
+      if (message.type === "text") {
+        message.content = message.content.replace(
+          /@(\S+)\s/g,
+          "<mention>@$1</mention> "
+        );
       }
-      
+
       const newMessage = {
         id: message.id || Date.now() + Math.random(), // 确保每条消息都有唯一ID
-        type: message.type || 'text',
+        type: message.type || "text",
         content: message.content,
         time: formatTime(new Date()),
         userId: message.userId,
         name: message.name,
         avatar: message.avatar,
-        location: message.location
-      }
-      
-      this.currentChat.messages.push(newMessage)
-      this.currentChat.lastMessage = message.type === 'text' ? message.content : '[图片]'
-      this.currentChat.lastTime = '刚刚'
-      this.shouldScrollToBottom = true
+        location: message.location,
+        fileSize: message.fileSize,
+        fileName: message.fileName,
+        duration: message.duration,
+        isPlaying: false, // 确保初始化时存在
+      };
+
+      this.currentChat.messages.push(newMessage);
+      this.currentChat.lastMessage =
+        message.type === "text" ? message.content : "[图片]";
+      this.currentChat.lastTime = "刚刚";
+      this.shouldScrollToBottom = true;
 
       this.$nextTick(() => {
-        this.scrollToBottom()
-      })
+        this.scrollToBottom();
+      });
     },
 
     /**
      * 发送文本消息
      */
     async sendMessage() {
-      if (!this.messageText.trim() || !this.$store.state.userInfo || this.countdown > 0) return
-      
-      const mentionedContent = this.messageText.replace(/@(\S+)\s/g, '<mention>@$1</mention> ')
-      
+      if (
+        !this.messageText.trim() ||
+        !this.$store.state.userInfo ||
+        this.countdown > 0
+      )
+        return;
+
+      const mentionedContent = this.messageText.replace(
+        /@(\S+)\s/g,
+        "<mention>@$1</mention> "
+      );
+
       const message = {
-        type: 'text',
+        type: "text",
         content: mentionedContent,
         name: this.$store.state.userInfo.nickname,
         userId: this.$store.state.userInfo.id,
         avatar: this.$store.state.userInfo.avatar,
-      }
+      };
 
       try {
-        const response = await sendMsg(message)
-        this.startCountdown()
-        this.shouldScrollToBottom = true // 发送消息时设置为true
+        const response = await sendMsg(message);
+        this.startCountdown();
+        this.shouldScrollToBottom = true; // 发送消息时设置为true
       } catch (error) {
-        console.error('发送消息失败:', error)
-        this.$message.error('发送失败，请重试')
+        console.error("发送消息失败:", error);
+        this.$message.error("发送失败，请重试");
       }
-      this.messageText = ''
+      this.messageText = "";
     },
 
     /**
      * 发送图片消息
      */
     async sendImage(imageData) {
-      if (!this.$store.state.userInfo) return
-      
+      if (!this.$store.state.userInfo) return;
+
       const message = {
-        type: 'image',
+        type: "image",
         content: imageData,
         self: true,
         name: this.$store.state.userInfo.nickname,
         userId: this.$store.state.userInfo.id,
         avatar: this.$store.state.userInfo.avatar,
-      }
+      };
 
       try {
-        const response = await sendMsg(message)
-        this.shouldScrollToBottom = true // 发送图片时设置为true
+        const response = await sendMsg(message);
+        this.shouldScrollToBottom = true; // 发送图片时设置为true
       } catch (error) {
-        console.error('发送图片失败:', error)
-        this.$message.error('发送失败，请重试')
+        console.error("发送图片失败:", error);
+        this.$message.error("发送失败，请重试");
       }
     },
 
@@ -556,80 +708,80 @@ export default {
      * 滚动到底部
      */
     scrollToBottom() {
-      const container = this.$refs.messageContainer
+      const container = this.$refs.messageContainer;
       if (container) {
-        container.scrollTop = container.scrollHeight
+        container.scrollTop = container.scrollHeight;
       }
     },
 
     /**
      * 插入表情
      */
-     insertEmoji(emoji) {
+    insertEmoji(emoji) {
       const match = emoji.match(/\((.*?)\)/);
       if (match && match.length > 1) {
-          const imgUrl = match[1];
-          this.sendImage(imgUrl)
-          return
+        const imgUrl = match[1];
+        this.sendImage(imgUrl);
+        return;
       }
-      const textarea = this.$refs.messageTextarea
-      const start = textarea.selectionStart
-      const end = textarea.selectionEnd
-      this.messageText = 
-        this.messageText.substring(0, start) + 
-        emoji + 
-        this.messageText.substring(end)
-      
+      const textarea = this.$refs.messageTextarea;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      this.messageText =
+        this.messageText.substring(0, start) +
+        emoji +
+        this.messageText.substring(end);
+
       // 将光标移动到插入的表情符号后面
       this.$nextTick(() => {
-        textarea.focus()
-        textarea.setSelectionRange(start + emoji.length, start + emoji.length)
-      })
+        textarea.focus();
+        textarea.setSelectionRange(start + emoji.length, start + emoji.length);
+      });
     },
     /**
      * 上传图片
-     * @param event 
+     * @param event
      */
     async handleImageUpload(event) {
-      const file = event.target.files[0]
-      if (!file) return
-      
-      if (!file.type.startsWith('image/')) {
-        this.$message.error('请选择图片文件')
-        return
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith("image/")) {
+        this.$message.error("请选择图片文件");
+        return;
       }
-      
+
       if (file.size > 5 * 1024 * 1024) {
-        this.$message.error('图片大小不能超过5MB')
-        return
+        this.$message.error("图片大小不能超过5MB");
+        return;
       }
-      
+
       try {
         // 创建 FormData 对象
-        const formData = new FormData()
-        formData.append('file', file)
-        
+        const formData = new FormData();
+        formData.append("file", file);
+
         // 调用上传接口
-        const response = await uploadFileApi(formData,'chat')
-        
+        const response = await uploadFileApi(formData, "chat");
+
         // 发送图片消息
         if (response.data) {
-          await this.sendImage(response.data)
+          await this.sendImage(response.data);
         }
       } catch (error) {
-        console.error('图片上传失败:', error)
-        this.$message.error('图片上传失败')
+        console.error("图片上传失败:", error);
+        this.$message.error("图片上传失败");
       }
-      
+
       // 清空 input 的值，允许重复选择同一文件
-      event.target.value = ''
+      event.target.value = "";
     },
     /**
      * 预览图片
-     * @param src 
+     * @param src
      */
     previewImage(src) {
-      this.$refs.imagePreview.show(src)
+      this.$refs.imagePreview.show(src);
     },
     /**
      * 显示消息操作菜单
@@ -639,16 +791,16 @@ export default {
     showMessageActions(message, event) {
       this.selectedMessage = message;
       this.showActionsMenu = true;
-      
+
       // 计算菜单位置
       this.actionMenuPosition = {
         top: `${event.clientY}px`,
-        left: `${event.clientX}px`
+        left: `${event.clientX}px`,
       };
 
       // 添加点击事件监听
       setTimeout(() => {
-        document.addEventListener('click', this.closeActionsMenu);
+        document.addEventListener("click", this.closeActionsMenu);
       }, 0);
     },
 
@@ -658,30 +810,30 @@ export default {
     closeActionsMenu() {
       this.showActionsMenu = false;
       this.selectedMessage = null;
-      document.removeEventListener('click', this.closeActionsMenu);
+      document.removeEventListener("click", this.closeActionsMenu);
     },
 
     /**
      * 撤回消息
      */
     async recallMessage() {
-      if (!this.selectedMessage) return
-      
+      if (!this.selectedMessage) return;
+
       try {
-        const data = {id: this.selectedMessage.id}
+        const data = { id: this.selectedMessage.id };
         // 调用撤回消息接口
-        const response = await recallMsgApi(data)
+        const response = await recallMsgApi(data);
       } catch (error) {
-        this.$message.error(error.message || '撤回失败，请重试')
+        this.$message.error(error.message || "撤回失败，请重试");
       }
-      this.closeActionsMenu()
+      this.closeActionsMenu();
     },
 
     /**
      * 处理搜索
      */
     handleSearch() {
-      this.$message.info('搜索功能暂未实现')
+      this.$message.info("搜索功能暂未实现");
     },
 
     /**
@@ -690,7 +842,7 @@ export default {
     handleImageLoad() {
       // 只有在需要滚动到底部时才执行
       if (this.shouldScrollToBottom) {
-        this.scrollToBottom()
+        this.scrollToBottom();
       }
     },
 
@@ -718,17 +870,21 @@ export default {
         const oldScrollHeight = container.scrollHeight;
 
         this.params.pageNum++;
-        
+
         const response = await getChatMsgListApi(this.params);
-        
-        if (response.data && response.data.records && response.data.records.length > 0) {
-          const formattedMessages = response.data.records.map(msg => ({
+
+        if (
+          response.data &&
+          response.data.records &&
+          response.data.records.length > 0
+        ) {
+          const formattedMessages = response.data.records.map((msg) => ({
             ...msg,
-            time: formatTime(msg.time)
+            time: formatTime(msg.time),
           }));
-          
+
           this.currentChat.messages.unshift(...formattedMessages.reverse());
-          
+
           if (response.data.records.length < this.params.pageSize) {
             this.hasMore = false;
           }
@@ -741,8 +897,8 @@ export default {
           this.hasMore = false;
         }
       } catch (error) {
-        console.error('加载历史消息失败:', error);
-        this.$message.error('加载历史消息失败');
+        console.error("加载历史消息失败:", error);
+        this.$message.error("加载历史消息失败");
       } finally {
         this.loading = false;
       }
@@ -752,36 +908,38 @@ export default {
      * 开始倒计时
      */
     startCountdown() {
-      this.countdown = 3
+      this.countdown = 3;
       if (this.countdownTimer) {
-        clearInterval(this.countdownTimer)
+        clearInterval(this.countdownTimer);
       }
       this.countdownTimer = setInterval(() => {
         if (this.countdown > 0) {
-          this.countdown--
+          this.countdown--;
         } else {
-          clearInterval(this.countdownTimer)
+          clearInterval(this.countdownTimer);
         }
-      }, 1000)
+      }, 1000);
     },
 
     /**
      * 开始心跳
      */
     startHeartbeat() {
-      this.stopHeartbeat() // 确保之前的心跳已停止
+      this.stopHeartbeat(); // 确保之前的心跳已停止
       this.heartbeatTimer = setInterval(() => {
         if (this.ws && this.ws.readyState === WebSocket.OPEN) {
           // 发送心跳消息
-          this.ws.send(JSON.stringify({
-            type: 'ping',
-            timestamp: new Date().getTime()
-          }))
+          this.ws.send(
+            JSON.stringify({
+              type: "ping",
+              timestamp: new Date().getTime(),
+            })
+          );
         } else {
-          this.stopHeartbeat()
-          this.reconnect()
+          this.stopHeartbeat();
+          this.reconnect();
         }
-      }, this.heartbeatInterval)
+      }, this.heartbeatInterval);
     },
 
     /**
@@ -789,8 +947,8 @@ export default {
      */
     stopHeartbeat() {
       if (this.heartbeatTimer) {
-        clearInterval(this.heartbeatTimer)
-        this.heartbeatTimer = null
+        clearInterval(this.heartbeatTimer);
+        this.heartbeatTimer = null;
       }
     },
 
@@ -800,37 +958,37 @@ export default {
     reconnect() {
       // 如果不需要重连，直接返回
       if (!this.shouldReconnect) {
-        return
+        return;
       }
 
       if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-        console.log('达到最大重连次数，停止重连')
-        this.$message.error('网络连接异常，请刷新页面重试')
-        return
+        console.log("达到最大重连次数，停止重连");
+        this.$message.error("网络连接异常，请刷新页面重试");
+        return;
       }
 
-      this.reconnectAttempts++
-      console.log(`第 ${this.reconnectAttempts} 次尝试重连...`)
-      
+      this.reconnectAttempts++;
+      console.log(`第 ${this.reconnectAttempts} 次尝试重连...`);
+
       // 使用指数退避算法计算重连延迟
-      const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000)
-      
+      const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
+
       setTimeout(() => {
         // 再次检查是否需要重连
         if (this.shouldReconnect && this.$store.state.userInfo) {
-          this.connectWebSocket()
+          this.connectWebSocket();
         }
-      }, delay)
+      }, delay);
     },
 
     //截取地址
     splitIpAddress(address) {
-      return address ? address.split("|")[1] : '' ;
+      return address ? address.split("|")[1] : "";
     },
 
     /**
      * 处理Enter键
-     * @param {KeyboardEvent} event 
+     * @param {KeyboardEvent} event
      */
     handleEnterKey(event) {
       // 如果按下了Ctrl键，则插入换行
@@ -838,11 +996,11 @@ export default {
         const textarea = this.$refs.messageTextarea;
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
-        this.messageText = 
-          this.messageText.substring(0, start) + 
-          '\n' + 
+        this.messageText =
+          this.messageText.substring(0, start) +
+          "\n" +
           this.messageText.substring(end);
-        
+
         // 将光标移动到换行后的位置
         this.$nextTick(() => {
           textarea.selectionStart = textarea.selectionEnd = start + 1;
@@ -855,138 +1013,169 @@ export default {
 
     /**
      * 处理@输入
-     * @param {Event} event 
+     * @param {Event} event
      */
     handleInput(event) {
-      const textarea = this.$refs.messageTextarea
-      const text = textarea.value
-      const position = textarea.selectionStart
+      const textarea = this.$refs.messageTextarea;
+      const text = textarea.value;
+      const position = textarea.selectionStart;
 
       // 检查是否刚输入了@符号
-      if (text[position - 1] === '@') {
-        this.showMentionList = true
-        this.mentionFilter = ''
-        this.selectedMentionIndex = -1
-        
+      if (text[position - 1] === "@") {
+        this.showMentionList = true;
+        this.mentionFilter = "";
+        this.selectedMentionIndex = -1;
+
         // 计算@列表的位置
-        const coords = this.getCaretCoordinates(textarea, position)
+        const coords = this.getCaretCoordinates(textarea, position);
         this.mentionListPosition = {
           top: `${coords.top + 20}px`,
-          left: `${coords.left}px`
-        }
+          left: `${coords.left}px`,
+        };
       } else if (this.showMentionList) {
         // 更新过滤文本
-        const lastAtIndex = text.lastIndexOf('@', position - 1)
+        const lastAtIndex = text.lastIndexOf("@", position - 1);
         if (lastAtIndex !== -1) {
-          this.mentionFilter = text.substring(lastAtIndex + 1, position)
+          this.mentionFilter = text.substring(lastAtIndex + 1, position);
         }
       }
     },
 
     /**
      * 处理@列表键盘事件
-     * @param {KeyboardEvent} event 
+     * @param {KeyboardEvent} event
      */
     handleMentionKeydown(event) {
-      if (!this.showMentionList) return
+      if (!this.showMentionList) return;
 
-      const filteredUsers = this.getFilteredUsers()
+      const filteredUsers = this.getFilteredUsers();
 
       switch (event.key) {
-        case 'ArrowDown':
-          event.preventDefault()
+        case "ArrowDown":
+          event.preventDefault();
           this.selectedMentionIndex = Math.min(
             this.selectedMentionIndex + 1,
             filteredUsers.length - 1
-          )
-          break
-        case 'ArrowUp':
-          event.preventDefault()
-          this.selectedMentionIndex = Math.max(this.selectedMentionIndex - 1, 0)
-          break
-        case 'Enter':
-          event.preventDefault()
+          );
+          break;
+        case "ArrowUp":
+          event.preventDefault();
+          this.selectedMentionIndex = Math.max(
+            this.selectedMentionIndex - 1,
+            0
+          );
+          break;
+        case "Enter":
+          event.preventDefault();
           if (this.selectedMentionIndex >= 0) {
-            this.selectMentionUser(filteredUsers[this.selectedMentionIndex])
+            this.selectMentionUser(filteredUsers[this.selectedMentionIndex]);
           }
-          break
-        case 'Escape':
-          event.preventDefault()
-          this.showMentionList = false
-          break
+          break;
+        case "Escape":
+          event.preventDefault();
+          this.showMentionList = false;
+          break;
       }
     },
 
     /**
      * 选择要@的用户
-     * @param {Object} user 
+     * @param {Object} user
      */
     selectMentionUser(user) {
-      const textarea = this.$refs.messageTextarea
-      const text = textarea.value
-      const position = textarea.selectionStart
-      const lastAtIndex = text.lastIndexOf('@', position - 1)
+      const textarea = this.$refs.messageTextarea;
+      const text = textarea.value;
+      const position = textarea.selectionStart;
+      const lastAtIndex = text.lastIndexOf("@", position - 1);
 
       if (lastAtIndex !== -1) {
-        this.messageText = 
+        this.messageText =
           text.substring(0, lastAtIndex) +
           `@${user.name} ` +
-          text.substring(position)
-        
+          text.substring(position);
+
         // 将光标移动到插入的@用户名后面
         this.$nextTick(() => {
-          const newPosition = lastAtIndex + user.nickname.length + 2
-          textarea.focus()
-          textarea.setSelectionRange(newPosition, newPosition)
-        })
+          const newPosition = lastAtIndex + user.nickname.length + 2;
+          textarea.focus();
+          textarea.setSelectionRange(newPosition, newPosition);
+        });
       }
 
-      this.showMentionList = false
+      this.showMentionList = false;
     },
 
     /**
      * 获取过滤后的用户列表
      */
     getFilteredUsers() {
-      return this.mentionUsers.filter(user => 
+      return this.mentionUsers.filter((user) =>
         user.nickname.toLowerCase().includes(this.mentionFilter.toLowerCase())
-      )
+      );
     },
 
     /**
      * 获取光标在textarea中的坐标
      */
     getCaretCoordinates(element, position) {
-      const div = document.createElement('div')
-      const styles = window.getComputedStyle(element)
+      const div = document.createElement("div");
+      const styles = window.getComputedStyle(element);
       const properties = [
-        'direction', 'boxSizing', 'width', 'height', 'overflowX', 'overflowY',
-        'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth',
-        'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
-        'fontStyle', 'fontVariant', 'fontWeight', 'fontStretch', 'fontSize',
-        'fontSizeAdjust', 'lineHeight', 'fontFamily', 'textAlign', 'textTransform',
-        'textIndent', 'textDecoration', 'letterSpacing', 'wordSpacing'
-      ]
+        "direction",
+        "boxSizing",
+        "width",
+        "height",
+        "overflowX",
+        "overflowY",
+        "borderTopWidth",
+        "borderRightWidth",
+        "borderBottomWidth",
+        "borderLeftWidth",
+        "paddingTop",
+        "paddingRight",
+        "paddingBottom",
+        "paddingLeft",
+        "fontStyle",
+        "fontVariant",
+        "fontWeight",
+        "fontStretch",
+        "fontSize",
+        "fontSizeAdjust",
+        "lineHeight",
+        "fontFamily",
+        "textAlign",
+        "textTransform",
+        "textIndent",
+        "textDecoration",
+        "letterSpacing",
+        "wordSpacing",
+      ];
 
-      div.style.position = 'absolute'
-      div.style.visibility = 'hidden'
-      properties.forEach(prop => {
-        div.style[prop] = styles[prop]
-      })
+      div.style.position = "absolute";
+      div.style.visibility = "hidden";
+      properties.forEach((prop) => {
+        div.style[prop] = styles[prop];
+      });
 
-      div.textContent = element.value.substring(0, position)
-      const span = document.createElement('span')
-      span.textContent = element.value.substring(position) || '.'
-      div.appendChild(span)
-      document.body.appendChild(div)
+      div.textContent = element.value.substring(0, position);
+      const span = document.createElement("span");
+      span.textContent = element.value.substring(position) || ".";
+      div.appendChild(span);
+      document.body.appendChild(div);
 
       const coordinates = {
-        top: span.offsetTop + parseInt(styles.borderTopWidth) + parseInt(styles.paddingTop),
-        left: span.offsetLeft + parseInt(styles.borderLeftWidth) + parseInt(styles.paddingLeft)
-      }
+        top:
+          span.offsetTop +
+          parseInt(styles.borderTopWidth) +
+          parseInt(styles.paddingTop),
+        left:
+          span.offsetLeft +
+          parseInt(styles.borderLeftWidth) +
+          parseInt(styles.paddingLeft),
+      };
 
-      document.body.removeChild(div)
-      return coordinates
+      document.body.removeChild(div);
+      return coordinates;
     },
 
     /**
@@ -998,19 +1187,19 @@ export default {
       if (message.userId === this.$store.state.userInfo.id) {
         return;
       }
-      
+
       this.selectedMessage = message;
       this.showActionsMenu = true;
-      
+
       // 计算菜单位置
       this.actionMenuPosition = {
         top: `${event.clientY}px`,
-        left: `${event.clientX}px`
+        left: `${event.clientX}px`,
       };
 
       // 添加点击事件监听
       setTimeout(() => {
-        document.addEventListener('click', this.closeActionsMenu);
+        document.addEventListener("click", this.closeActionsMenu);
       }, 0);
     },
 
@@ -1020,31 +1209,34 @@ export default {
     mentionUser() {
       if (!this.selectedMessage) return;
       const user = {
-        nickname: this.selectedMessage.name
+        nickname: this.selectedMessage.name,
       };
-      
+
       // 在输入框末尾添加@用户
       this.messageText += `@${user.nickname} `;
-      
+
       // 关闭菜单
       this.closeActionsMenu();
-      
+
       // 聚焦输入框
       this.$nextTick(() => {
         const textarea = this.$refs.messageTextarea;
         textarea.focus();
-        textarea.setSelectionRange(this.messageText.length, this.messageText.length);
+        textarea.setSelectionRange(
+          this.messageText.length,
+          this.messageText.length
+        );
       });
     },
 
     // 添加格式化消息内容的方法
     formatMessageContent(content) {
       // 如果内容已经包含<mention>标签，说明是发送时已经处理过的
-      if (content.includes('<mention>')) {
+      if (content.includes("<mention>")) {
         return content;
       }
       // 否则处理普通文本中的@格式
-      return content.replace(/@(\S+)\s/g, '<mention>@$1</mention> ');
+      return content.replace(/@(\S+)\s/g, "<mention>@$1</mention> ");
     },
 
     toggleList() {
@@ -1079,8 +1271,213 @@ export default {
       // 实现删除好友的逻辑
       this.$message.info(`删除好友 ${this.selectedFriend.name}`);
     },
-  }
-}
+
+    /**
+     * 处理文件上传
+     * @param event
+     */
+    async handleFileUpload(event) {
+      showLoading();
+      const file = event.target.files[0];
+      if (!file) return;
+
+      try {
+        // 创建 FormData 对象
+        const formData = new FormData();
+        formData.append("file", file);
+
+        // 调用上传接口
+        const response = await uploadFileApi(formData, "chat");
+
+        // 发送文件消息
+        if (response.data) {
+          await this.sendFile(response.data, file.name, file.size);
+        }
+      } catch (error) {
+        console.error("文件上传失败:", error);
+        this.$message.error("文件上传失败");
+      } finally {
+        hideLoading();
+      }
+
+      // 清空 input 的值，允许重复选择同一文件
+      event.target.value = "";
+    },
+
+    /**
+     * 发送文件消息
+     */
+    async sendFile(fileData, fileName, fileSize) {
+      if (!this.$store.state.userInfo) return;
+
+      const message = {
+        type: "file",
+        content: fileData,
+        fileName: fileName,
+        fileSize: fileSize,
+        name: this.$store.state.userInfo.nickname,
+        userId: this.$store.state.userInfo.id,
+        avatar: this.$store.state.userInfo.avatar,
+      };
+
+      try {
+        const response = await sendMsg(message);
+        this.shouldScrollToBottom = true; // 发送文件时设置为true
+      } catch (error) {
+        console.error("发送文件失败:", error);
+        this.$message.error("发送失败，请重试");
+      }
+    },
+
+    /**
+     * 格式化文件大小
+     * @param {Number} size 文件大小（字节）
+     * @returns {String} 格式化后的文件大小
+     */
+    formatFileSize(size) {
+      if (size < 1024) return size + " B";
+      if (size < 1024 * 1024) return (size / 1024).toFixed(2) + " KB";
+      if (size < 1024 * 1024 * 1024)
+        return (size / (1024 * 1024)).toFixed(2) + " MB";
+      return (size / (1024 * 1024 * 1024)).toFixed(2) + " GB";
+    },
+
+    /**
+     * 切换语音模式
+     */
+    toggleVoiceMode() {
+      this.isVoiceMode = !this.isVoiceMode;
+    },
+
+    /**
+     * 开始录音
+     */
+    startRecording() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        this.$message.error("当前浏览器不支持录音功能");
+        return;
+      }
+
+      navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then((stream) => {
+          this.audioStartTime = new Date();
+          this.mediaRecorder = new MediaRecorder(stream);
+          this.mediaRecorder.start();
+          this.audioChunks = [];
+
+          this.mediaRecorder.ondataavailable = (event) => {
+            this.audioChunks.push(event.data);
+          };
+
+          // 添加录音中的视觉反馈
+          this.isRecording = true;
+        })
+        .catch((error) => {
+          console.error("录音失败:", error);
+          this.$message.error("录音失败，请检查麦克风权限");
+        });
+    },
+
+    /**
+     * 停止录音并上传语音
+     */
+    stopRecording() {
+      if (this.mediaRecorder && this.mediaRecorder.state !== "inactive") {
+        this.audioEndTime = new Date();
+        let recordingDuration = Math.ceil((this.audioEndTime - this.audioStartTime) / 1000);
+        if (recordingDuration < 3) {
+          this.$message.error("录音时间太短，请重新录音");
+          return;
+        }
+        this.mediaRecorder.stop();
+        this.mediaRecorder.onstop = async () => {
+          const audioBlob = new Blob(this.audioChunks, { type: "audio/wav" });
+          const formData = new FormData();
+          formData.append("file", audioBlob, new Date().getTime() + ".wav");
+
+          try {
+            const response = await uploadFileApi(formData, "chat");
+            if (response.data) {
+              await this.sendAudio(response.data, recordingDuration);
+            }
+          } catch (error) {
+            console.error("语音上传失败:", error);
+            this.$message.error("语音上传失败");
+          }
+
+          this.isRecording = false;
+          if (this.mediaRecorder.stream) {
+            this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+          }
+        };
+      }
+    },
+
+    /**
+     * 取消录音
+     */
+    cancelRecording() {
+      if (this.mediaRecorder && this.mediaRecorder.state !== "inactive") {
+        this.mediaRecorder.stop();
+        this.audioChunks = [];
+        this.$message.info("录音已取消");
+        this.isRecording = false; // 移除录音中的视觉反馈
+      }
+    },
+
+    /**
+     * 发送语音消息
+     */
+    async sendAudio(audioUrl, duration) {
+      if (!this.$store.state.userInfo) return;
+
+      const message = {
+        type: "audio",
+        content: audioUrl,
+        duration: duration,
+        name: this.$store.state.userInfo.nickname,
+        userId: this.$store.state.userInfo.id,
+        avatar: this.$store.state.userInfo.avatar,
+      };
+
+      try {
+        const response = await sendMsg(message);
+        this.shouldScrollToBottom = true; // 发送语音时设置为true
+      } catch (error) {
+        console.error("发送语音失败:", error);
+        this.$message.error("发送失败，请重试");
+      }
+    },
+
+    /**
+     * 切换语音播放状态
+     */
+    toggleAudioPlayback(msg, event) {
+
+      const audio = new Audio(msg.content);
+      audio.play().then(() => {
+        this.$set(msg, 'isPlaying', true);
+
+        audio.onended = () => {
+          this.$set(msg, 'isPlaying', false);
+        };
+      }).catch(error => {
+        console.error("音频播放失败:", error);
+        this.$message.error("音频播放失败，请检查音频格式或网络连接");
+      });
+    },
+
+    /**
+     * 格式化音频时长
+     */
+    formatAudioDuration(duration) {
+      const minutes = Math.floor(duration / 60);
+      const seconds = duration % 60;
+      return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -1123,13 +1520,17 @@ export default {
   }
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(44, 62, 80, 0.1) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(52, 152, 219, 0.1) 0%,
+      rgba(44, 62, 80, 0.1) 100%
+    );
     z-index: 1;
   }
 
@@ -1152,13 +1553,13 @@ export default {
       transition: all 0.3s ease;
       border: 2px solid transparent;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      
+
       &:hover {
         border-color: rgba(255, 255, 255, 0.8);
         transform: scale(1.05) translateY(-2px);
         box-shadow: 0 8px 16px rgba(52, 152, 219, 0.3);
       }
-      
+
       img {
         width: 100%;
         height: 100%;
@@ -1195,7 +1596,7 @@ export default {
         color: white;
         background: rgba(255, 255, 255, 0.1);
         transform: translateY(-1px);
-        
+
         .nav-text {
           opacity: 1;
           transform: scale(1.02);
@@ -1208,23 +1609,23 @@ export default {
         &.chat-icon i {
           color: #2ecc71;
         }
-        
+
         &.friends-icon i {
           color: #e74c3c;
         }
-        
+
         &.groups-icon i {
           color: #f1c40f;
         }
       }
-      
+
       &.active {
         color: white;
         background: rgba(255, 255, 255, 0.15);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
         &::before {
-          content: '';
+          content: "";
           position: absolute;
           left: -$spacing-sm;
           top: 50%;
@@ -1235,7 +1636,7 @@ export default {
           border-radius: 0 4px 4px 0;
           box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
         }
-        
+
         .nav-text {
           opacity: 1;
           color: white;
@@ -1245,11 +1646,11 @@ export default {
         &.chat-icon i {
           color: #2ecc71;
         }
-        
+
         &.friends-icon i {
           color: #e74c3c;
         }
-        
+
         &.groups-icon i {
           color: #f1c40f;
         }
@@ -1268,7 +1669,7 @@ export default {
       }
 
       &::after {
-        content: '';
+        content: "";
         position: absolute;
         left: 50%;
         bottom: -$spacing-sm;
@@ -1312,7 +1713,7 @@ export default {
         color: white;
         background: rgba(255, 255, 255, 0.1);
         transform: translateY(-1px);
-        
+
         .nav-text {
           opacity: 1;
         }
@@ -1356,7 +1757,7 @@ export default {
     transform: translateX(0);
     transition: transform 0.3s ease;
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-    
+
     &.mobile-hidden {
       transform: translateX(-280px);
     }
@@ -1367,10 +1768,10 @@ export default {
     border-bottom: 1px solid var(--border-color);
     background: var(--card-bg);
     position: relative;
-    
+
     &::before {
-      content: '\f002';
-      font-family: 'Font Awesome 5 Free';
+      content: "\f002";
+      font-family: "Font Awesome 5 Free";
       font-weight: 900;
       position: absolute;
       left: 24px;
@@ -1380,7 +1781,7 @@ export default {
       font-size: 0.9em;
       opacity: 0.7;
     }
-    
+
     input {
       width: 100%;
       padding: $spacing-sm $spacing-xl $spacing-sm 42px;
@@ -1390,12 +1791,12 @@ export default {
       color: var(--text-primary);
       font-size: 0.9em;
       transition: all 0.3s ease;
-      
+
       &:focus {
         outline: none;
         border-color: $primary;
         box-shadow: 0 0 0 3px rgba($primary, 0.1);
-        
+
         & + .search-icon {
           color: $primary;
         }
@@ -1422,16 +1823,17 @@ export default {
     margin: $spacing-sm $spacing-xs;
     cursor: pointer;
     transition: all 0.3s ease;
-    
-    &:hover, &.active {
+
+    &:hover,
+    &.active {
       background: var(--hover-bg);
     }
-    
+
     .avatar {
       width: 42px;
       height: 42px;
       flex-shrink: 0;
-      
+
       img {
         width: 100%;
         height: 100%;
@@ -1439,7 +1841,7 @@ export default {
         object-fit: cover;
       }
     }
-    
+
     .friend-info {
       .name {
         font-size: 0.95em;
@@ -1463,16 +1865,16 @@ export default {
   &:hover {
     background: var(--hover-bg);
   }
-  
+
   &.active {
     background: var(--hover-bg);
   }
-  
+
   .avatar {
     width: 42px;
     height: 42px;
     flex-shrink: 0;
-    
+
     img {
       width: 100%;
       height: 100%;
@@ -1480,18 +1882,17 @@ export default {
       object-fit: cover;
     }
   }
-  
-  .chat-info {    
+
+  .chat-info {
     min-width: 0; // 确保文本可以正确截断
-    
+
     .name {
       margin-bottom: 4px;
       font-size: 0.95em;
       font-weight: 500;
       color: var(--text-primary);
-      
     }
-    
+
     .last-message {
       font-size: 0.85em;
       color: var(--text-secondary);
@@ -1501,10 +1902,10 @@ export default {
       width: 170px;
     }
   }
-  
+
   .meta {
     flex-shrink: 0;
-    
+
     .time {
       font-size: 0.8em;
       color: var(--text-secondary);
@@ -1527,7 +1928,7 @@ export default {
   border-left: 1px solid var(--border-color);
   position: relative;
   overflow: hidden;
-  
+
   @media screen and (max-width: 768px) {
     grid-column: 2;
     padding-top: 60px; // 为header留出空间
@@ -1552,14 +1953,14 @@ export default {
       align-items: center;
       gap: $spacing-md;
       width: 100%;
-      
+
       h3 {
         font-size: 1.1em;
         font-weight: 600;
         color: var(--text-primary);
         margin: 0;
       }
-      
+
       .toggle-list-btn {
         display: none;
         align-items: center;
@@ -1570,15 +1971,15 @@ export default {
         background: var(--hover-bg);
         cursor: pointer;
         margin-right: $spacing-sm;
-        
+
         @media screen and (max-width: 768px) {
           display: flex;
         }
-        
+
         &:hover {
           background: var(--border-color);
         }
-        
+
         i {
           color: var(--text-primary);
           font-size: 1.1em;
@@ -1596,18 +1997,18 @@ export default {
     display: flex;
     flex-direction: column;
     gap: $spacing-md;
-    
+
     .message {
       display: flex;
       gap: $spacing-sm;
       align-items: flex-start;
-      
+
       &.message-self {
         flex-direction: row-reverse;
-        
+
         .message-content {
           align-items: flex-end;
-          
+
           .message-text {
             background: $primary;
             color: white;
@@ -1623,12 +2024,12 @@ export default {
           }
         }
       }
-      
+
       .avatar {
         width: 36px;
         height: 36px;
         flex-shrink: 0;
-        
+
         img {
           width: 100%;
           height: 100%;
@@ -1636,42 +2037,42 @@ export default {
           object-fit: cover;
         }
       }
-      
+
       .message-content {
         display: flex;
         flex-direction: column;
         gap: 4px;
         max-width: 70%;
-        
+
         .message-header {
           display: flex;
           align-items: center;
           gap: $spacing-sm;
-          
+
           .sender-name {
             font-size: 0.85em;
             color: var(--text-secondary);
           }
         }
-        
+
         .message-text {
           background: var(--hover-bg);
           padding: $spacing-sm $spacing-md;
           border-radius: 16px 16px 16px 4px;
           color: var(--text-primary);
           word-break: break-word;
-          
+
           :deep(mention) {
             color: rgb(84, 214, 231);
             font-weight: 500;
             cursor: pointer;
-            
+
             &:hover {
               text-decoration: underline;
             }
           }
         }
-        
+
         .message-time {
           font-size: 0.8em;
           color: var(--text-secondary);
@@ -1692,7 +2093,7 @@ export default {
     display: flex;
     gap: $spacing-md;
     z-index: 10;
-    
+
     @media screen and (max-width: 768px) {
       position: fixed; // 固定定位
       left: 80px; // 与左侧导航栏对齐
@@ -1702,12 +2103,18 @@ export default {
       display: flex;
       gap: $spacing-sm;
       align-items: center;
-      
-      :deep(.emoji-picker i){
+
+      :deep(.emoji-picker i) {
         color: #f1c40f !important;
       }
-      .image-upload-btn{
-        color: $primary  ;
+      .image-upload-btn {
+        color: $primary;
+      }
+      .file-upload-btn {
+        color: #2daba5;
+      }
+      .voice-toggle-btn {
+        color: #e67e22;
       }
       .toolbar-btn {
         padding: $spacing-sm;
@@ -1715,10 +2122,9 @@ export default {
         background: none;
         cursor: pointer;
         border-radius: 4px;
-        
+
         &:hover {
           background: var(--hover-bg);
-          color: $primary;
         }
       }
     }
@@ -1737,13 +2143,13 @@ export default {
       height: 60px;
       background: var(--input-bg);
       color: var(--text-primary);
-      
+
       &:focus {
         outline: none;
         border-color: $primary;
       }
     }
-    
+
     button {
       width: 60px;
       border: none;
@@ -1753,11 +2159,7 @@ export default {
       cursor: pointer;
       transition: all 0.3s ease;
       font-size: 1em;
-      
-      &:hover:not(:disabled) {
-        background: darken($primary, 10%);
-      }
-      
+
       &:disabled {
         opacity: 0.5;
         cursor: not-allowed;
@@ -1772,13 +2174,13 @@ export default {
   border-radius: 12px 12px 12px 4px;
   color: var(--text-primary);
   max-width: 600px;
-  
+
   // 添加深度选择器来处理v-html内容的样式
   :deep(mention) {
     color: rgb(84, 214, 231) !important;
     font-weight: 500;
     cursor: pointer;
-    
+
     &:hover {
       text-decoration: underline;
     }
@@ -1792,7 +2194,7 @@ export default {
   align-items: center;
   justify-content: center;
   color: var(--text-secondary);
-  
+
   i {
     font-size: 4em;
     margin-bottom: $spacing-md;
@@ -1805,7 +2207,7 @@ export default {
   border-radius: 8px;
   cursor: pointer;
   transition: transform 0.3s ease;
-  
+
   &:hover {
     transform: scale(1.05);
   }
@@ -1823,7 +2225,7 @@ export default {
   padding: 4px;
   cursor: pointer;
   color: var(--text-secondary);
-  
+
   &:hover {
     color: var(--text-primary);
   }
@@ -1837,7 +2239,7 @@ export default {
   text-align: center;
   padding: $spacing-md;
   margin: 0 auto;
-  
+
   span {
     background: var(--hover-bg);
     color: var(--text-secondary);
@@ -1861,7 +2263,7 @@ export default {
   z-index: 1000;
   padding: $spacing-sm;
   min-width: 120px;
-  
+
   .action-item {
     padding: $spacing-sm $spacing-md;
     cursor: pointer;
@@ -1869,11 +2271,11 @@ export default {
     align-items: center;
     gap: $spacing-sm;
     color: var(--text-primary);
-    
+
     &:hover {
       background: var(--hover-bg);
     }
-    
+
     i {
       color: var(--text-secondary);
     }
@@ -1885,7 +2287,7 @@ export default {
   padding: $spacing-md;
   color: var(--text-secondary);
   font-size: 0.9em;
-  
+
   i {
     margin-right: $spacing-sm;
   }
@@ -1919,7 +2321,7 @@ export default {
 // 添加遮罩层样式
 .mobile-overlay {
   display: none;
-  
+
   @media screen and (max-width: 768px) {
     display: block;
     position: fixed;
@@ -1946,12 +2348,116 @@ export default {
     margin-bottom: $spacing-md;
   }
 
-  .signature, .gender {
+  .signature,
+  .gender {
     font-size: 1em;
     color: var(--text-secondary);
     margin-bottom: $spacing-md;
   }
-  
-
 }
-</style> 
+
+.message-file {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  background: var(--hover-bg);
+  padding: $spacing-sm $spacing-md;
+  border-radius: 8px;
+  color: var(--text-primary);
+  cursor: pointer;
+  max-width: 500px;
+
+  i {
+    font-size: 1.5em;
+    color: #3498db;
+  }
+
+  .file-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+
+    a {
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .file-size {
+      font-size: 0.85em;
+      color: var(--text-secondary);
+    }
+  }
+}
+
+.chat-input {
+  .voice-toggle-btn {
+    color: #e67e22;
+  }
+  .voice-record-btn {
+    width: 500px !important;
+
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--input-bg);
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1em;
+    transition: background 0.3s ease;
+
+    &:hover,
+    &:active,
+    &.recording {
+      background: #e74c3c;
+      color: white;
+    }
+  }
+}
+
+.message-audio {
+  display: flex;
+  align-items: center;
+  background: #e6f7ff;
+  padding: 8px 12px;
+  border-radius: 16px;
+  cursor: pointer;
+  max-width: 250px;
+  position: relative;
+  overflow: hidden;
+  margin: 5px 0;
+
+  .audio-bubble {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #333;
+
+    i {
+      font-size: 1.2em;
+      color: #1890ff;
+    }
+
+    span {
+      font-size: 0.85em;
+      color: #555;
+    }
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-right-color: #e6f7ff;
+  }
+}
+</style>

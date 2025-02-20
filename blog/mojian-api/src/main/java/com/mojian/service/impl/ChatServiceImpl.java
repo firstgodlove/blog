@@ -38,6 +38,9 @@ public class ChatServiceImpl implements ChatService {
         chatMsg.setContent(chatSendMsgVo.getContent());
         chatMsg.setIp(IpUtil.getIp());
         chatMsg.setLocation(IpUtil.getIp2region(chatMsg.getIp()));
+        chatMsg.setFileName(chatSendMsgVo.getFileName());
+        chatMsg.setFileSize(chatSendMsgVo.getFileSize());
+        chatMsg.setDuration(chatSendMsgVo.getDuration());
         chatMsgMapper.insert(chatMsg);
 
         chatSendMsgVo.setId(chatMsg.getId());

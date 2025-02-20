@@ -90,7 +90,9 @@ blog
 ![statics/img_1.png](/statics/img_1.png) ![statics/img_2.png](/statics/img_2.png)
 
 
-![statics/img_3.png](/statics/img_3.png)
+![statics/img_3.png](/statics/img_3.png) ![img.png](/statics/login.png)
+
+![img.png](/statics/about.png)
 
 **管理系统**
 ![statics/img_4.png](/statics/img_4.png)  ![statics/img_5.png](/statics/img_5.png)

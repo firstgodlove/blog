@@ -436,6 +436,7 @@ export default {
       isRecording: false, // 新增录音状态
       audioStartTime: null, // 新增音频开始时间
       audioEndTime: null, // 新增音频结束时间
+      audio: null,
     };
   },
   //监听this.$store.state.userInfo的变化
@@ -1454,15 +1455,21 @@ export default {
      * 切换语音播放状态
      */
     toggleAudioPlayback(msg, event) {
-
-      const audio = new Audio(msg.content);
-      audio.play().then(() => {
+      if (this.audio) {
+        this.audio.pause();
+        this.$set(msg, 'isPlaying', false);
+        this.audio = null;
+        return;
+      }
+      this.audio = new Audio(msg.content);
+      this.audio.play().then(() => {
         this.$set(msg, 'isPlaying', true);
-
-        audio.onended = () => {
+        this.audio.onended = () => {
           this.$set(msg, 'isPlaying', false);
+          this.audio = null;
         };
       }).catch(error => {
+        this.audio = null;
         console.error("音频播放失败:", error);
         this.$message.error("音频播放失败，请检查音频格式或网络连接");
       });

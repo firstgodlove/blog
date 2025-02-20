@@ -6,39 +6,40 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mojian.utils.DateUtil;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 
 @Data
 @TableName("sys_album")
-@Schema(description = "相册对象")
+@ApiModel(value = "相册对象")
 public class SysAlbum implements Serializable {
 
     @TableId(type = IdType.AUTO)
-    @Schema(description = "主键")
+    @ApiModelProperty(value = "主键")
     private Long id;
 
-    @Schema(description = "封面图")
+    @ApiModelProperty(value = "封面图")
     private String cover;
 
-    @Schema(description = "相册名")
+    @ApiModelProperty(value = "相册名")
     private String name;
 
-    @Schema(description = "相册描述")
+    @ApiModelProperty(value = "相册描述")
     private String description;
 
-    @Schema(description = "是否加密 0：否 1：是")
+    @ApiModelProperty(value = "是否加密 0：否 1：是")
     private Integer isLock;
 
-    @Schema(description = "密码")
+    @ApiModelProperty(value = "密码")
     private String password;
 
-    @Schema(description = "排序")
+    @ApiModelProperty(value = "排序")
     private Integer sort;
 
-    @Schema(description = "创建时间")
+    @ApiModelProperty(value = "创建时间")
     @JsonFormat(pattern = DateUtil.YYYY_MM_DD, timezone = "GMT+8")
     private LocalDateTime createTime;
 

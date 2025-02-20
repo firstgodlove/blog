@@ -1,18 +1,19 @@
 package com.mojian.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@Schema(description = "任务日志查询参数")
+@ApiModel(value = "任务日志查询参数")
 public class JobLogQuery {
-    
-    @Schema(description = "任务名称")
+
+    @ApiModelProperty(value = "任务名称")
     private String jobName;
-    
-    @Schema(description = "任务组名")
+
+    @ApiModelProperty(value = "任务组名")
     private String jobGroup;
-    
-    @Schema(description = "执行状态")
+
+    @ApiModelProperty(value = "执行状态")
     private String status;
 }

@@ -1,21 +1,22 @@
 package com.mojian.vo.server;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@Schema(description = "服务器内存信息")
+@ApiModel(value = "服务器内存信息")
 public class MemInfo {
 
-    @Schema(description = "总内存")
+    @ApiModelProperty(value = "总内存")
     private long total;
 
-    @Schema(description = "已用内存")
+    @ApiModelProperty(value = "已用内存")
     private long used;
 
-    @Schema(description = "剩余内存")
+    @ApiModelProperty(value = "剩余内存")
     private long free;
 
-    @Schema(description = "使用率")
+    @ApiModelProperty(value = "使用率")
     private double usage;
 }

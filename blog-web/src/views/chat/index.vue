@@ -360,10 +360,18 @@ export default {
   methods: {
     switchNav(nav) {
       this.currentNav = nav;
-      this.selectedFriend = null
+      this.selectedFriend = null;
       if (nav === 'chat') {
         this.$nextTick(() => {
           this.scrollToBottom();
+          // 重新添加滚动事件监听器
+          const container = this.$refs.messageContainer;
+          if (container) {
+            container.addEventListener('scroll', this.handleScroll);
+          }
+          // 重置加载状态
+          this.hasMore = true;
+          this.params.pageNum = 1;
         });
       }
     },

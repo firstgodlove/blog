@@ -21,6 +21,8 @@ public class SaTokenConfigure implements WebMvcConfigurer {
                         "/swagger-ui/**",          // knife4j接口文档
                         "/webjars/**",        // knife4j相关资源
                         "/v3/api-docs/**",     // openapi接口文档
+                        "/doc.html",     // openapi接口文档
+                        "/favicon.ico",     // openapi接口文档
                         "/swagger-resources",
                         "/api/**",
                         "/wechat/**",

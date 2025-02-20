@@ -3,7 +3,8 @@ package com.mojian.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mojian.utils.DateUtil;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,25 +13,25 @@ import java.time.LocalDateTime;
 
 @Data
 @TableName("sys_dict")
-@Schema(description = "字典类型")
+@ApiModel(value = "字典类型")
 public class SysDict implements Serializable {
 
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    @Schema(description = "字典名称")
+    @ApiModelProperty(value = "字典名称")
     private String name;
 
-    @Schema(description = "字典类型")
+    @ApiModelProperty(value = "字典类型")
     private String type;
 
-    @Schema(description = "状态")
+    @ApiModelProperty(value = "状态")
     private Integer status;
 
-    @Schema(description = "备注")
+    @ApiModelProperty(value = "备注")
     private String remark;
 
-    @Schema(description = "排序")
+    @ApiModelProperty(value = "排序")
     private Integer sort;
 
     @TableField(fill = FieldFill.INSERT)

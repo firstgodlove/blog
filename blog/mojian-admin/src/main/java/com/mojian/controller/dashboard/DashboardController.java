@@ -4,7 +4,7 @@ package com.mojian.controller.dashboard;
 import com.mojian.common.Result;
 import com.mojian.vo.dashboard.IndexVo;
 import com.mojian.service.IndexService;
-import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,14 +22,14 @@ public class DashboardController {
     private final IndexService indexService;
 
     @GetMapping
-    @Operation(summary = "首页")
+    @ApiOperation(value = "首页")
     public Result<IndexVo> index() {
         return Result.success(indexService.index());
     }
 
 
     @GetMapping("/bottom")
-    @Operation(summary = "首页底部分类")
+    @ApiOperation(value = "首页底部分类")
     public Result<List<Map<String, Integer>>> getCategories() {
         return Result.success(indexService.getCategories());
     }

@@ -2,59 +2,60 @@ package com.mojian.vo.comment;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mojian.utils.DateUtil;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@Schema(description = "评论列表视图对象")
+@ApiModel(value = "评论列表视图对象")
 public class CommentListVo {
 
-    @Schema(description = "评论主键ID，自增唯一标识")
+    @ApiModelProperty(value = "评论主键ID，自增唯一标识")
     private Integer id;
 
-    @Schema(description = "关联的文章ID，表明该评论所属的文章")
+    @ApiModelProperty(value = "关联的文章ID，表明该评论所属的文章")
     private Integer articleId;
 
-    @Schema(description = "关联的文章标题")
+    @ApiModelProperty(value = "关联的文章标题")
     private String articleTitle;
 
-    @Schema(description = "评论父级id")
+    @ApiModelProperty(value = "评论父级id")
     private Integer parentId;
 
-    @Schema(description = "评论用户id")
+    @ApiModelProperty(value = "评论用户id")
     private Integer userId;
 
-    @Schema(description = "发表评论的用户ID")
+    @ApiModelProperty(value = "发表评论的用户ID")
     private String nickname;
 
-    @Schema(description = "头像")
+    @ApiModelProperty(value = "头像")
     private String avatar;
 
-    @Schema(description = "回复人id")
+    @ApiModelProperty(value = "回复人id")
     private String replyNickname;
 
-    @Schema(description = "评论内容，使用utf8mb4字符集以支持更多字符类型")
+    @ApiModelProperty(value = "评论内容，使用utf8mb4字符集以支持更多字符类型")
     private String content;
 
-    @Schema(description = "是否置顶")
+    @ApiModelProperty(value = "是否置顶")
     private Integer isStick;
 
-    @Schema(description = "ip")
+    @ApiModelProperty(value = "ip")
     private String ip;
 
-    @Schema(description = "ip来源")
+    @ApiModelProperty(value = "ip来源")
     private String ipSource;
 
-    @Schema(description = "浏览器")
+    @ApiModelProperty(value = "浏览器")
     private String browser;
 
-    @Schema(description = "创建时间")
+    @ApiModelProperty(value = "创建时间")
     @JsonFormat(pattern = DateUtil.YYYY_MM_DD_HH_MM_SS)
     private LocalDateTime createTime;
 
-    @Schema(description = "子评论")
+    @ApiModelProperty(value = "子评论")
     private List<CommentListVo> children;
 }

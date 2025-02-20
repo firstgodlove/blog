@@ -1,21 +1,22 @@
 package com.mojian.vo.server;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@Schema(description = "服务器cpu信息")
+@ApiModel(value = "服务器cpu信息")
 public class CpuInfo {
 
-    @Schema(description = "cpu核数")
+    @ApiModelProperty(value = "cpu核数")
     private int cpuNum;
 
-    @Schema(description = "cpu用户使用率")
+    @ApiModelProperty(value = "cpu用户使用率")
     private double used;
 
-    @Schema(description = "cpu系统使用率")
+    @ApiModelProperty(value = "cpu系统使用率")
     private double sys;
 
-    @Schema(description = "当前空闲率")
+    @ApiModelProperty(value = "当前空闲率")
     private double free;
 }

@@ -3,7 +3,8 @@ package com.mojian.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mojian.utils.DateUtil;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,61 +18,61 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName("sys_user")
-@Schema(description = "用户信息")
+@ApiModel(value = "用户信息")
 public class SysUser implements Serializable {
 
     @TableId(type = IdType.AUTO)
     private Integer id;
 
-    @Schema(description = "用户名")
+    @ApiModelProperty(value = "用户名")
     private String username;
 
-    @Schema(description = "密码")
+    @ApiModelProperty(value = "密码")
     private String password;
 
-    @Schema(description = "状态")
+    @ApiModelProperty(value = "状态")
     private Integer status;
 
-    @Schema(description = "ip地址")
+    @ApiModelProperty(value = "ip地址")
     private String ip;
 
-    @Schema(description = "ip来源")
+    @ApiModelProperty(value = "ip来源")
     private String ipLocation;
 
-    @Schema(description = "操作系统")
+    @ApiModelProperty(value = "操作系统")
     private String os;
 
-    @Schema(description = "上次登录时间")
+    @ApiModelProperty(value = "上次登录时间")
     @JsonFormat(pattern = DateUtil.YYYY_MM_DD_HH_MM_SS, timezone = "GMT+8")
     private LocalDateTime lastLoginTime;
 
-    @Schema(description = "浏览器")
+    @ApiModelProperty(value = "浏览器")
     private String browser;
 
-    @Schema(description = "昵称")
+    @ApiModelProperty(value = "昵称")
     private String nickname;
 
-    @Schema(description = "头像")
+    @ApiModelProperty(value = "头像")
     private String avatar;
 
-    @Schema(description = "手机号")
+    @ApiModelProperty(value = "手机号")
     private String mobile;
 
-    @Schema(description = "邮箱")
+    @ApiModelProperty(value = "邮箱")
     private String email;
 
-    @Schema(description = "性别")
+    @ApiModelProperty(value = "性别")
     private Integer sex;
 
-    @Schema(description = "登录方式")
+    @ApiModelProperty(value = "登录方式")
     private String loginType;
 
-    @Schema(description = "创建时间")
+    @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
     @JsonFormat(pattern = DateUtil.YYYY_MM_DD_HH_MM_SS, timezone = "GMT+8")
     private LocalDateTime createTime;
 
-    @Schema(description = "更新时间")
+    @ApiModelProperty(value = "更新时间")
     @TableField(fill = FieldFill.UPDATE)
     @JsonFormat(pattern = DateUtil.YYYY_MM_DD_HH_MM_SS, timezone = "GMT+8")
     private LocalDateTime updateTime;

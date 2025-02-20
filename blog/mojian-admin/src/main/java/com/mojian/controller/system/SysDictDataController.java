@@ -6,16 +6,16 @@ import com.mojian.annotation.OperationLogger;
 import com.mojian.common.Result;
 import com.mojian.entity.SysDictData;
 import com.mojian.service.SysDictDataService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "字典数据管理", description = "字典数据相关接口")
+@Api(tags = "字典数据管理")
 @RestController
 @RequestMapping("/sys/dictData")
 @RequiredArgsConstructor
@@ -24,19 +24,19 @@ public class SysDictDataController {
     private final SysDictDataService sysDictDataService;
 
     @GetMapping("list")
-    @Operation(summary = "获取字典数据列表")
+    @ApiOperation(value = "获取字典数据列表")
     public Result<IPage<SysDictData>> listDictData(Long dictId) {
         return Result.success(sysDictDataService.listDictData(dictId));
     }
 
     @GetMapping("getDiceData/{dictType}")
-    @Operation(summary = "获取字典数据列表")
+    @ApiOperation(value = "获取字典数据列表")
     public Result<Map<String, Map<String, Object>>> getDiceDataByDictType(@PathVariable List<String> dictType) {
         return Result.success(sysDictDataService.getDiceDataByDictType(dictType));
     }
 
     @PostMapping("add")
-    @Operation(summary = "新增字典数据")
+    @ApiOperation(value = "新增字典数据")
     @OperationLogger(value = "新增字典数据")
     @SaCheckPermission("sys:dict:add")
     public Result<Void> addDictData(@RequestBody SysDictData dictData) {
@@ -45,7 +45,7 @@ public class SysDictDataController {
     }
 
     @PutMapping("update")
-    @Operation(summary = "修改字典数据")
+    @ApiOperation(value = "修改字典数据")
     @OperationLogger(value = "修改字典数据")
     @SaCheckPermission("sys:dict:update")
     public Result<Void> updateDictData(@RequestBody SysDictData dictData) {
@@ -54,7 +54,7 @@ public class SysDictDataController {
     }
 
     @DeleteMapping("/delete/{ids}")
-    @Operation(summary = "删除字典数据")
+    @ApiOperation(value = "删除字典数据")
     @OperationLogger(value = "删除字典数据")
     @SaCheckPermission("sys:dict:delete")
     public Result<Void> delete(@PathVariable List<Long> ids) {

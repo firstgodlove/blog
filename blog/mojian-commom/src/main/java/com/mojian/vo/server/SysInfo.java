@@ -1,24 +1,25 @@
 package com.mojian.vo.server;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@Schema(description = "服务器信息")
+@ApiModel(value = "服务器信息")
 public class SysInfo {
 
-    @Schema(description = "服务器名称")
+    @ApiModelProperty(value = "服务器名称")
     private String computerName;
 
-    @Schema(description = "服务器IP")
+    @ApiModelProperty(value = "服务器IP")
     private String computerIp;
 
-    @Schema(description = "操作系统")
+    @ApiModelProperty(value = "操作系统")
     private String osName;
 
-    @Schema(description = "系统架构")
+    @ApiModelProperty(value = "系统架构")
     private String osArch;
 
-    @Schema(description = "项目路径")
+    @ApiModelProperty(value = "项目路径")
     private String userDir;
 }

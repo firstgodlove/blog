@@ -1,6 +1,7 @@
 package com.mojian.vo.article;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,12 +11,12 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "归档视图对象")
+@ApiModel(value = "归档视图对象")
 public class ArchiveListVo {
 
-    @Schema(description = "年份")
+    @ApiModelProperty(value = "年份")
     private Integer year;
 
-    @Schema(description = "文章列表")
+    @ApiModelProperty(value = "文章列表")
     private List<ArticleListVo> posts;
 }

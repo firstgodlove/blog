@@ -3,7 +3,8 @@ package com.mojian.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mojian.utils.DateUtil;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,30 +13,30 @@ import java.time.LocalDateTime;
 
 @Data
 @TableName("sys_photo")
-@Schema(description = "图片对象")
+@ApiModel(value = "图片对象")
 public class SysPhoto implements Serializable {
 
     @TableId(type = IdType.AUTO)
-    @Schema(description = "主键")
+    @ApiModelProperty(value = "主键")
     private Long id;
 
-    @Schema(description = "相册id")
+    @ApiModelProperty(value = "相册id")
     private Long albumId;
 
-    @Schema(description = "图片地址")
+    @ApiModelProperty(value = "图片地址")
     private String url;
 
-    @Schema(description = "图片描述")
+    @ApiModelProperty(value = "图片描述")
     private String description;
 
-    @Schema(description = "排序")
+    @ApiModelProperty(value = "排序")
     private Integer sort;
 
-    @Schema(description = "记录时间")
+    @ApiModelProperty(value = "记录时间")
     @JsonFormat(pattern = DateUtil.YYYY_MM_DD, timezone = "GMT+8")
     private LocalDate recordTime;
 
-    @Schema(description = "创建时间")
+    @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 }

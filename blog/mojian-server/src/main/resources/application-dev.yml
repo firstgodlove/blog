@@ -17,17 +17,29 @@ spring:
    # password: queql#admin
     database: 8
 
-# knife4j的增强配置，不需要增强可以不配
+
+#==============================knife4j配置==============================
 knife4j:
   enable: true
   basic:
     enable: true
-    # Basic认证用户名
-    username: mojian
-    # Basic认证密码
+    username: test
     password: 123456
-  setting:
-    language: zh_cn
+  openapi:
+    title: 拾壹博客接口文档
+    description: 一个专注于技术分享的博客平台
+    # aaa"
+    email: 248954763@qq.com
+    concat: 拾壹
+    url: https://www.shiyit.com
+    version: v1.0
+    group:
+      test1:
+        group-name: 分组名称
+        api-rule: package
+        api-rule-resources:
+          - com.mojian
+
 #==============================公众号配置==============================
 wechat:
   app-id:

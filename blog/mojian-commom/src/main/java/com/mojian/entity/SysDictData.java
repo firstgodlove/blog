@@ -3,7 +3,8 @@ package com.mojian.entity;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -11,35 +12,35 @@ import lombok.Data;
  */
 @Data
 @TableName("sys_dict_data")
-@Schema(description = "字典数据")
+@ApiModel(value = "字典数据")
 public class SysDictData {
 
 
     @TableId(type = IdType.AUTO)
-    @Schema(description = "字典数据id")
+    @ApiModelProperty(value = "字典数据id")
     private Long id;
 
-    @Schema(description = "字典类型id")
+    @ApiModelProperty(value = "字典类型id")
     private Long dictId;
 
-    @Schema(description = "字典标签")
+    @ApiModelProperty(value = "字典标签")
     private String label;
 
-    @Schema(description = "字典键值")
+    @ApiModelProperty(value = "字典键值")
     private String value;
 
-    @Schema(description = "回显样式")
+    @ApiModelProperty(value = "回显样式")
     private String style;
 
-    @Schema(description = "是否默认（1是 0否）")
+    @ApiModelProperty(value = "是否默认（1是 0否）")
     private Integer isDefault;
 
-    @Schema(description = "排序")
+    @ApiModelProperty(value = "排序")
     private Integer sort;
 
-    @Schema(description = "备注")
+    @ApiModelProperty(value = "备注")
     private String remark;
 
-    @Schema(description = "状态")
+    @ApiModelProperty(value = "状态")
     private Integer status;
 }

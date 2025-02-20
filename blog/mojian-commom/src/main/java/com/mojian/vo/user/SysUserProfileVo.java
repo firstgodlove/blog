@@ -1,7 +1,8 @@
 package com.mojian.vo.user;
 
 import com.mojian.entity.SysUser;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,12 +15,12 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "个人信息")
+@ApiModel(value = "个人信息")
 public class SysUserProfileVo {
 
-    @Schema(description = "用户信息")
+    @ApiModelProperty(value = "用户信息")
     private SysUser sysUser;
 
-    @Schema(description = "角色")
+    @ApiModelProperty(value = "角色")
     private List<String> roles;
 }

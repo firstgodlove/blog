@@ -1,10 +1,10 @@
-package com.mojian.controller;
+package com.mojian.controller.site;
 
 import java.util.List;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 import com.mojian.entity.SysPhoto;
 import com.mojian.service.SysPhotoService;
@@ -18,47 +18,47 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/sys/photo")
 @RequiredArgsConstructor
-@Tag(name = "照片管理", description = "照片管理相关接口")
+@Api(tags = "照片管理")
 public class SysPhotoController {
 
     private final SysPhotoService sysPhotoService;
 
     @GetMapping("/list")
-    @Operation(summary = "获取照片列表")
+    @ApiOperation(value = "获取照片列表")
     public Result<IPage<SysPhoto>> list(SysPhoto sysPhoto) {
         return Result.success(sysPhotoService.selectPage(sysPhoto));
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "获取照片详情")
+    @ApiOperation(value = "获取照片详情")
     public Result<SysPhoto> getInfo(@PathVariable("id") Long id) {
         return Result.success(sysPhotoService.getById(id));
     }
 
     @PostMapping("/add")
     @SaCheckPermission("sys:photo:add")
-    @Operation(summary = "添加照片")
+    @ApiOperation(value = "添加照片")
     public Result<Object> add(@RequestBody SysPhoto sysPhoto) {
         return Result.success(sysPhotoService.insert(sysPhoto));
     }
 
     @PutMapping("/update")
     @SaCheckPermission("sys:photo:update")
-    @Operation(summary = "修改照片")
+    @ApiOperation(value = "修改照片")
     public Result<Object> edit(@RequestBody SysPhoto sysPhoto) {
         return Result.success(sysPhotoService.update(sysPhoto));
     }
 
     @DeleteMapping("/delete/{ids}")
     @SaCheckPermission("sys:photo:delete")
-    @Operation(summary = "删除照片")
+    @ApiOperation(value = "删除照片")
     public Result<Object> remove(@PathVariable List<Long> ids) {
         return Result.success(sysPhotoService.deleteByIds(ids));
     }
 
     @PutMapping("/move/{ids}")
     @SaCheckPermission("sys:photo:move")
-    @Operation(summary = "移动照片")
+    @ApiOperation(value = "移动照片")
     public Result<Object> move(@PathVariable List<Long> ids, @RequestParam Long albumId) {
         return Result.success(sysPhotoService.move(ids,albumId));
     }

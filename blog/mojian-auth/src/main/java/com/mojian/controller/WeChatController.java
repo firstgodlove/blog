@@ -1,8 +1,8 @@
 package com.mojian.controller;
 
 import com.mojian.service.AuthService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.api.WxConsts;
@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * @description:
  */
 @Slf4j
-@Tag(name = "微信接口相关控制器")
+@Api(tags = "微信接口相关控制器")
 @RestController()
 @RequestMapping("/wechat")
 @RequiredArgsConstructor
@@ -34,7 +34,7 @@ public class WeChatController {
 
     private final Pattern pattern = Pattern.compile("(?i)^DL\\d{4}$");
 
-    @Operation(description = "微信公众号服务器配置校验token")
+    @ApiOperation(value = "微信公众号服务器配置校验token")
     @GetMapping(produces = "text/plain;charset=utf-8")
     public String checkSignature(@RequestParam(name = "signature") String signature,
                                  @RequestParam(name = "timestamp") String timestamp,

@@ -3,8 +3,8 @@ package com.mojian.controller.article;
 import java.util.List;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 import com.mojian.entity.SysMoment;
 import com.mojian.service.SysMomentService;
@@ -18,34 +18,34 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/sys/moment")
 @RequiredArgsConstructor
-@Tag(name = "说说管理", description = "说说管理相关接口")
+@Api(tags = "说说管理")
 public class SysMomentController {
 
     private final SysMomentService sysMomentService;
 
     @GetMapping("/list")
-    @Operation(summary = "获取说说列表")
+    @ApiOperation(value = "获取说说列表")
     public Result<IPage<SysMoment>> list(SysMoment sysMoment) {
         return Result.success(sysMomentService.selectPage(sysMoment));
     }
 
     @PostMapping("/add")
     @SaCheckPermission("sys:moment:add")
-    @Operation(summary = "添加说说")
+    @ApiOperation(value = "添加说说")
     public Result<Object> add(@RequestBody SysMoment sysMoment) {
         return Result.success(sysMomentService.add(sysMoment));
     }
 
     @PutMapping("/update")
     @SaCheckPermission("sys:moment:update")
-    @Operation(summary = "修改说说")
+    @ApiOperation(value = "修改说说")
     public Result<Object> edit(@RequestBody SysMoment sysMoment) {
         return Result.success(sysMomentService.updateById(sysMoment));
     }
 
     @DeleteMapping("/delete/{ids}")
     @SaCheckPermission("sys:moment:delete")
-    @Operation(summary = "删除说说")
+    @ApiOperation(value = "删除说说")
     public Result<Object> remove(@PathVariable List<Long> ids) {
         return Result.success(sysMomentService.removeByIds(ids));
     }

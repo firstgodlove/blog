@@ -5,8 +5,8 @@ import com.mojian.common.Result;
 import com.mojian.dto.EmailRegisterDto;
 import com.mojian.dto.LoginDTO;
 import com.mojian.service.AuthService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.model.AuthCallback;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +18,13 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "认证管理", description = "认证相关接口")
+@Api(tags = "认证管理")
 public class AuthController {
 
     private final AuthService authService;
 
     @RequestMapping("/api/auth/render/{source}")
-    @Operation(summary = "获取第三方授权地址")
+    @ApiOperation(value = "获取第三方授权地址")
     public Result<String> renderAuth(HttpServletResponse response, @PathVariable String source) {
         return Result.success(authService.renderAuth(source));
     }
@@ -35,50 +35,50 @@ public class AuthController {
     }
 
 
-    @Operation(summary = "用户登录")
+    @ApiOperation(value = "用户登录")
     @PostMapping("/auth/login")
     public Result<LoginUserInfo> login(@RequestBody LoginDTO loginDTO) {
         return Result.success(authService.login(loginDTO));
     }
 
-    @Operation(summary = "用户登出")
+    @ApiOperation(value = "用户登出")
     @PostMapping("/auth/logout")
     public Result<Void> logout() {
         StpUtil.logout();
         return Result.success(null);
     }
 
-    @Operation(summary = "发送注册邮箱验证码")
+    @ApiOperation(value = "发送注册邮箱验证码")
     @GetMapping("/api/sendEmailCode")
     public Result<Boolean> sendEmailCode(String email) throws MessagingException {
         return Result.success(authService.sendEmailCode(email));
     }
 
-    @Operation(summary = "邮箱账号注册")
+    @ApiOperation(value = "邮箱账号注册")
     @PostMapping("/api/email/register")
     public Result<Boolean> register(@RequestBody EmailRegisterDto dto){
         return Result.success(authService.register(dto));
     }
 
-    @Operation(summary = "根据邮箱修改密码")
+    @ApiOperation(value = "根据邮箱修改密码")
     @PostMapping("/api/email/forgot")
     public Result<Boolean> forgot(@RequestBody EmailRegisterDto dto){
         return Result.success(authService.forgot(dto));
     }
 
-    @Operation(summary = "获取微信扫码登录验证码")
+    @ApiOperation(value = "获取微信扫码登录验证码")
     @GetMapping("/api/wechat/getCode")
     public Result<String> getWechatLoginCode(){
         return Result.success(authService.getWechatLoginCode());
     }
 
-    @Operation(summary = "获取微信扫码登录验证码")
+    @ApiOperation(value = "获取微信扫码登录验证码")
     @GetMapping("/api/wechat/isLogin/{loginCode}")
     public Result<LoginUserInfo> getWechatIsLogin(@PathVariable String loginCode){
         return Result.success(authService.getWechatIsLogin(loginCode));
     }
 
-    @Operation(summary = "微信小程序登录")
+    @ApiOperation(value = "微信小程序登录")
     @GetMapping("/api/wechat/appletLogin/{code}")
     public Result<LoginUserInfo> appletLogin(@PathVariable String code){
         return Result.success(authService.appletLogin(code));

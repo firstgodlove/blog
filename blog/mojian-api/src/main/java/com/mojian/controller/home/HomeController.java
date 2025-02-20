@@ -5,8 +5,7 @@ import com.mojian.entity.SysNotice;
 import com.mojian.service.HomeService;
 import com.mojian.common.Result;
 import com.mojian.entity.SysWebConfig;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,25 +23,25 @@ public class HomeController {
     private final HomeService homeService;
 
     @GetMapping("/webConfig")
-    @Operation(summary = "获取网站配置")
+    @ApiOperation(value = "获取网站配置")
     public Result<SysWebConfig> getWebConfig() {
         return homeService.getWebConfig();
     }
 
     @GetMapping("/getNotice")
-    @Operation(summary = "获取公告")
+    @ApiOperation(value = "获取公告")
     public Result<Map<String, List<SysNotice>>> getNotice() {
         return Result.success(homeService.getNotice());
     }
 
     @GetMapping("/getHotSearch/{type}")
-    @Operation(summary = "获取热搜")
+    @ApiOperation(value = "获取热搜")
     public Result<JSONObject> getHotSearch(@PathVariable String type) {
         return Result.success(homeService.getHotSearch(type));
     }
 
     @GetMapping("/report")
-    @Operation(summary = "添加访问量")
+    @ApiOperation(value = "添加访问量")
     public Result<Void> report() {
         homeService.report();
         return Result.success();

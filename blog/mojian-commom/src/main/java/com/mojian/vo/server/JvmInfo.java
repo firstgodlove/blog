@@ -1,30 +1,31 @@
 package com.mojian.vo.server;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@Schema(description = "服务器jvm信息")
+@ApiModel(value = "服务器jvm信息")
 public class JvmInfo {
 
-    @Schema(description = "当前JVM占用的总内存")
+    @ApiModelProperty(value = "当前JVM占用的总内存")
     private String total;
 
-    @Schema(description = "JVM最大可用内存")
+    @ApiModelProperty(value = "JVM最大可用内存")
     private String name;
 
-    @Schema(description = "JVM内存使用率")
+    @ApiModelProperty(value = "JVM内存使用率")
     private String usage;
 
-    @Schema(description = "JDK版本")
+    @ApiModelProperty(value = "JDK版本")
     private String version;
 
-    @Schema(description = "JDK路径")
+    @ApiModelProperty(value = "JDK路径")
     private String home;
 
-    @Schema(description = "JDK启动时间")
+    @ApiModelProperty(value = "JDK启动时间")
     private String startTime;
 
-    @Schema(description = "JDK运行时长")
+    @ApiModelProperty(value = "JDK运行时长")
     private String runTime;
 }

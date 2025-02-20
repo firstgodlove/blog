@@ -1,33 +1,34 @@
 package com.mojian.dto.user;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
 
 @Data
-@Schema(description = "登录用户信息")
+@ApiModel(value = "登录用户信息")
 public class LoginUserInfo implements Serializable {
 
-    @Schema(description = "用户ID")
+    @ApiModelProperty(value = "用户ID")
     private Integer id;
 
-    @Schema(description = "用户名")
+    @ApiModelProperty(value = "用户名")
     private String username;
 
-    @Schema(description = "昵称")
+    @ApiModelProperty(value = "昵称")
     private String nickname;
 
-    @Schema(description = "头像")
+    @ApiModelProperty(value = "头像")
     private String avatar;
 
-    @Schema(description = "token")
+    @ApiModelProperty(value = "token")
     private String token;
 
-    @Schema(description = "权限列表")
+    @ApiModelProperty(value = "权限列表")
     private List<String> permissions;
 
-    @Schema(description = "角色信息")
+    @ApiModelProperty(value = "角色信息")
     private List<String> roles;
 }

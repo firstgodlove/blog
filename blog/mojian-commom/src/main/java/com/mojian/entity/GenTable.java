@@ -2,21 +2,22 @@ package com.mojian.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mojian.utils.DateUtil;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.Date;
 
 @Data
-@Schema(description = "代码生成业务对象 gen_table")
+@ApiModel(value = "代码生成业务对象 gen_table")
 public class GenTable {
 
-    @Schema(description = "表ID")
+    @ApiModelProperty(value = "表ID")
     private Long tableId;
 
-    @Schema(description = "表名称")
+    @ApiModelProperty(value = "表名称")
     private String tableName;
 
-    @Schema(description = "表描述")
+    @ApiModelProperty(value = "表描述")
     private String tableComment;
 
     @JsonFormat(pattern = DateUtil.YYYY_MM_DD_HH_MM_SS, timezone = "GMT+8")
@@ -34,15 +35,15 @@ public class GenTable {
     private Integer offset;
     private Integer pageSize;
 
-    @Schema(description = "实体类名称")
+    @ApiModelProperty(value = "实体类名称")
     private String className;
 
-    @Schema(description = "生成包路径")
+    @ApiModelProperty(value = "生成包路径")
     private String packageName;
 
-    @Schema(description = "生成模块名")
+    @ApiModelProperty(value = "生成模块名")
     private String moduleName;
 
-    @Schema(description = "生成业务名")
+    @ApiModelProperty(value = "生成业务名")
     private String businessName;
 }

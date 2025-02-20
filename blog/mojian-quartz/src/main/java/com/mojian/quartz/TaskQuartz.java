@@ -4,7 +4,6 @@ import com.mojian.common.RedisConstants;
 import com.mojian.entity.SysArticle;
 import com.mojian.mapper.SysArticleMapper;
 import com.mojian.utils.RedisUtil;
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +32,9 @@ public class TaskQuartz {
     }
 
 
-    @Operation(description = "定时同步阅读量")
+    /**
+     * 定时同步阅读量
+     */
     public void syncQuantity() {
         // 获取带阅读量的前缀key集合
         List<SysArticle> articles = new ArrayList<>();

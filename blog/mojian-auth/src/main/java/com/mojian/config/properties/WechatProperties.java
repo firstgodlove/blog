@@ -1,6 +1,6 @@
 package com.mojian.config.properties;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -15,14 +15,14 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "wechat")
 public class WechatProperties {
 
-    @Schema(description = "公众号appId")
+    @ApiModelProperty(value = "公众号appId")
     private String appId;
 
-    @Schema(description = "公众号appSecret")
+    @ApiModelProperty(value = "公众号appSecret")
     private String secret;
 
-    @Schema(description = "消息校验Token")
+    @ApiModelProperty(value = "消息校验Token")
     private String token;
-    @Schema(description = "消息加解密密钥")
+    @ApiModelProperty(value = "消息加解密密钥")
     private String aesKey;
 }

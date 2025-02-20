@@ -53,13 +53,13 @@ SQL文件位于根目录下的 mj-blog.sql
 
 ```
 blog
-├── shiyi-admin    --  后台管理系统的controller模块
-├── shiyi-common        --  通用模块
-├── shiyi-auth        --  认证模块
-├── shiyi-file        --  文件模块
-├── shiyi-quartz        --  定时任务模块
-├── shiyi-server        --  博客启动类模块
-├── shiyi-api           --  门户接口模块
+├── mojian-admin    --  后台管理系统的controller模块
+├── mojian-common        --  通用模块
+├── mojian-auth        --  认证模块
+├── mojian-file        --  文件模块
+├── mojian-quartz        --  定时任务模块
+├── mojian-server        --  博客启动类模块
+├── mojian-api           --  门户接口模块
 
 ```
 ## 项目特点
@@ -78,11 +78,45 @@ blog
 - 代码支持多种搜索模式（Elasticsearch或MYSQL），可支持配置。
 - 代码支持多种文件上传模式（七牛云oss或本地上传），可支持配置。
 - 代码遵循阿里巴巴开发规范，利于开发者学习。
-- 使用websocket技术实现博客群聊功能
+- 使用websocket技术实现博客群聊功能,支持发送表情、动图、文件、语音、图片
+- 
+
+## 项目截图
+
+**门户**
+![statics/img.png](/statics/img.png) ![statics/img.png](img.png)
+
+
+![statics/img_1.png](img_1.png) ![statics/img_2.png](img_2.png)
+
+
+![statics/img_3.png](img_3.png)
+
+**管理系统**
+![statics/img_4.png](img_4.png)  ![statics/img_5.png](img_5.png)
+
+![statics/img_6.png](img_6.png)  ![statics/img_7.png](img_7.png)
+
+![statics/img_8.png](img_8.png)  ![statics/img_9.png](img_9.png)
+
+![statics/img_10.png](img_10.png)  ![statics/img_11.png](img_11.png)
+
+![statics/img_12.png](img_12.png)  ![statics/img_13.png](img_13.png)
+
+![statics/img_14.png](img_14.png)  ![statics/img_15.png](img_15.png)
+
+![statics/img_16.png](img_16.png)  ![statics/img_17.png](img_17.png)
+
+![statics/img_18.png](img_18.png)  ![statics/img_19.png](img_19.png)
+
+![statics/img_20.png](img_20.png)
+
 
 ## 技术介绍
 
-**前端：** vue3.0 +  pinia + vue-router + axios + element-plus + echarts
+**门户-前端：** vue2.0 +  Vuex + vue-router + axios + elementUi
+
+**管理系统-前端：** vue3.0 +  pinia + vue-router + axios + element-plus + echarts
 
 **后端：** SpringBoot + nginx + docker + sa-token + Swagger2 + MyBatisPlus + Mysql + Redis + elasticsearch
 

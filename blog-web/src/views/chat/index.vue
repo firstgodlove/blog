@@ -242,8 +242,8 @@
           >
             <i class="fas fa-microphone"></i>
           </label>
-          <!-- <button 
-            class="toolbar-btn voice-toggle-btn" 
+          <!-- <button
+            class="toolbar-btn voice-toggle-btn"
             @click="toggleVoiceMode"
             title="语音输入"
           >
@@ -538,6 +538,8 @@ export default {
             ? this.currentChat.messages[0].content
             : this.currentChat.messages[0].type === "image"
             ? "[图片]"
+            : this.currentChat.messages[0].type === "audio"
+            ? "[语音] " + this.currentChat.messages[0].duration + "秒"
             : "[文件]";
       }
       //获取到的数据是最新时间的，应该要把这个顺序反过来
@@ -637,7 +639,13 @@ export default {
 
       this.currentChat.messages.push(newMessage);
       this.currentChat.lastMessage =
-        message.type === "text" ? message.content : "[图片]";
+        message.type === "text"
+          ? message.content
+          : message.type === "image"
+          ? "[图片]"
+          : message.type === "audio"
+          ? "[语音] " + message.duration + "秒"
+          : "[文件]";
       this.currentChat.lastTime = "刚刚";
       this.shouldScrollToBottom = true;
 
@@ -1386,7 +1394,9 @@ export default {
     stopRecording() {
       if (this.mediaRecorder && this.mediaRecorder.state !== "inactive") {
         this.audioEndTime = new Date();
-        let recordingDuration = Math.ceil((this.audioEndTime - this.audioStartTime) / 1000);
+        let recordingDuration = Math.ceil(
+          (this.audioEndTime - this.audioStartTime) / 1000
+        );
         if (recordingDuration < 3) {
           this.$message.error("录音时间太短，请重新录音");
           return;
@@ -1409,7 +1419,9 @@ export default {
 
           this.isRecording = false;
           if (this.mediaRecorder.stream) {
-            this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            this.mediaRecorder.stream
+              .getTracks()
+              .forEach((track) => track.stop());
           }
         };
       }
@@ -1424,6 +1436,11 @@ export default {
         this.audioChunks = [];
         this.$message.info("录音已取消");
         this.isRecording = false; // 移除录音中的视觉反馈
+        if (this.mediaRecorder.stream) {
+          this.mediaRecorder.stream
+            .getTracks()
+            .forEach((track) => track.stop());
+        }
       }
     },
 
@@ -1457,22 +1474,25 @@ export default {
     toggleAudioPlayback(msg, event) {
       if (this.audio) {
         this.audio.pause();
-        this.$set(msg, 'isPlaying', false);
+        this.$set(msg, "isPlaying", false);
         this.audio = null;
         return;
       }
       this.audio = new Audio(msg.content);
-      this.audio.play().then(() => {
-        this.$set(msg, 'isPlaying', true);
-        this.audio.onended = () => {
-          this.$set(msg, 'isPlaying', false);
+      this.audio
+        .play()
+        .then(() => {
+          this.$set(msg, "isPlaying", true);
+          this.audio.onended = () => {
+            this.$set(msg, "isPlaying", false);
+            this.audio = null;
+          };
+        })
+        .catch((error) => {
           this.audio = null;
-        };
-      }).catch(error => {
-        this.audio = null;
-        console.error("音频播放失败:", error);
-        this.$message.error("音频播放失败，请检查音频格式或网络连接");
-      });
+          console.error("音频播放失败:", error);
+          this.$message.error("音频播放失败，请检查音频格式或网络连接");
+        });
     },
 
     /**

@@ -160,6 +160,23 @@
   }
 }
 
+::selection {
+  background-color: #45bcd1 !important;
+  color: #fff;
+}
+
+::-moz-selection {
+  background-color: #45bcd1 !important;
+  color: #fff;
+}
+
+::-webkit-selection {
+  background-color: #45bcd1 !important;
+  color: #fff;
+}
+
+
+
 
 
 :root {

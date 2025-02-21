@@ -632,6 +632,7 @@ export default {
         updateProfileApi({ id: this.profileForm.id, avatar: response.data }).then(res => {
           this.$message.success('头像更新成功')
           this.userInfo.avatar = response.data
+          this.$store.state.userInfo.avatar = response.data
         }).catch(err => {
           this.$message.error(err.message || '头像更新失败')
         })

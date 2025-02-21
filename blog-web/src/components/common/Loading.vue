@@ -66,6 +66,8 @@ export default {
   justify-content: center;
   z-index: 9999;
   backdrop-filter: blur(4px);
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  opacity: 0.95;
 
   &.local {
     position: absolute !important;
@@ -83,6 +85,7 @@ export default {
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  animation: spinnerFadeIn 0.5s ease-out;
   
   .local & {
     transform: scale(0.8);
@@ -95,6 +98,13 @@ export default {
   font-weight: 500;
   letter-spacing: 2px;
   animation: pulse 1.5s ease-in-out infinite;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  transition: color 0.3s ease;
+}
+
+@keyframes spinnerFadeIn {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .galaxy {
@@ -103,6 +113,12 @@ export default {
   height: 80px;
   transform-style: preserve-3d;
   perspective: 1000px;
+  animation: galaxySpin 3s linear infinite;
+}
+
+@keyframes galaxySpin {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
 }
 
 .ring {

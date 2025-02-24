@@ -124,6 +124,7 @@
             { 'message-self': msg.userId === $store.state.userInfo.id },
           ]"
         >
+     
           <div
             class="avatar"
             @contextmenu.prevent="handleAvatarContextMenu(msg, $event)"
@@ -150,11 +151,13 @@
             </div>
             <template v-else>
               <div
+                :data-message-id="msg.id"
                 v-if="msg.type === 'text'"
                 class="message-text"
                 v-html="formatMessageContent(msg.content)"
                 @contextmenu.prevent="showMessageActions(msg, $event)"
               ></div>
+              
               <img
                 v-else-if="msg.type === 'image'"
                 v-lazy="msg.content"
@@ -171,7 +174,7 @@
               >
                 <i class="fas fa-file-download"></i>
                 <div class="file-info">
-                  <a :href="msg.content" target="_blank" download>{{
+                  <a href="javascript:void(0)" >{{
                     msg.fileName
                   }}</a>
                   <span class="file-size">{{
@@ -195,12 +198,23 @@
                 </div>
               </div>
             </template>
+             <!-- 新增引用消息显示 -->
+             <div v-if="msg.replyId && !msg.isRecalled" class="reply-message" @click="scrollToMessage(msg.replyId)">
+              <span class="reply-content">
+                <i class="el-icon-top"></i>{{msg.replyUserName}}：{{msg.replyContent}}
+              </span>
+            </div>
             <div class="message-time">{{ msg.time }}</div>
           </div>
         </div>
       </div>
 
-      <div class="chat-input">
+      <div class="chat-input" style="position: relative;">
+        <!-- 新增被回复消息显示 -->
+        <div v-if="selectedReplyMessage" class="reply-preview">
+          <span>回复: {{ selectedReplyMessage.content }}</span>
+          <i class="fas fa-times" @click="cancelReply"></i>
+        </div>
         <div class="input-toolbar">
           <mj-emoji size="1.1rem" class="emoji-picker" @select="insertEmoji" />
 
@@ -297,6 +311,11 @@
       :style="actionMenuPosition"
     >
       <template v-if="selectedMessage">
+        <!-- 新增回复选项 -->
+        <div class="action-item" v-if="selectedMessage.userId !== $store.state.userInfo.id"" @click="replyToMessage">
+          <i class="fas fa-reply"></i>
+          回复
+        </div>
         <div
           v-if="selectedMessage.userId !== $store.state.userInfo.id"
           class="action-item"
@@ -319,6 +338,10 @@
         <div class="action-item" @click="handleSearch">
           <i class="fas fa-search"></i>
           搜索
+        </div>
+        <div class="action-item" @click="handleDownloadFile" v-if="selectedMessage.type === 'file'">
+          <i class="fas fa-download"></i>
+          下载文件
         </div>
       </template>
     </div>
@@ -402,9 +425,7 @@ export default {
             type: "audio",
             content: "audio_url_here",
             isPlaying: false, // 确保初始化时存在
-            // 其他属性...
           },
-          // 其他消息...
         ],
       },
       showActionsMenu: false,
@@ -437,6 +458,7 @@ export default {
       audioStartTime: null, // 新增音频开始时间
       audioEndTime: null, // 新增音频结束时间
       audio: null,
+      selectedReplyMessage: null, // 新增字段，用于存储回复的消息
     };
   },
   //监听this.$store.state.userInfo的变化
@@ -635,6 +657,9 @@ export default {
         fileName: message.fileName,
         duration: message.duration,
         isPlaying: false, // 确保初始化时存在
+        replyId: message.replyId || null, 
+        replyContent: message.replyContent || null,
+        replyUserName: message.replyUserName || null,
       };
 
       this.currentChat.messages.push(newMessage);
@@ -676,12 +701,17 @@ export default {
         name: this.$store.state.userInfo.nickname,
         userId: this.$store.state.userInfo.id,
         avatar: this.$store.state.userInfo.avatar,
+        replyId: this.selectedReplyMessage?.id || null,
+        replyContent: this.selectedReplyMessage?.content || null,
+        replyUserId: this.selectedReplyMessage?.userId || null,
+        replyUserName: this.selectedReplyMessage?.name || null,
       };
 
       try {
         const response = await sendMsg(message);
         this.startCountdown();
         this.shouldScrollToBottom = true; // 发送消息时设置为true
+        this.selectedReplyMessage = null;
       } catch (error) {
         console.error("发送消息失败:", error);
         this.$message.error("发送失败，请重试");
@@ -734,6 +764,7 @@ export default {
         return;
       }
       const textarea = this.$refs.messageTextarea;
+      if (!textarea) return;
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
       this.messageText =
@@ -843,6 +874,27 @@ export default {
      */
     handleSearch() {
       this.$message.info("搜索功能暂未实现");
+    },
+
+    /**
+     * 处理下载文件
+     */
+    async handleDownloadFile() {
+      try {
+        let fileName = this.selectedMessage.fileName;
+        let response = await fetch(this.selectedMessage.content);
+        let blob = await response.blob();
+        let blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a"); // 创建a标签
+        link.href = blobUrl; // 下载链接
+        link.download = fileName; // 下载的文件名
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link); // 下载完成后移除a标签
+        URL.revokeObjectURL(blobUrl); // 释放URL对象
+      } catch (error) {
+        this.$message.error("下载失败，请重试");
+      }
     },
 
     /**
@@ -1503,6 +1555,47 @@ export default {
       const seconds = duration % 60;
       return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
     },
+
+    /**
+     * 滚动到指定消息
+     */
+    async scrollToMessage(messageId) {
+      console.log(messageId);
+      const container = this.$refs.messageContainer;
+      let messageElement = container.querySelector(`[data-message-id="${messageId}"]`);
+
+      // 如果消息元素不存在，尝试加载更多消息
+      while (!messageElement && this.hasMore) {
+        await this.loadMoreMessages(); // 确保等待加载完成
+        messageElement = container.querySelector(`[data-message-id="${messageId}"]`);
+      }
+
+      // 如果找到消息元素，滚动到该位置
+      if (messageElement) {
+        const offset = 100; // 设置偏移量，单位为像素
+        const topPosition = messageElement.offsetTop - offset;
+        container.scrollTo({ top: topPosition, behavior: 'smooth' });
+      } else {
+        this.$message.error("未能找到该消息，请尝试手动加载更多历史消息。");
+      }
+    },
+    /**
+     * 回复菜单
+     */
+    replyToMessage() {
+      this.selectedReplyMessage = this.selectedMessage;
+      this.closeActionsMenu();
+      this.$nextTick(() => {
+        const textarea = this.$refs.messageTextarea;
+        textarea.focus();
+      });
+    },
+    /**
+     * 取消回复
+     */
+    cancelReply() {
+      this.selectedReplyMessage = null;
+    },
   },
 };
 </script>
@@ -2019,7 +2112,6 @@ export default {
     flex: 1;
     overflow-y: auto;
     padding: $spacing-md $spacing-lg;
-    padding-bottom: 100px;
     background: var(--bg);
     display: flex;
     flex-direction: column;
@@ -2303,8 +2395,20 @@ export default {
       background: var(--hover-bg);
     }
 
-    i {
-      color: var(--text-secondary);
+    .fa-reply {
+      color: #be1fde;
+    }
+    .fa-at {
+      color: #0ab028;
+    }
+    .fa-download {
+      color: #2daba5;
+    }
+    .fa-undo {
+      color: #f5222d;
+    }
+    .fa-search {
+      color: #1890ff;
     }
   }
 }
@@ -2485,6 +2589,40 @@ export default {
     transform: translateY(-50%);
     border: 6px solid transparent;
     border-right-color: #e6f7ff;
+  }
+}
+
+.reply-message {
+  background: var(--reply-message-bg); // 使用 CSS 变量
+  padding: 2px 3px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+
+  .reply-content {
+    font-size: 0.85em;
+    color: var(--text-primary);
+  }
+}
+
+.reply-preview {
+  background: var(--hover-bg);
+  padding: $spacing-sm $spacing-md;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-sm;
+  position: absolute; /* 绝对定位 */
+  bottom: 100%; /* 放在输入框上方 */
+  left: 50%; /* 水平居中 */
+  transform: translateX(-50%); /* 水平居中调整 */
+  width: calc(100% - 2 * $spacing-md); /* 与输入框宽度一致 */
+
+  i {
+    cursor: pointer;
+    color: var(--text-primary);
   }
 }
 </style>

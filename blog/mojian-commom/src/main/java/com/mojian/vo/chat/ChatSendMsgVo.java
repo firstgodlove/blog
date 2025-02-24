@@ -48,4 +48,17 @@ public class ChatSendMsgVo {
     @ApiModelProperty(value = "发送时间")
     @JsonFormat(pattern = DateUtil.YYYY_MM_DD_HH_MM_SS)
     private LocalDateTime time;
+
+    @ApiModelProperty(value = "回复的消息id")
+    private String replyId;
+
+    @ApiModelProperty(value = "回复的用户id")
+    private String replyUserId;
+
+    @ApiModelProperty(value = "回复的消息内容")
+    private String replyContent;
+
+    @ApiModelProperty(value = "回复用户昵称")
+    private String replyUserName;
+
 }

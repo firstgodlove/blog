@@ -51,4 +51,14 @@ public class ChatMsg implements Serializable {
 
     @ApiModelProperty(value = "发送时间")
     private LocalDateTime createTime;
+
+
+    @ApiModelProperty(value = "回复的消息id")
+    private String replyId;
+
+    @ApiModelProperty(value = "回复的用户id")
+    private String replyUserId;
+
+    @ApiModelProperty(value = "回复的消息内容")
+    private String replyContent;
 }

@@ -36,6 +36,9 @@ CREATE TABLE `chat_msg`
     `file_name` varchar(255) DEFAULT NULL COMMENT '消息是文件时，存的文件名',
     `file_size` double DEFAULT NULL COMMENT '文件大小',
     `duration` int(11) DEFAULT NULL COMMENT '语音时长',
+    `reply_id` bigint(20) DEFAULT NULL COMMENT '回复消息id',
+    `reply_content` text COMMENT '回复消息内容',
+    `reply_user_id` bigint(20) DEFAULT NULL COMMENT '回复用户id',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4  COMMENT = '聊天消息' ROW_FORMAT = DYNAMIC;
 

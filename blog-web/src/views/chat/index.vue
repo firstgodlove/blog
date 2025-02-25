@@ -118,7 +118,7 @@
 
         <div
           v-for="(msg, index) in currentChat.messages"
-          :key="msg.id || 'msg-' + index"
+          :key="generateUniqueKey(msg, index)"
           :class="[
             'message',
             { 'message-self': msg.userId === $store.state.userInfo.id },
@@ -649,7 +649,7 @@ export default {
         type: message.type || "text",
         content: message.content,
         time: formatTime(new Date()),
-        userId: message.userId,
+        userId: message.senderId,
         name: message.name,
         avatar: message.avatar,
         location: message.location,
@@ -1595,6 +1595,10 @@ export default {
      */
     cancelReply() {
       this.selectedReplyMessage = null;
+    },
+    // 生成唯一的key
+    generateUniqueKey(msg, index) {
+      return msg.id || `msg-${msg.userId}-${index}-${Date.now()}`;
     },
   },
 };

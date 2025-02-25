@@ -57,7 +57,7 @@ export function getCategoriesApi() {
  */
 export function addCommentApi(data) {
     return request({
-        url: '/addComment',
+        url: '/api/comment/add',
         method: 'post',
         data
     })

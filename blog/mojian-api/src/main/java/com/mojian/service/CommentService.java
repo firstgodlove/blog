@@ -19,5 +19,5 @@ public interface CommentService {
      * @param sysComment
      * @return
      */
-    Boolean add(SysComment sysComment);
+    void add(SysComment sysComment);
 }

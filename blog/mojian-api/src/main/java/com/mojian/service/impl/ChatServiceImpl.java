@@ -3,7 +3,10 @@ package com.mojian.service.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
+import com.mojian.enums.ChatTypeEnum;
 import com.mojian.exception.ServiceException;
+import com.mojian.utils.BeanCopyUtil;
 import com.mojian.utils.IpUtil;
 import com.mojian.vo.chat.ChatSendMsgVo;
 import com.mojian.entity.ChatMsg;
@@ -32,24 +35,20 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public void sendMsg(ChatSendMsgVo chatSendMsgVo) {
-        ChatMsg chatMsg = new ChatMsg();
+
+        //如果是文字类型的，就先敏感词过滤
+        if (ChatTypeEnum.TEXT.getType().equals(chatSendMsgVo.getType())){
+            chatSendMsgVo.setContent(SensitiveWordHelper.replace(chatSendMsgVo.getContent()));
+        }
+
+
+        ChatMsg chatMsg = BeanCopyUtil.copyObj(chatSendMsgVo, ChatMsg.class);
         chatMsg.setSenderId(StpUtil.getLoginIdAsLong());
-        chatMsg.setType(chatSendMsgVo.getType());
-        chatMsg.setContent(chatSendMsgVo.getContent());
         chatMsg.setIp(IpUtil.getIp());
         chatMsg.setLocation(IpUtil.getIp2region(chatMsg.getIp()));
-        chatMsg.setFileName(chatSendMsgVo.getFileName());
-        chatMsg.setFileSize(chatSendMsgVo.getFileSize());
-        chatMsg.setDuration(chatSendMsgVo.getDuration());
-        chatMsg.setReplyId(chatSendMsgVo.getReplyId());
-        chatMsg.setReplyContent(chatSendMsgVo.getReplyContent());
-        chatMsg.setReplyUserId(chatSendMsgVo.getReplyUserId());
 
         chatMsgMapper.insert(chatMsg);
-
-        chatSendMsgVo.setId(chatMsg.getId());
-        chatSendMsgVo.setLocation(chatMsg.getLocation());
-        webSocketServer.sendAllMessage(JSON.toJSONString(chatSendMsgVo));
+        webSocketServer.sendAllMessage(JSON.toJSONString(chatMsg));
     }
 
     @Override

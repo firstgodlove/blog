@@ -1,5 +1,6 @@
 package com.mojian.service.impl;
 
+import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.mojian.service.MessageService;
 import com.mojian.entity.SysMessage;
 import com.mojian.mapper.SysMessageMapper;
@@ -25,6 +26,7 @@ public class MessageServiceImpl implements MessageService {
         String ip = IpUtil.getIp();
         sysMessage.setIp(ip);
         sysMessage.setSource(IpUtil.getIp2region(ip));
+        sysMessage.setContent(SensitiveWordHelper.replace(sysMessage.getContent()));
         messageMapper.insert(sysMessage);
         return true;
     }

@@ -84,6 +84,11 @@ export default {
     }
   },
   methods: {
+    /**
+     * 显示图片预览
+     * @param images 图片数组
+     * @param startIndex 开始显示的索引
+     */
     show(images, startIndex = 0) {
       this.images = Array.isArray(images) ? images : [images]
       this.currentIndex = startIndex
@@ -94,40 +99,68 @@ export default {
         this.$el.focus()
       })
     },
+    /**
+     * 关闭图片预览
+     */
     close() {
       this.visible = false
       document.body.style.overflow = ''
     },
+    /**
+     * 显示上一张图片
+     */
     prev() {
       if (this.currentIndex > 0) {
         this.currentIndex--
         this.reset()
       }
     },
+    /**
+     * 显示下一张图片
+     */
     next() {
       if (this.currentIndex < this.images.length - 1) {
         this.currentIndex++
         this.reset()
       }
     },
+    /**
+     * 旋转图片
+     * @param deg 旋转角度
+     */
     rotate(deg) {
       this.rotation = (this.rotation + deg) % 360
     },
+    /**
+     * 缩放图片
+     * @param delta 缩放比例
+     */
     zoom(delta) {
       const newScale = this.scale + delta
       if (newScale >= 0.1 && newScale <= 3) {
         this.scale = newScale
       }
     },
+    /**
+     * 重置图片
+     */
     reset() {
       this.scale = 1
       this.rotation = 0
       this.position = { x: 0, y: 0 }
     },
+    /**
+     * 处理鼠标滚轮事件
+     * @param e 鼠标滚轮事件
+     */
     handleWheel(e) {
       const delta = e.deltaY > 0 ? -0.1 : 0.1
       this.zoom(delta)
     },
+    /**
+     * 开始拖拽
+     * @param e 鼠标事件
+     */
     startDrag(e) {
       this.isDragging = true
       this.lastMousePosition = {
@@ -135,6 +168,10 @@ export default {
         y: e.clientY
       }
     },
+    /**
+     * 拖拽图片
+     * @param e 鼠标事件
+     */
     onDrag(e) {
       if (!this.isDragging) return
       
@@ -149,9 +186,16 @@ export default {
         y: e.clientY
       }
     },
+    /**
+     * 停止拖拽
+     */
     stopDrag() {
       this.isDragging = false
     },
+    /**
+     * 开始触摸
+     * @param e 触摸事件
+     */
     startTouch(e) {
       if (e.target.tagName.toLowerCase() === 'img' && e.touches.length === 1) {
         e.preventDefault()
@@ -162,6 +206,10 @@ export default {
         }
       }
     },
+    /**
+     * 触摸事件
+     * @param e 触摸事件
+     */
     onTouch(e) {
       if (!this.isDragging || e.touches.length !== 1) return
       
@@ -176,9 +224,28 @@ export default {
         y: e.touches[0].clientY
       }
     },
+    /**
+     * 停止触摸
+     */
     stopTouch() {
       this.isDragging = false
     }
+  },
+  mounted() {
+    // 监听ESC键盘事件
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.close()
+      }
+    })
+  },
+  beforeDestroy() {
+    // 移除ESC键盘事件监听
+    document.removeEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.close()
+      }
+    })
   }
 }
 </script>

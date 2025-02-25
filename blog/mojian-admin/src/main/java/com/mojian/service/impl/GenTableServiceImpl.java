@@ -81,24 +81,8 @@ public class GenTableServiceImpl implements GenTableService {
     }
 
     @Override
-    public void generatorCode(String tables) {
-        String[] tableNames = tables.split(",");
-        GenTable genTable = new GenTable();
-        for (String tableName : tableNames) {
-            // 查询表信息
-            genTable.setTableName(tableName);
-            List<GenTable> tableList = genTableMapper.selectDbTableList(genTable);
-            GenTable table = tableList.get(0);
-            // 查询列信息
-            List<GenTableColumn> columns = genTableMapper.selectDbTableColumns(tableName);
-            // 生成代码文件
-            generateFiles(table, columns);
-        }
-    }
-
-    @Override
     @Transactional(rollbackFor = Exception.class)
-    public String synchDb(String tableName) {
+    public String syncDb(String tableName) {
         try {
             // 查询表信息
             GenTable genTable = new GenTable();
@@ -291,56 +275,6 @@ public class GenTableServiceImpl implements GenTableService {
         return name.substring(0, name.indexOf(".vm"));
     }
 
-    private void generateFiles(GenTable table, List<GenTableColumn> columns) {
-        try {
-            VelocityContext context = VelocityUtil.prepareContext(table, columns);
-
-            // 获取模板列表
-            List<String> templates = getTemplateList();
-            for (String template : templates) {
-                // 渲染模板
-                StringWriter sw = new StringWriter();
-                Template tpl = Velocity.getTemplate(template, "UTF-8");
-                tpl.merge(context, sw);
-
-                // 生成文件
-                String path = getGeneratePath(template, table);
-                if (path != null) {
-                    File file = new File(path);
-                    FileUtils.forceMkdirParent(file); // 确保父目录存在
-                    FileUtils.writeStringToFile(file, sw.toString(), "UTF-8");
-                }
-            }
-        } catch (IOException e) {
-            throw new ServiceException("生成代码失败，请检查目录权限！", e);
-        }
-    }
-
-    private String getGeneratePath(String template, GenTable table) {
-        String className = VelocityUtil.convertClassName(table.getTableName());
-        String packagePath = "src/main/java/com/neat/demo/";
-        String resourcePath = "src/main/resources/";
-
-        if (template.contains("entity.java.vm")) {
-            return packagePath + "entity/" + className + ".java";
-        } else if (template.contains("mapper.java.vm")) {
-            return packagePath + "mapper/" + className + "Mapper.java";
-        } else if (template.contains("service.java.vm")) {
-            return packagePath + "service/" + className + "Service.java";
-        } else if (template.contains("serviceImpl.java.vm")) {
-            return packagePath + "service/impl/" + className + "ServiceImpl.java";
-        } else if (template.contains("controller.java.vm")) {
-            return packagePath + "controller/" + className + "Controller.java";
-        } else if (template.contains("mapper.xml.vm")) {
-            return resourcePath + "mapper/" + className + "Mapper.xml";
-        } else if (template.contains("vue.vue.vm")) {
-            return "vue/" + VelocityUtil.convertToCamelCase(table.getTableName()) + "/index.vue";
-        }else if (template.contains("api.ts.vm")) {
-            return "api/" +  className + "index.ts";
-        }
-        return null;
-    }
-
     @Override
     public byte[] downloadCode(String[] tableNames) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -375,12 +309,14 @@ public class GenTableServiceImpl implements GenTableService {
                         // 添加到zip
                         zip.putNextEntry(new ZipEntry(fileName));
                         IOUtils.write(sw.toString(), zip, Constants.UTF8);
+                        IOUtils.closeQuietly(sw);
+                        zip.flush();
                         zip.closeEntry();
                     }
                 }
             }
 
-            zip.close();
+            IOUtils.closeQuietly(zip);
             return outputStream.toByteArray();
         } catch (IOException e) {
             throw new RuntimeException("生成代码失败", e);
@@ -391,8 +327,8 @@ public class GenTableServiceImpl implements GenTableService {
     }
 
     private String getFileName(String template, GenTable table) {
-        String className = table.getClassName();
-        String packageName = table.getPackageName().replace(".", "/");
+        String className = VelocityUtil.getClassName(table.getTableName());
+        String packageName = VelocityUtil.packageName.replace(".", "/");
 
         if (template.contains("entity.java.vm")) {
             return packageName + "/entity/" + className + ".java";
@@ -411,5 +347,4 @@ public class GenTableServiceImpl implements GenTableService {
         }
         return null;
     }
-
 }

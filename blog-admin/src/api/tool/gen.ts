@@ -27,10 +27,11 @@ export function delTableApi(tableId: string | number) {
 }
 
 // 生成代码
-export function genCodeApi(tableNames: string) {
+export function downloadCodeApi(tableNames: string) {
   return request({
     url: '/tool/gen/download/' + tableNames,
-    method: 'get'
+    method: 'get',
+    responseType: 'blob'
   })
 }
 

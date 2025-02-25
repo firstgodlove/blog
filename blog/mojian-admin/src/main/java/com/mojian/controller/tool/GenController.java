@@ -6,6 +6,9 @@ import com.mojian.service.GenTableService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.IOUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
@@ -39,17 +42,10 @@ public class GenController {
         return Result.success(genTableService.deleteGenTableByIds(tableIds));
     }
 
-    @GetMapping("/code/{tables}")
-    @ApiOperation(value = "下载代码")
-    public Result<Void> genCode(@PathVariable String tables) {
-        genTableService.generatorCode(tables);
-        return Result.success();
-    }
-
     @GetMapping("/sync/{tableName}")
     @ApiOperation(value = "同步数据库")
-    public Result<String> synchDb(@PathVariable String tableName) {
-        return Result.success(genTableService.synchDb(tableName));
+    public Result<String> syncDb(@PathVariable String tableName) {
+        return Result.success(genTableService.syncDb(tableName));
     }
 
     @GetMapping("/db/list")
@@ -66,20 +62,17 @@ public class GenController {
         return Result.success();
     }
 
-    @GetMapping("/download/{tables}")
-    @ApiOperation(value = "下载代码")
-    public void download(@PathVariable("tables") String tables, HttpServletResponse response) {
-        try {
-            byte[] data = genTableService.downloadCode(tables.split(","));
-
-            response.reset();
-            response.setHeader("Content-Disposition", "attachment; filename=\"code.zip\"");
-            response.addHeader("Content-Length", "" + data.length);
-            response.setContentType("application/octet-stream; charset=UTF-8");
-
-            IOUtils.write(data, response.getOutputStream());
-        } catch (IOException e) {
-            throw new RuntimeException("下载代码失败", e);
-        }
+    @GetMapping("/download/{tableNames}")
+    @ApiOperation(value = "下载代码压缩包")
+    public void downloadCode(@PathVariable String[] tableNames, HttpServletResponse response) throws IOException {
+        byte[] data = genTableService.downloadCode(tableNames);
+        response.reset();
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Expose-Headers", "Content-Disposition");
+        response.setHeader("Content-Disposition", "attachment; filename=\"ruoyi.zip\"");
+        response.addHeader("Content-Length", "" + data.length);
+        response.setContentType("application/octet-stream; charset=UTF-8");
+        IOUtils.write(data, response.getOutputStream());
     }
+
 }

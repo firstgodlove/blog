@@ -13,10 +13,12 @@ import java.util.List;
  */
 public class VelocityUtil {
 
+    public static String packageName = "com.mojian";
+
+
     public static VelocityContext prepareContext(GenTable genTable, List<GenTableColumn> columns) {
         VelocityContext context = new VelocityContext();
 
-        String packageName = "com.mojian";
         String moduleName = genTable.getModuleName();
         String businessName = getBusinessName(genTable.getTableName());
         String className = getClassName(genTable.getTableName());

@@ -41,14 +41,17 @@ public class ChatServiceImpl implements ChatService {
             chatSendMsgVo.setContent(SensitiveWordHelper.replace(chatSendMsgVo.getContent()));
         }
 
-
         ChatMsg chatMsg = BeanCopyUtil.copyObj(chatSendMsgVo, ChatMsg.class);
         chatMsg.setSenderId(StpUtil.getLoginIdAsLong());
         chatMsg.setIp(IpUtil.getIp());
         chatMsg.setLocation(IpUtil.getIp2region(chatMsg.getIp()));
 
+
         chatMsgMapper.insert(chatMsg);
-        webSocketServer.sendAllMessage(JSON.toJSONString(chatMsg));
+
+        chatSendMsgVo.setId(chatMsg.getId());
+        chatSendMsgVo.setLocation(IpUtil.getIp2region(chatMsg.getIp()));
+        webSocketServer.sendAllMessage(JSON.toJSONString(chatSendMsgVo));
     }
 
     @Override

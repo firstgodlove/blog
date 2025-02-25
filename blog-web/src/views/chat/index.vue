@@ -649,7 +649,7 @@ export default {
         type: message.type || "text",
         content: message.content,
         time: formatTime(new Date()),
-        userId: message.senderId,
+        userId: message.userId,
         name: message.name,
         avatar: message.avatar,
         location: message.location,

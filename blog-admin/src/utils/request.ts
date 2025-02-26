@@ -28,9 +28,9 @@ service.interceptors.response.use(
   (response) => {
     const res = response.data
     // 二进制数据则直接返回
-    if (res.request.responseType ===  'blob' || res.request.responseType ===  'arraybuffer') {
-      return res.data
-    }
+    // if (res.request.responseType ===  'blob' || res.request.responseType ===  'arraybuffer') {
+    //   return res.data
+    // }
     if (res.code !== 200) {
       ElMessage.error(res.message || '请求错误')
       if (res.code === 401) {

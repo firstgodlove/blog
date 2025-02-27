@@ -377,6 +377,11 @@ import { formatTime } from "@/utils/time";
 import { uploadFileApi } from "@/api/file";
 import { disableScroll, enableScroll } from "@/utils/scroll";
 import { showLoading, hideLoading } from "@/utils/loading";
+import { marked } from 'marked'; // 使用命名导入
+import hljs from 'highlight.js'
+import 'highlight.js/styles/atom-one-dark.css'
+
+
 export default {
   name: "Chat",
   data() {
@@ -569,6 +574,8 @@ export default {
       this.currentChat.messages.forEach((msg) => {
         msg.time = formatTime(msg.time);
       });
+
+     this.handlePreCode();
     },
     /**
      * 连接WebSocket
@@ -677,6 +684,64 @@ export default {
       this.$nextTick(() => {
         this.scrollToBottom();
       });
+      setTimeout(() => {
+        this.handlePreCode();
+      }, 100);
+    },
+    /**
+     * 处理代码块
+     */
+    async handlePreCode(){
+      await this.$nextTick()
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block)
+      })
+
+      this.addCopyButtons();
+    },
+
+     /**
+     * 添加复制按钮
+     */
+     addCopyButtons() {
+      const codeBlocks = document.querySelectorAll('.message-content pre')
+      if (!codeBlocks.length) return
+
+      codeBlocks.forEach(pre => {
+        // 检查是否已经添加过复制按钮
+        if (pre.querySelector('.code-header')) return
+
+        // 创建复制按钮容器
+        const buttonWrapper = document.createElement('div')
+        buttonWrapper.className = 'code-header'
+
+        // 创建复制按钮
+        const copyButton = document.createElement('button')
+        copyButton.className = 'copy-button'
+        copyButton.innerHTML = '<i class="fas fa-copy"></i> 复制'
+        copyButton.title = '复制代码'
+
+        // 添加点击事件
+        copyButton.addEventListener('click', async () => {
+          try {
+            const code = pre.querySelector('code')
+            await navigator.clipboard.writeText(code.textContent)
+            copyButton.innerHTML = '<i class="fas fa-check"></i> 已复制'
+            copyButton.classList.add('copied')
+            setTimeout(() => {
+              copyButton.innerHTML = '<i class="fas fa-copy"></i> 复制'
+              copyButton.classList.remove('copied')
+            }, 2000)
+            this.$message.success('复制成功')
+          } catch (err) {
+            this.$message.error('复制失败，请手动复制')
+          }
+        })
+
+        // 将按钮添加到代码块
+        buttonWrapper.appendChild(copyButton)
+        pre.appendChild(buttonWrapper)
+      })
     },
 
     /**
@@ -1044,7 +1109,7 @@ export default {
 
     //截取地址
     splitIpAddress(address) {
-      return address ? address.split("|")[1] : "";
+      return address ? address.split("|")[1] : "未知";
     },
 
     /**
@@ -1290,14 +1355,20 @@ export default {
       });
     },
 
-    // 添加格式化消息内容的方法
+    /**
+     * 格式化消息内容
+     */
     formatMessageContent(content) {
+      // 使用 marked 解析 Markdown 内容
+      const htmlContent = marked(content);
+
       // 如果内容已经包含<mention>标签，说明是发送时已经处理过的
-      if (content.includes("<mention>")) {
-        return content;
+      if (htmlContent.includes("<mention>")) {
+        return htmlContent;
       }
+
       // 否则处理普通文本中的@格式
-      return content.replace(/@(\S+)\s/g, "<mention>@$1</mention> ");
+      return htmlContent.replace(/@(\S+)\s/g, "<mention>@$1</mention> ");
     },
 
     toggleList() {
@@ -2629,4 +2700,164 @@ export default {
     color: var(--text-primary);
   }
 }
+
+:deep(pre) {
+    margin: 1em 0;
+    position: relative;
+    background: #282c34;
+    border-radius: 6px;
+    padding-top: 2.5em;
+    overflow: hidden;
+    max-height: 2000px;
+    transition: max-height 0.4s ease-in-out;
+
+    &.collapsed {
+      max-height: 300px;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: linear-gradient(transparent, #282c34);
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      .expand-button {
+        display: flex !important;
+      }
+    }
+
+    .expand-button {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 6px 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      color: #abb2bf;
+      cursor: pointer;
+      z-index: 3;
+      font-size: 0.9em;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        transform: translateX(-50%) translateY(-2px);
+      }
+
+      i {
+        font-size: 14px;
+      }
+    }
+
+    /* 添加行号容器样式 */
+    .line-numbers {
+      position: absolute;
+      left: 0;
+      top: 2.5em;
+      bottom: 0;
+      font-size: 14px;
+      padding: 1em 0;
+      text-align: right;
+      color: #666;
+      border-right: 1px solid #404040;
+      background: #2d323b;
+      user-select: none;
+      z-index: 1;
+
+      span {
+        display: block;
+        padding: 0 0.5em;
+        min-width: 2.5em;
+        line-height: 1.5;
+      }
+    }
+
+    /* 调整代码内容的样式 */
+    code {
+      display: block;
+      padding: 1em;
+      padding-left: 4em;
+      /* 增加左侧padding */
+      margin-left: 0;
+      /* 移除margin */
+      overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      position: relative;
+      /* 添加相对定位 */
+
+
+    }
+
+    /* 添加仿 macOS 风格的按钮 */
+    &::before {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ff5f56;
+      box-shadow:
+        20px 0 0 #ffbd2e,
+        40px 0 0 #27c93f;
+    }
+
+    /* 复制按钮容器 */
+    .code-header {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    /* 显示复制按钮 */
+    &:hover .code-header {
+      opacity: 1;
+    }
+
+    /* 复制按钮样式 */
+    .copy-button {
+      padding: 4px 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 4px;
+      color: #abb2bf;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      i {
+        font-size: 14px;
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+      }
+
+      &.copied {
+        background: #98c379;
+        color: #fff;
+      }
+    }
+  }
 </style>

@@ -4,11 +4,17 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mojian.utils.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @ApiModel(value = "聊天消息")
 public class ChatSendMsgVo {
 
@@ -22,7 +28,7 @@ public class ChatSendMsgVo {
     private String content;
 
     @ApiModelProperty(value = "是否自己发送")
-    private Integer userId;
+    private Long userId;
 
     @ApiModelProperty(value = "发送人名称")
     private String name;

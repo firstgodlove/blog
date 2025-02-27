@@ -1238,25 +1238,7 @@ export default {
       font-size: 14px;
       line-height: 1.5;
       position: relative;
-      /* 添加相对定位 */
-
-      /* 添加水平滚动条样式 */
-      &::-webkit-scrollbar {
-        height: 8px;
-      }
-
-      &::-webkit-scrollbar-track {
-        background: #2d323b;
-      }
-
-      &::-webkit-scrollbar-thumb {
-        background: #454c59;
-        border-radius: 4px;
-
-        &:hover {
-          background: #5a6273;
-        }
-      }
+    
     }
 
     /* 添加仿 macOS 风格的按钮 */

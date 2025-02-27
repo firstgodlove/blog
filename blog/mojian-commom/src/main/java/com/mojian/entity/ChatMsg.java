@@ -61,4 +61,5 @@ public class ChatMsg implements Serializable {
 
     @ApiModelProperty(value = "回复的消息内容")
     private String replyContent;
+
 }

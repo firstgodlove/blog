@@ -20,4 +20,6 @@ public class Constants {
     public static final String PARENT_VIEW = "ParentView";
 
     public static final Object USER = "user";
+
+    public static final Long XIAO_ASSISTANT_ID  = 2L;
 }

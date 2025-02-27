@@ -1,11 +1,16 @@
 package com.mojian.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.thread.ThreadUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
+import com.mojian.common.Constants;
+import com.mojian.entity.SysUser;
 import com.mojian.enums.ChatTypeEnum;
 import com.mojian.exception.ServiceException;
+import com.mojian.mapper.SysUserMapper;
+import com.mojian.utils.AiUtil;
 import com.mojian.utils.BeanCopyUtil;
 import com.mojian.utils.IpUtil;
 import com.mojian.vo.chat.ChatSendMsgVo;
@@ -27,6 +32,11 @@ public class ChatServiceImpl implements ChatService {
     private final WebSocketServer webSocketServer;
 
     private final SysChatMsgMapper chatMsgMapper;
+
+    private final SysUserMapper sysUserMapper;
+
+    private final AiUtil aiUtil;
+
 
     @Override
     public IPage<ChatSendMsgVo> getChatMsgList() {
@@ -52,6 +62,30 @@ public class ChatServiceImpl implements ChatService {
         chatSendMsgVo.setId(chatMsg.getId());
         chatSendMsgVo.setLocation(IpUtil.getIp2region(chatMsg.getIp()));
         webSocketServer.sendAllMessage(JSON.toJSONString(chatSendMsgVo));
+
+        //判断是否@拾壹小助手
+        String SHINY_XIA_ASSISTANT = "@拾壹小助手";
+        if (chatSendMsgVo.getContent().contains(SHINY_XIA_ASSISTANT)) {
+            ThreadUtil.execAsync(() -> {
+                String replaceContent = chatSendMsgVo.getContent().replace(SHINY_XIA_ASSISTANT, "");
+                String aiContent = aiUtil.send(replaceContent);
+
+                SysUser sysUser = sysUserMapper.selectById(Constants.XIAO_ASSISTANT_ID);
+                ChatSendMsgVo vo = ChatSendMsgVo.builder()
+                        .avatar(sysUser.getAvatar())
+                        .name(sysUser.getNickname())
+                        .content("@" + chatSendMsgVo.getName() + " " + aiContent)
+                        .userId(Constants.XIAO_ASSISTANT_ID)
+                        .type(ChatTypeEnum.TEXT.getType())
+                        .build();
+                ChatMsg obj = BeanCopyUtil.copyObj(vo, ChatMsg.class);
+                obj.setSenderId(Constants.XIAO_ASSISTANT_ID);
+
+                chatMsgMapper.insert(obj);
+                vo.setId(obj.getId());
+                webSocketServer.sendAllMessage(JSON.toJSONString(vo));
+            });
+        }
     }
 
     @Override

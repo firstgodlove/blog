@@ -122,6 +122,7 @@
           :class="[
             'message',
             { 'message-self': msg.userId === $store.state.userInfo.id },
+            { 'active-message': msg.id === currentChat.id }
           ]"
         >
      
@@ -139,11 +140,11 @@
                 "
                 class="sender-name"
               >
-                {{ msg.name }}
+                <span :class="msg.userId === 1 ? 'user-name': msg.userId === 2 ? 'assistant-name': ''" >{{ msg.name }}</span>
                 <span v-if="msg.userId === 1" class="author-tag">作者</span>
-                <span class="location"
-                  >({{ splitIpAddress(msg.location) }})</span
-                >
+                <span v-if="msg.userId === 2" class="assistant-tag">A I</span>
+                <span class="message-time">{{ msg.time }}</span>
+                <span class="location">{{ splitIpAddress(msg.location) }}</span>
               </div>
             </div>
             <div v-if="msg.isRecalled" class="message-recalled">
@@ -204,7 +205,6 @@
                 <i class="el-icon-top"></i>{{msg.replyUserName}}：{{msg.replyContent}}
               </span>
             </div>
-            <div class="message-time">{{ msg.time }}</div>
           </div>
         </div>
       </div>
@@ -1631,24 +1631,29 @@ export default {
      * 滚动到指定消息
      */
     async scrollToMessage(messageId) {
-      console.log(messageId);
-      const container = this.$refs.messageContainer;
-      let messageElement = container.querySelector(`[data-message-id="${messageId}"]`);
+        const container = this.$refs.messageContainer;
+        let messageElement = container.querySelector(`[data-message-id="${messageId}"]`);
 
-      // 如果消息元素不存在，尝试加载更多消息
-      while (!messageElement && this.hasMore) {
-        await this.loadMoreMessages(); // 确保等待加载完成
-        messageElement = container.querySelector(`[data-message-id="${messageId}"]`);
-      }
+        // 如果消息元素不存在，尝试加载更多消息
+        while (!messageElement && this.hasMore) {
+            await this.loadMoreMessages(); // 确保等待加载完成
+            messageElement = container.querySelector(`[data-message-id="${messageId}"]`);
+        }
 
-      // 如果找到消息元素，滚动到该位置
-      if (messageElement) {
-        const offset = 100; // 设置偏移量，单位为像素
-        const topPosition = messageElement.offsetTop - offset;
-        container.scrollTo({ top: topPosition, behavior: 'smooth' });
-      } else {
-        this.$message.error("未能找到该消息，请尝试手动加载更多历史消息。");
-      }
+        // 如果找到消息元素，滚动到该位置
+        if (messageElement) {
+            const offset = 100; // 设置偏移量，单位为像素
+            const topPosition = messageElement.offsetTop - offset;
+            container.scrollTo({ top: topPosition, behavior: 'smooth' });
+
+            // 添加激活效果
+            messageElement.classList.add('active-message');
+            setTimeout(() => {
+                messageElement.classList.remove('active-message');
+            }, 2000); // 3秒后移除激活效果
+        } else {
+            this.$message.error("未能找到该消息，请尝试手动加载更多历史消息。");
+        }
     },
     /**
      * 回复菜单
@@ -2215,6 +2220,7 @@ export default {
 
           .sender-name {
             text-align: right;
+            user-select: none;
           }
         }
       }
@@ -2245,7 +2251,14 @@ export default {
 
           .sender-name {
             font-size: 0.85em;
+            user-select: none;
             color: var(--text-secondary);
+            .user-name {
+              color: red;
+            }
+            .assistant-name {
+              color: #b32ce9;
+            }
           }
         }
 
@@ -2265,12 +2278,6 @@ export default {
               text-decoration: underline;
             }
           }
-        }
-
-        .message-time {
-          font-size: 0.8em;
-          color: var(--text-secondary);
-          margin-top: 2px;
         }
       }
     }
@@ -2445,8 +2452,11 @@ export default {
 }
 
 .message-time {
-  font-size: 0.8em;
+  margin-left: $spacing-sm;
   color: var(--text-secondary);
+  &::after {
+    content: '·';
+  }
 }
 
 .message-actions-menu {
@@ -2502,11 +2512,19 @@ export default {
 .location {
   font-size: 12px;
   color: var(--text-secondary);
-  margin-left: 4px;
 }
 
 .author-tag {
   background: $primary;
+  color: white;
+  font-size: 12px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 4px;
+}
+
+.assistant-tag {
+  background: #b32ce9;
   color: white;
   font-size: 12px;
   padding: 1px 6px;
@@ -2701,93 +2719,29 @@ export default {
   }
 }
 
+:deep(ol) {
+  padding-left: $spacing-md !important;
+}
+
+:deep(ul) {
+  padding-left: $spacing-md !important;
+}
+
 :deep(pre) {
     margin: 1em 0;
     position: relative;
     background: #282c34;
     border-radius: 6px;
     padding-top: 2.5em;
-    overflow: hidden;
-    max-height: 2000px;
-    transition: max-height 0.4s ease-in-out;
+    overflow: auto;
+    max-height: 500px;
 
-    &.collapsed {
-      max-height: 300px;
-      
-      &::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 60px;
-        background: linear-gradient(transparent, #282c34);
-        pointer-events: none;
-        z-index: 2;
-      }
-
-      .expand-button {
-        display: flex !important;
-      }
-    }
-
-    .expand-button {
-      position: absolute;
-      bottom: 15px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 6px 16px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 4px;
-      color: #abb2bf;
-      cursor: pointer;
-      z-index: 3;
-      font-size: 0.9em;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.2);
-        color: #fff;
-        transform: translateX(-50%) translateY(-2px);
-      }
-
-      i {
-        font-size: 14px;
-      }
-    }
-
-    /* 添加行号容器样式 */
-    .line-numbers {
-      position: absolute;
-      left: 0;
-      top: 2.5em;
-      bottom: 0;
-      font-size: 14px;
-      padding: 1em 0;
-      text-align: right;
-      color: #666;
-      border-right: 1px solid #404040;
-      background: #2d323b;
-      user-select: none;
-      z-index: 1;
-
-      span {
-        display: block;
-        padding: 0 0.5em;
-        min-width: 2.5em;
-        line-height: 1.5;
-      }
-    }
 
     /* 调整代码内容的样式 */
     code {
       display: block;
       padding: 1em;
-      padding-left: 4em;
+      padding-left: 1em;
       /* 增加左侧padding */
       margin-left: 0;
       /* 移除margin */
@@ -2796,9 +2750,6 @@ export default {
       font-size: 14px;
       line-height: 1.5;
       position: relative;
-      /* 添加相对定位 */
-
-
     }
 
     /* 添加仿 macOS 风格的按钮 */
@@ -2860,4 +2811,12 @@ export default {
       }
     }
   }
+
+.message {
+    // existing styles...
+    .active-message {
+        background-color: rgb(222 22 22 / 55%) !important; // 你可以根据需要调整颜色
+        transition: background-color 0.2s ease !important;
+    }
+}
 </style>
